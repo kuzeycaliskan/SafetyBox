@@ -54,6 +54,11 @@ class main_DB():
         readPNR_DB = self.select_DB.fetchall()
         return readPNR_DB
 
+    def getTrackList(self):
+        self.select_DB.execute("SELECT Takip_Numarasi FROM cargosystem")
+        readTrack_DB = self.select_DB.fetchall()
+        return readTrack_DB
+
     def getInfo_IW(self, PNR_num):
         self.select_DB.execute('SELECT * FROM cargosystem WHERE Pnr_Num =' + PNR_num)
         readInfo_IW = self.select_DB.fetchall()
