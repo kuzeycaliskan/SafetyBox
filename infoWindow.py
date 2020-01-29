@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import *
-import main_DB
 
 class InfoWindow(QWidget):  # <===
     def __init__(self, DB_RowValue):

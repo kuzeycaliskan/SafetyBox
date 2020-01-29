@@ -1,0 +1,4 @@
+root
+kuzey7174
+127.0.0.1
+cargosystem

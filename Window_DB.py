@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import *
 import main_DB
 
-
 class Window_DB(QWidget):
 
     def __init__(self):
@@ -82,3 +81,7 @@ class Window_DB(QWidget):
             event.accept()
         else:
             event.ignore()
+
+
+
+

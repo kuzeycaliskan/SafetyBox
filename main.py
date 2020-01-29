@@ -1,17 +1,16 @@
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QFont
 import infoWindow
 import main_DB
-import window_DB
+import Window_DB
 import CreateRow
 
 StyleSheet = '''
 QPushButton#DeliveringButton {
     background-color: #0000ff;
-    /* Ограничьте минимальный размер */
-    border-radius: 48px;        /* круглый */
+    border-radius: 48px;
 }
 
 QPushButton#DeliveringButton:hover {
@@ -25,8 +24,7 @@ QPushButton#DeliveringButton:pressed {
 
 QPushButton#ReceivingButton {
     background-color: #ff0000;
-    /* Ограничьте минимальный размер */
-    border-radius: 48px;        /* круглый */
+    border-radius: 48px;
 }
 
 QPushButton#ReceivingButton:hover {
@@ -45,7 +43,8 @@ class Window(QWidget):
 
         self.setGeometry(0, 0, 1080,732) #window size
         self.setWindowTitle("Safety Box")  #window title
-        self.database = main_DB.main_DB() #calling database class
+        self.database = main_DB.main_DB()  # calling database class
+
         # self.database.deleteTable()
         # self.database.createTable()
         # self.database.addRow_default()
@@ -70,6 +69,7 @@ class Window(QWidget):
         deliveringButton.installEventFilter(self)
         deliveringButton.setFixedSize(deliveringButton.width(),deliveringButton.height()) #button size maximize
         deliveringButton.setFont(QFont("Arial", 50, QFont.Bold)) #button font
+        # deliveringButton.setVisible(False)
         deliveringButton.clicked.connect(self.deliveringFunction)
         # unclicked unvisible
         #print(groupBox.width())
@@ -195,7 +195,7 @@ class Window(QWidget):
         # for i in self.read_DB:
         #     print("check")
         #     print(i)
-        self.w_DB = window_DB.Window_DB()
+        self.w_DB = Window_DB.Window_DB()
         self.w_DB.show()
         # self.database.getDB_All()
 
@@ -210,8 +210,8 @@ class Window(QWidget):
         U_CurrentName = self.U_Name.text()
         U_CurrentValue = self.U_T_Value.text()
 
-        if U_CurrentCombo == "Değiştirmek istediniğiniz sütunu seçiniz.":
-            QMessageBox.information(self, "Hata", "Sütun seçimi boş bırakılamaz.")
+        if U_CurrentCombo == "Değiştirmek istediğiniz sütunu seçiniz.":
+            QMessageBox.critical(self, "Hata", "Sütun seçimi boş bırakılamaz.")
         else:
             self.database.updateRow(U_CurrentCombo, U_CurrentName, U_CurrentValue)
 
@@ -292,7 +292,7 @@ class Window(QWidget):
         self.U_TextLabel = QLabel("")
 
         self.U_Combo = QComboBox(self)
-        self.U_Combo.addItems(["Değiştirmek istediniğiniz sütunu seçiniz.","Takip_Numarasi","Ad","Soyad","Tel_Num",
+        self.U_Combo.addItems(["Değiştirmek istediğiniz sütunu seçiniz.","Takip_Numarasi","Ad","Soyad","Tel_Num",
                                "Mail_adres","Qrkod","Pnr_Num","Security","Box_Location","Cabin_Num","Cargo_Start_Time",
                                "Cargo_End_Time"])
 
@@ -344,10 +344,6 @@ class Window(QWidget):
         mainLayout.addWidget(self.tab)
 
         self.setLayout(mainLayout)
-
-
-
-
 
 
 
