@@ -5,14 +5,19 @@ class main_DB():
     def __init__(self):
         super().__init__()
         print(mysql.connector.version)
-        with open("DBparameters.txt", "r") as DB_pm:
-            DB_pm_list = DB_pm.read().splitlines()
-            print(DB_pm_list)
+        # with open("DBparameters.txt", "r") as DB_pm:
+        #     DB_pm_list = DB_pm.read().splitlines()
+        #     print(DB_pm_list)
+        #
+        #
+        # self.connection = mysql.connector.connect(user=DB_pm_list[0], password=DB_pm_list[1],
+        #                       host=DB_pm_list[2],
+        #                       database=DB_pm_list[3])
+        #
+        self.connection = mysql.connector.connect(user="root", password="kuzey7174",
+                                                  host="192.168.1.33",
+                                                  database="cargosystem")
 
-
-        self.connection = mysql.connector.connect(user=DB_pm_list[0], password=DB_pm_list[1],
-                              host=DB_pm_list[2],
-                              database=DB_pm_list[3])
         if (self.connection):
             print('baglanti başarili')
         else:
