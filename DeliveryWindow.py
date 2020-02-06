@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import *
 
-class InfoWindow(QWidget):  # <===
+class DeliveryWindow(QWidget):  # <===
     def __init__(self, DB_RowValue):
         super().__init__()
         #self.setGeometry(0, 0, 500, 250)

@@ -72,16 +72,31 @@ class main_DB():
         readPNR_DB = self.select_DB.fetchall()
         return readPNR_DB
 
-    def getTrackList(self):
-        self.select_DB.execute("SELECT Takip_Numarasi FROM cargosystem")
-        readTrack_DB = self.select_DB.fetchall()
-        return readTrack_DB
-
     def getInfo_IW(self, PNR_num):
         self.select_DB.execute('SELECT * FROM cargosystem WHERE Pnr_Num =' + PNR_num)
         readInfo_IW = self.select_DB.fetchall()
 
         return readInfo_IW
+
+    def getTrackList(self):
+        self.select_DB.execute("SELECT Takip_Numarasi FROM cargosystem")
+        readTrack_DB = self.select_DB.fetchall()
+
+        return readTrack_DB
+
+    def getTracking_Num_DW(self, Tracking_num):
+        self.select_DB.execute('SELECT * FROM cargosystem WHERE Takip_Numarasi =' + Tracking_num)
+        readDelivery_DW = self.select_DB.fetchall()
+
+        return readDelivery_DW
+
+
+    def getCabin_Num(self):
+        self.select_DB.execute('SELECT Cabin_Num FROM cargosystem')
+        readCabin_Num = self.select_DB.fetchall()
+
+        return readCabin_Num
+
 
     def deleteTable(self):
         self.select_DB.execute("DROP TABLE cargosystem")

@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import *
-from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QFont
-import infoWindow
+import InfoWindow
 import main_DB
 import Window_DB
 import CreateRow
+import DeliveryWindow
 
 StyleSheet = '''
 QPushButton#DeliveringButton {
@@ -188,7 +188,7 @@ class Window(QWidget):
 
     def InfoWindow(self, PNR_Num): #calling info window class with PNR Number
         list_InfoWindow = self.database.getInfo_IW(PNR_Num)
-        self.w = infoWindow.InfoWindow(list_InfoWindow)
+        self.w = InfoWindow.InfoWindow(list_InfoWindow)
         self.w.show()
 
     def DatabaseWindow(self): #calling database class
@@ -250,6 +250,7 @@ class Window(QWidget):
             if int(self.TrackTextEditor.text()) == int(getTrack[0]):
                 self.TrackText.setText("Success")
                 print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
+                self.DeliveryWindow(str(getTrack[0]))
                 i = i + 1
                 break
             else:
@@ -260,6 +261,11 @@ class Window(QWidget):
         if i == 0:  # if not found give information is provided
             QMessageBox.information(self, "Bilgilendirme", "Girdiğiniz takip numarası bulunamamıştır.\n "
                                                            "Kontrol edip tekrar deneyiniz.")
+
+    def DeliveryWindow(self, Tracking_Num):  # calling Delivery window class with Tracking Number
+        list_DeliveryWindow = self.database.getTracking_Num_DW(Tracking_Num)
+        self.w = DeliveryWindow.DeliveryWindow(list_DeliveryWindow)
+        self.w.show()
 
     def tabs(self): #tabs function
 
