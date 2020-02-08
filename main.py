@@ -1,13 +1,15 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QFont
+from PyQt5.Qt import *
 import InfoWindow
 import main_DB
 import Window_DB
 import CreateRow
 import DeliveryWindow
 
-StyleSheet = '''
+#GUI Button Shape
+StyleSheet = '''  
 QPushButton#DeliveringButton {
     background-color: #0000ff;
     border-radius: 48px;
@@ -65,7 +67,7 @@ class Window(QWidget):
 
         vbox = QVBoxLayout()
 
-        deliveringButton = QPushButton("Kargo Teslim\nAlma", objectName="ReceivingButton")
+        deliveringButton = QPushButton("Kargo Teslim\nAlma", objectName="ReceivingButton") #button initialize
         deliveringButton.installEventFilter(self)
         deliveringButton.setFixedSize(deliveringButton.width(),deliveringButton.height()) #button size maximize
         deliveringButton.setFont(QFont("Arial", 50, QFont.Bold)) #button font
@@ -84,7 +86,7 @@ class Window(QWidget):
         groupBox = QGroupBox("Kargo Teslim Etme")
 
         vbox = QVBoxLayout()
-        receivingButton = QPushButton("Kargo Teslim\nEtme", objectName="DeliveringButton")
+        receivingButton = QPushButton("Kargo Teslim\nEtme", objectName="DeliveringButton") #button initialize
         receivingButton.setFixedSize(receivingButton.width(), receivingButton.height()) #button size maximize
         receivingButton.setFont(QFont("Arial", 50, QFont.Bold)) #button font
         receivingButton.clicked.connect(self.receivingFunction)
@@ -93,43 +95,44 @@ class Window(QWidget):
 
         return groupBox
 
-    def deliveringFunction(self):
+    def deliveringFunction(self): #main screen button function
         self.tab.setCurrentWidget(self.tab2) #pass tab-2 when clicked button
 
-    def receivingFunction(self):
+    def receivingFunction(self): #main screen button function
         self.tab.setCurrentWidget(self.tab5) #pass tab-5 when clicked button
 
     def instructions(self): #Talimatlar Group Box - Step2
 
         groupBox = QGroupBox("Talimatlar") #create groupbox
 
-        self.info1 = QLabel("QR Kodunuzu Aşağıdaki Cihaza Okutunuz")
-        self.info1.setFont(QFont("Arial", 30, QFont.Bold))
-        self.info1.setContentsMargins(200, 0, 0, 100)
+        info_instructions = QLabel("QR Kodunuzu Aşağıdaki Cihaza Okutunuz")
+        info_instructions.setFont(QFont("Arial", 30, QFont.Bold))
+        info_instructions.setAlignment(Qt.AlignCenter)
 
-        self.image1 = QLabel(self) #instruction picture one
-        self.pixmap1 = QPixmap("qrkod1.jpg")
-        self.pixmap1.scaled(64,64) #picture size
-        self.image1.setPixmap(self.pixmap1)
+        image1 = QLabel(self) #instruction picture one
+        image1.setPixmap(QPixmap("qrkod1.jpg"))
 
-        self.image2 = QLabel(self) #instruction picture two
-        self.image2.setPixmap(QPixmap("qrkod1.jpg"))
+        image2 = QLabel(self) #instruction picture two
+        image2.setPixmap(QPixmap("qrkod1.jpg"))
 
-        self.image3 = QLabel(self) #instruction picture three
-        self.image3.setPixmap(QPixmap("qrkod1.jpg"))
+        image3 = QLabel(self) #instruction picture three
+        image3.setPixmap(QPixmap("qrkod1.jpg"))
+
 
         hbox = QHBoxLayout() #create layout
 
-
-
-
         hbox.addStretch()
-        hbox.addWidget(self.image1)
-        hbox.addWidget(self.image2)
-        hbox.addWidget(self.image3)
+        hbox.addWidget(image1)
+        hbox.addWidget(image2)
+        hbox.addWidget(image3)
         hbox.addStretch()
 
-        groupBox.setLayout(hbox) #hbox is placed in groupbox
+        vbox = QVBoxLayout()
+
+        vbox.addWidget(info_instructions)
+        vbox.addLayout(hbox)
+
+        groupBox.setLayout(vbox) #hbox is placed in groupbox
 
 
         return groupBox
@@ -138,27 +141,28 @@ class Window(QWidget):
 
         groupBox = QGroupBox("Kargo Teslim")
 
-        self.info = QLabel("Kargonuzu PNR ile teslim almak için butona basınız.")
-        self.info.setFont(QFont("Arial", 30, QFont.Bold ))
+        info_PNRDelivery = QLabel("Kargonuzu PNR ile teslim almak için butona basınız.")
+        info_PNRDelivery.setFont(QFont("Arial", 30, QFont.Bold))
+        info_PNRDelivery.setAlignment(Qt.AlignCenter)
 
         self.PNRTextEditor = QLineEdit(self)
         self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
         self.PNRTextEditor.setStyleSheet("color : blue")
 
 
-        self.PNRbutton = QPushButton("PNR Button")
-        self.PNRbutton.setStyleSheet("background : gray; color: white")
-        self.PNRbutton.clicked.connect(self.PNRFinder)
+        PNRbutton = QPushButton("PNR Button")
+        PNRbutton.setStyleSheet("background : gray; color: white")
+        PNRbutton.clicked.connect(self.PNRFinder)
 
 
         self.PNRText = QLabel("") #success failed text
 
         vbox = QVBoxLayout()
         vbox.addStretch()
-        vbox.addWidget(self.info)
+        vbox.addWidget(info_PNRDelivery)
         vbox.addWidget(self.PNRTextEditor)
         vbox.addWidget(self.PNRText)
-        vbox.addWidget(self.PNRbutton)
+        vbox.addWidget(PNRbutton)
         vbox.addStretch()
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
@@ -191,7 +195,7 @@ class Window(QWidget):
         self.w = InfoWindow.InfoWindow(list_InfoWindow)
         self.w.show()
 
-    def DatabaseWindow(self): #calling database class
+    def DatabaseWindow(self): #calling database window class
         # for i in self.read_DB:
         #     print("check")
         #     print(i)
@@ -199,7 +203,7 @@ class Window(QWidget):
         self.w_DB.show()
         # self.database.getDB_All()
 
-    def Database_CreateRow(self): #calling database CreateRow class
+    def Database_CreateRow(self): #calling database CreateRow window class
         self.cr_W = CreateRow.CreateRow()
         self.cr_W.show()
 
@@ -218,23 +222,23 @@ class Window(QWidget):
     def cargoTrack(self): #Kargo teslim verme
         groupBox = QGroupBox("Kargo Teslim Verme ")
 
-        self.info = QLabel("Kargoyu Teslim Vermek İçin Butona Basınız")
-        self.info.setFont(QFont("Arial", 15, QFont.Bold))
+        info_PNRDelivery = QLabel("Kargoyu Teslim Vermek İçin Butona Basınız")
+        info_PNRDelivery.setFont(QFont("Arial", 15, QFont.Bold))
 
         self.TrackTextEditor = QLineEdit(self)
         self.TrackTextEditor.setPlaceholderText("Takip Numarasını Giriniz")
 
-        self.Trackbutton = QPushButton("Takip  Button")
-        self.Trackbutton.clicked.connect(self.TrackingFinder)
+        Trackbutton = QPushButton("Takip  Button")
+        Trackbutton.clicked.connect(self.TrackingFinder)
 
         self.TrackText = QLabel("")  # success failed text
 
         vbox = QVBoxLayout()
         vbox.addStretch()
-        vbox.addWidget(self.info)
+        vbox.addWidget(info_PNRDelivery)
         vbox.addWidget(self.TrackTextEditor)
         vbox.addWidget(self.TrackText)
-        vbox.addWidget(self.Trackbutton)
+        vbox.addWidget(Trackbutton)
         vbox.addStretch()
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
@@ -259,7 +263,7 @@ class Window(QWidget):
                 print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
 
         if i == 0:  # if not found give information is provided
-            QMessageBox.information(self, "Bilgilendirme", "Girdiğiniz takip numarası bulunamamıştır.\n "
+            QMessageBox.information(self, "Bilgilendirme", "Girdiğiniz takip numarası bulunamamıştır.\n"
                                                            "Kontrol edip tekrar deneyiniz.")
 
     def DeliveryWindow(self, Tracking_Num):  # calling Delivery window class with Tracking Number
