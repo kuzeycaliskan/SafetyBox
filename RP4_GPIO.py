@@ -1,11 +1,7 @@
-import gpiozero
-from gpiozero.pins.mock import MockFactory
 from gpiozero import LED
 from time import sleep
 
 ##you can remove pigpio in Project Interpreter for  ignore localhost:8888 error
-
-gpiozero.Device.pin_factory = MockFactory()
 
 class RP4_GPIO():  # <===
     def __init__(self, Box_Pin):
