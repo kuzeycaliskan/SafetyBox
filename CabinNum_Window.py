@@ -35,6 +35,6 @@ class CabinNum_Window(QWidget):  # <===
     def confirmFunction(self):
         self.hide()
         print("cabin_num test", self.Cabin_Num)
-        # RP4_GPIO.RP4_GPIO(self.Cabin_Num)
+        RP4_GPIO.RP4_GPIO(self.Cabin_Num)
 
 

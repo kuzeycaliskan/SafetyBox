@@ -194,6 +194,7 @@ class Window(QWidget):
         PNRbutton = QPushButton("PNR Buttonu")
         PNRbutton.setFont(QFont("Time New Roman", 20))
         PNRbutton.setStyleSheet("background-color:#39C6E2")
+        PNRbutton.clicked.connect(self.PNRFinder)
 
 
         self.PNRText = QLabel("") #success failed text
