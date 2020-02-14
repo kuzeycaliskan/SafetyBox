@@ -15,7 +15,7 @@ class main_DB():
         #                       database=DB_pm_list[3])
         #
         self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-                                                  host="192.168.1.33",
+                                                  host="192.168.43.146",
                                                   database="cargosystem")
 
         if (self.connection):
@@ -25,24 +25,65 @@ class main_DB():
 
         self.select_DB = self.connection.cursor()
 
-    def DatabaseConstructor(self):
-        pass
+    def getCounties(self):
+        self.select_DB.execute('SELECT * FROM ilceler')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
+
+    def getSafetyBoxs(self):
+        self.select_DB.execute('SELECT * FROM safetyboxs')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
+
+    def getAllBoxs(self):
+        self.select_DB.execute('SELECT * FROM dolaplar')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
+
+    def getCargoes(self):
+        self.select_DB.execute('SELECT * FROM kargolar')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
+
+    def getIdentities(self):
+        self.select_DB.execute('SELECT * FROM kimlikler')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
+
+    def getRowCount_Counties(self):
+        self.select_DB.execute('SELECT COUNT(*) FROM ilceler')
+        readRowCount = self.select_DB.fetchone()
+        return readRowCount[0]
+
+    def getRowCount_SafetyBoxs(self):
+        self.select_DB.execute('SELECT COUNT(*) FROM safetyboxs')
+        readRowCount = self.select_DB.fetchone()
+        return readRowCount[0]
+
+    def getRowCount_AllBoxs(self):
+        self.select_DB.execute('SELECT COUNT(*) FROM dolaplar')
+        readRowCount = self.select_DB.fetchone()
+        return readRowCount[0]
+
+    def getRowCount_Cargoes(self):
+        self.select_DB.execute('SELECT COUNT(*) FROM kargolar')
+        readRowCount = self.select_DB.fetchone()
+        return readRowCount[0]
+
+    def getRowCount_Identities(self):
+        self.select_DB.execute('SELECT COUNT(*) FROM kimlikler')
+        readRowCount = self.select_DB.fetchone()
+        return readRowCount[0]
 
     def getRowCount(self):
         self.select_DB.execute('SELECT COUNT(*) FROM cargosystem')
         readRowCount = self.select_DB.fetchone()
         return readRowCount[0]
-
-    def updateRow(self, U_column, U_Name, U_T_Value):
-        # Veri Güncelleme
-        self.select_DB.execute(
-            "UPDATE cargosystem SET " + U_column + " = '" + U_T_Value + "' where Ad " + "= '" + U_Name + "'")
-
-        self.connection.commit()  # confirm to update
-
-    # def deleteRow(self):
-    #     # Veri Silme
-    #     self.select_DB.execute("DELETE FROM CargoTable where Ad ='Erdoğan'");
 
     def createRow(self, newrowlist):
         self.select_DB.execute("INSERT INTO cargosystem (Takip_Numarasi,Ad,Soyad,Tel_Num,Mail_adres,Qrkod,Pnr_Num," +

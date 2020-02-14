@@ -2,9 +2,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QFont
 from PyQt5.Qt import *
+from PyQt5 import QtCore
 import InfoWindow
 import main_DB
+import Window_FilterDB
 import Window_DB
+import Window_OldDB
 import CreateRow
 import DeliveryWindow
 
@@ -39,11 +42,38 @@ QPushButton#ReceivingButton:pressed {
 }
 '''
 
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        self.window_widget = Window()
+        self.setCentralWidget(self.window_widget) #Ana Widget olarak Window classını çapırıyoruz
+
+
+        self.menubar()
+        self.show()
+
+    def menubar(self): #Menu Bar oluşturma
+        bar = self.menuBar()
+        file = bar.addMenu("Ayarlar")
+
+        dbu = QAction("DataBase Güncelleme",self)
+        file.addAction(dbu)
+
+        dbt = QAction("DataBase İşlemleri",self)
+        file.addAction(dbt)
+
+        dbt.triggered.connect(self.window_widget.DBTool)
+        dbu.triggered.connect(self.window_widget.DBU)
+        # file.triggered[QAction].connect(self.window_widget.DBTool)
+
+
+
+
 class Window(QWidget):
     def __init__(self):
         super().__init__()  # QWidget fonskiyonlarını kullanabilmek icin
 
-        self.setGeometry(0, 0, 1080,732) #window size
+        # self.setGeometry(0, 0, 1080,732) #window size
         self.setWindowTitle("Safety Box")  #window title
         self.database = main_DB.main_DB()  # calling database class
 
@@ -95,11 +125,23 @@ class Window(QWidget):
 
         return groupBox
 
-    def deliveringFunction(self): #main screen button function
-        self.tab.setCurrentWidget(self.tab2) #pass tab-2 when clicked button
+    def deliveringFunction(self):
+        self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
+        self.tab.setCurrentWidget(self.tab2)
 
-    def receivingFunction(self): #main screen button function
-        self.tab.setCurrentWidget(self.tab5) #pass tab-5 when clicked button
+    def receivingFunction(self):
+
+        self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
+        self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
+
+    def DBTool(self):#DB işlerleri tabını oluşturuyor menu bar için
+        self.tab.addTab(self.tab4, "DataBase İşlemleri")
+        self.tab.setCurrentWidget(self.tab4)
+        # self.tab.setCurrentIndex(0) İndex numarasına gidiyor
+
+    def DBU(self): #Db verilerini güncellemek menu barda
+        self.tab.addTab(self.tab5, "DB Güncelleme")
+        self.tab.setCurrentWidget(self.tab5)
 
     def instructions(self): #Talimatlar Group Box - Step2
 
@@ -149,10 +191,9 @@ class Window(QWidget):
         self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
         self.PNRTextEditor.setStyleSheet("color : blue")
 
-
-        PNRbutton = QPushButton("PNR Button")
-        PNRbutton.setStyleSheet("background : gray; color: white")
-        PNRbutton.clicked.connect(self.PNRFinder)
+        PNRbutton = QPushButton("PNR Buttonu")
+        PNRbutton.setFont(QFont("Time New Roman", 20))
+        PNRbutton.setStyleSheet("background-color:#39C6E2")
 
 
         self.PNRText = QLabel("") #success failed text
@@ -163,6 +204,7 @@ class Window(QWidget):
         vbox.addWidget(self.PNRTextEditor)
         vbox.addWidget(self.PNRText)
         vbox.addWidget(PNRbutton)
+        vbox.addWidget(self.BackMainButton())
         vbox.addStretch()
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
@@ -174,21 +216,25 @@ class Window(QWidget):
         # print(int(self.PNRTextEditor.text()))
         i = 0
 
-        for getPNR in getPNRList: #search in database
-            if  int(self.PNRTextEditor.text()) == int(getPNR[0]): #if found open info window
-                self.PNRText.setText("Success")
-                print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
-                self.InfoWindow(str(getPNR[0]))
-                i = i+1
-                break
-            else:
-                self.PNRText.setText("Failed")
-                print(getPNR[0])
-                print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
+        if self.PNRTextEditor.text() != "":
+            for getPNR in getPNRList: #search in database
+                if  int(self.PNRTextEditor.text()) == int(getPNR[0]): #if found open info window
+                    self.PNRText.setText("Success")
+                    print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
+                    self.InfoWindow(str(getPNR[0]))
+                    i = i+1
+                    break
+                else:
+                    self.PNRText.setText("Failed")
+                    print(getPNR[0])
+                    print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
 
-        if i == 0: #if not found give information is provided
-            QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
-                                                           "Kontrol edip tekrar deneyiniz.")
+            if i == 0: #if not found give information is provided
+                QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
+                                                               "Kontrol edip tekrar deneyiniz.")
+        else:
+            QMessageBox.information(self,"Bilgilendirme","PNR Numarası Girmediniz\n"
+                                                             "Lütfen PNR Numarası Girip Tekrar Deneyiniz" )
 
     def InfoWindow(self, PNR_Num): #calling info window class with PNR Number
         list_InfoWindow = self.database.getInfo_IW(PNR_Num)
@@ -200,6 +246,19 @@ class Window(QWidget):
         #     print("check")
         #     print(i)
         self.w_DB = Window_DB.Window_DB()
+        self.w_DB.show()
+        # self.database.getDB_All()
+
+    def DatabaseFilterWindow(self): #calling database window class
+        # for i in self.read_DB:
+        #     print("check")
+        #     print(i)
+        self.w_FDB = Window_FilterDB.Window_FilterDB()
+        self.w_FDB.show()
+        # self.database.getDB_All()
+
+    def NewDBWindowOpen(self):
+        self.w_DB = Window_OldDB.Window_OldDB()
         self.w_DB.show()
         # self.database.getDB_All()
 
@@ -229,6 +288,8 @@ class Window(QWidget):
         self.TrackTextEditor.setPlaceholderText("Takip Numarasını Giriniz")
 
         Trackbutton = QPushButton("Takip  Button")
+        Trackbutton.setFont(QFont("Time New Roman", 20))
+        Trackbutton.setStyleSheet("background-color:#39C6E2")
         Trackbutton.clicked.connect(self.TrackingFinder)
 
         self.TrackText = QLabel("")  # success failed text
@@ -239,6 +300,7 @@ class Window(QWidget):
         vbox.addWidget(self.TrackTextEditor)
         vbox.addWidget(self.TrackText)
         vbox.addWidget(Trackbutton)
+        vbox.addWidget(self.BackMainButton())
         vbox.addStretch()
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
@@ -250,26 +312,89 @@ class Window(QWidget):
         # print(getTrackList)
         i = 0
 
-        for getTrack in getTrackList:  # search in database
-            if int(self.TrackTextEditor.text()) == int(getTrack[0]):
-                self.TrackText.setText("Success")
-                print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
-                self.DeliveryWindow(str(getTrack[0]))
-                i = i + 1
-                break
-            else:
-                self.TrackText.setText("Failed")
-                print(getTrack[0])
-                print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
+        if self.TrackTextEditor.text() != "":
+            for getTrack in getTrackList:  # search in database
+                if int(self.TrackTextEditor.text()) == int(getTrack[0]):
+                    self.TrackText.setText("Success")
+                    print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
+                    self.DeliveryWindow(str(getTrack[0]))
+                    i = i + 1
+                    break
+                else:
+                    self.TrackText.setText("Failed")
+                    print(getTrack[0])
+                    print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
 
-        if i == 0:  # if not found give information is provided
-            QMessageBox.information(self, "Bilgilendirme", "Girdiğiniz takip numarası bulunamamıştır.\n"
-                                                           "Kontrol edip tekrar deneyiniz.")
+            if i == 0:  # if not found give information is provided
+                QMessageBox.information(self, "Bilgilendirme", "Girdiğiniz takip numarası bulunamamıştır.\n"
+                                                               "Kontrol edip tekrar deneyiniz.")
+
+        else:
+            QMessageBox.information(self, "Bilgilendirme", "Takip Numarası Girmediniz.\n"
+                                                            "Lütfen Bir Takip Numarası Giriniz.")
 
     def DeliveryWindow(self, Tracking_Num):  # calling Delivery window class with Tracking Number
         list_DeliveryWindow = self.database.getTracking_Num_DW(Tracking_Num)
         self.w = DeliveryWindow.DeliveryWindow(list_DeliveryWindow)
         self.w.show()
+
+    def BarCode(self):
+        grupbox = QGroupBox("Barkod Okuyucu")
+
+        title = QLabel("Kargonuzun barkodunu Aşağıya Okutunuz")
+        title.setFont(QFont("Arial",30,QFont.Bold))
+        title.setAlignment(Qt.AlignHCenter)
+
+        image = QLabel()
+        png = QPixmap("barcode.png")
+        png.scaled(64,64)
+        image.setPixmap(png)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(title)
+
+        hbox1 = QHBoxLayout()
+        hbox1.addStretch()
+        hbox1.addWidget(image)
+        hbox1.addStretch()
+
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox)
+        vbox.addLayout(hbox1)
+
+        grupbox.setLayout(vbox)
+        return grupbox
+
+    def BackMainFunction(self):
+        i = 0
+        a = self.tab.indexOf(self.tab.currentWidget())
+        self.tab.setCurrentWidget(self.tab1)
+        # self.tab.currentChanged(0)
+        # print(self.tab.indexOf(self.tab1))
+
+        # for i in (0,2):
+        #         if self.tab.currentWidget() == self.tab1:
+        #             self.tab.tabRemoved(a)
+        #             break
+
+        if self.tab.currentWidget() == self.tab1:
+            self.tab.removeTab(a)
+
+
+
+
+
+    def BackMainButton(self):
+
+        self.BackButton = QPushButton("Ana Menüye Dönmek için Tıklayınız")
+        self.BackButton.setFont(QFont("Arial",20))
+        self.BackButton.setStyleSheet("background-color: #25BB1E")
+        self.BackButton.setIcon(QIcon("Home.png"))
+        self.BackButton.setIconSize(QtCore.QSize(45,45))
+        self.BackButton.clicked.connect(self.BackMainFunction)
+
+        return self.BackButton
+
 
     def tabs(self): #tabs function
 
@@ -279,74 +404,89 @@ class Window(QWidget):
 
         self.tab1 = QWidget() #create tab-1 (step-1)
         self.tab2 = QWidget() #create tab-2 (step-2)
-        self.tab3 = QWidget() #create tab-3 (step-3)
+        self.tab3 = QWidget() # create tab-3 (step-3)
         self.tab4 = QWidget() #create tab-4 (step-4)
-        self.tab5 = QWidget() #create tab-5 (step-5)
+        self.tab5 = QWidget() # create tab-5 (step-5)
+
 
         tab1_grid = QGridLayout() #tab-1's layout
         tab2_grid = QGridLayout() #tab-2's layout
-        tab3_vbox = QVBoxLayout() #tab-3's layout
+        tab5_vbox = QVBoxLayout() #tab-3's layout
         tab4_vbox = QVBoxLayout() #tab-4's layout
-        tab5_grid = QGridLayout() #tab-5's layout
+        tab3_grid = QGridLayout() #tab-5's layout
 
-        #TAB-3 Widgets
+        #TAB-4 Widgets
         self.databaseAddRow = QPushButton("Add Row")
         self.databaseAddRow.clicked.connect(self.Database_CreateRow)
         self.databaseButton = QPushButton("DB Table")
         self.databaseButton.clicked.connect(self.DatabaseWindow)
         self.databaseUpdateRow = QPushButton("Update Row")
         self.databaseUpdateRow.clicked.connect(self.Database_Update)
-        #TAB-3 Widgets END
+        self.databasefilter = QPushButton("Database Filter Window")
+        self.databasefilter.clicked.connect(self.DatabaseFilterWindow)
+        self.newdbwindow = QPushButton("Old DB Window")
+        self.newdbwindow.clicked.connect(self.NewDBWindowOpen)
+        #TAB-4 Widgets END
 
-        #TAB-4 Widgets
+        # TAB-5 Widgets
         self.U_TextLabel = QLabel("")
 
         self.U_Combo = QComboBox(self)
-        self.U_Combo.addItems(["Değiştirmek istediğiniz sütunu seçiniz.","Takip_Numarasi","Ad","Soyad","Tel_Num",
-                               "Mail_adres","Qrkod","Pnr_Num","Security","Box_Location","Cabin_Num","Cargo_Start_Time",
+        self.U_Combo.addItems(["Değiştirmek istediğiniz sütunu seçiniz.", "Takip_Numarasi", "Ad", "Soyad", "Tel_Num",
+                               "Mail_adres", "Qrkod", "Pnr_Num", "Security", "Box_Location", "Cabin_Num",
+                               "Cargo_Start_Time",
                                "Cargo_End_Time"])
 
         self.U_Name = QLineEdit()
         self.U_Name.setPlaceholderText("Verisi değiştirilmek istenin kişinin adını giriniz.")
 
-
         self.U_T_Value = QLineEdit()
         self.U_T_Value.setPlaceholderText("Yeni veriyi giriniz.")
 
-
         self.U_Button = QPushButton("Kaydet")
         self.U_Button.clicked.connect(self.Database_Update)
-        #TAB-4 Widgets END
+        # TAB-5 Widgets END
+
+
 
         #widgets are placed
         tab1_grid.addWidget(self.cargoRecieve(), 0, 0)
         tab1_grid.addWidget(self.cargoDelivery(), 0, 1)
         tab2_grid.addWidget(self.instructions(), 1, 0)
         tab2_grid.addWidget(self.cargoPNR(), 0, 0)
-        tab3_vbox.addWidget(self.databaseAddRow)
-        tab3_vbox.addWidget(self.databaseUpdateRow)
-        tab3_vbox.addWidget(self.databaseButton)
-        tab4_vbox.addStretch()
-        tab4_vbox.addWidget(self.U_TextLabel)
-        tab4_vbox.addWidget(self.U_Combo)
-        tab4_vbox.addWidget(self.U_Name)
-        tab4_vbox.addWidget(self.U_T_Value)
-        tab4_vbox.addWidget(self.U_Button)
-        tab4_vbox.addStretch()
-        tab5_grid.addWidget(self.cargoTrack())
+        tab3_grid.addWidget(self.cargoTrack(), 0, 0)
+        tab3_grid.addWidget(self.BarCode(), 1, 0)
+        tab4_vbox.addWidget(self.databaseAddRow)
+        tab4_vbox.addWidget(self.databaseUpdateRow)
+        tab4_vbox.addWidget(self.databaseButton)
+        tab4_vbox.addWidget(self.databasefilter)
+        tab4_vbox.addWidget(self.newdbwindow)
+        tab4_vbox.addWidget(self.BackMainButton())
+        tab5_vbox.addStretch()
+        tab5_vbox.addWidget(self.U_TextLabel)
+        tab5_vbox.addWidget(self.U_Combo)
+        tab5_vbox.addWidget(self.U_Name)
+        tab5_vbox.addWidget(self.U_T_Value)
+        tab5_vbox.addWidget(self.U_Button)
+        tab5_vbox.addWidget(self.BackMainButton())
+        tab5_vbox.addStretch()
+
 
         #tab's layout setted
         self.tab1.setLayout(tab1_grid)
         self.tab2.setLayout(tab2_grid)
-        self.tab3.setLayout(tab3_vbox)
+        self.tab3.setLayout(tab3_grid)
         self.tab4.setLayout(tab4_vbox)
-        self.tab5.setLayout(tab5_grid)
+        self.tab5.setLayout(tab5_vbox)
+
+
 
         self.tab.addTab(self.tab1, "Ana Sayfa")
-        self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
-        self.tab.addTab(self.tab3, "DataBase İşlemleri")
-        self.tab.addTab(self.tab4, "DB Güncelleme")
-        self.tab.addTab(self.tab5, "Kargo Verme Aşaması")
+        # self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
+        # self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
+        # self.tab.addTab(self.tab4, "DataBase İşlemleri")
+        # self.tab.addTab(self.tab5, "DB Güncelleme")
+
 
 
 
@@ -359,6 +499,8 @@ class Window(QWidget):
 
 app = QApplication([])
 app.setStyleSheet(StyleSheet)
-window = Window()
-window.show()
+# window = Window()
+# window.show()
+mainwindow = MainWindow()
+mainwindow.show()
 app.exec_()
