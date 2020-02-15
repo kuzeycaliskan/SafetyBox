@@ -40,6 +40,14 @@ QPushButton#ReceivingButton:hover {
 QPushButton#ReceivingButton:pressed {
     background-color: #FABCAF;
 }
+
+QPushButton#GeneralButton{
+background-color : #FF9E00 
+}
+
+QPushButton#GeneralButton:hover{
+ background-color: #FFDBA0 
+}
 '''
 
 class MainWindow(QMainWindow):
@@ -183,9 +191,8 @@ class Window(QWidget):
         self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
         self.PNRTextEditor.setStyleSheet("color : blue")
 
-        PNRbutton = QPushButton("PNR Buttonu")
+        PNRbutton = QPushButton("PNR Buttonu", objectName="GeneralButton")
         PNRbutton.setFont(QFont("Time New Roman", 20))
-        PNRbutton.setStyleSheet("background-color:#39C6E2")
         PNRbutton.clicked.connect(self.PNRFinder)
 
 
@@ -273,9 +280,8 @@ class Window(QWidget):
         self.TrackTextEditor = QLineEdit(self)
         self.TrackTextEditor.setPlaceholderText("Takip Numarasını Giriniz")
 
-        Trackbutton = QPushButton("Takip  Button")
+        Trackbutton = QPushButton("Takip  Button", objectName="GeneralButton")
         Trackbutton.setFont(QFont("Time New Roman", 20))
-        Trackbutton.setStyleSheet("background-color:#39C6E2")
         Trackbutton.clicked.connect(self.TrackingFinder)
 
         self.TrackText = QLabel("")  # success failed text
@@ -368,9 +374,8 @@ class Window(QWidget):
 
     def BackMainButton(self):
 
-        self.BackButton = QPushButton("Ana Menüye Dönmek için Tıklayınız")
+        self.BackButton = QPushButton("Ana Menüye Dönmek için Tıklayınız", objectName="GeneralButton")
         self.BackButton.setFont(QFont("Arial",20))
-        self.BackButton.setStyleSheet("background-color: #25BB1E")
         self.BackButton.setIcon(QIcon("Home.png"))
         self.BackButton.setIconSize(QtCore.QSize(45,45))
         self.BackButton.clicked.connect(self.BackMainFunction)
@@ -398,15 +403,15 @@ class Window(QWidget):
         tab3_grid = QGridLayout() #tab-5's layout
 
         #TAB-4 Widgets
-        self.databaseAddRow = QPushButton("Add Row")
+        self.databaseAddRow = QPushButton("Add Row", objectName="GeneralButton")
         self.databaseAddRow.clicked.connect(self.Database_CreateRow)
-        self.databaseButton = QPushButton("DB Table")
+        self.databaseButton = QPushButton("DB Table", objectName="GeneralButton")
         self.databaseButton.clicked.connect(self.DatabaseWindow)
-        self.databaseUpdateRow = QPushButton("Update Row")
+        self.databaseUpdateRow = QPushButton("Update Row", objectName="GeneralButton")
         self.databaseUpdateRow.clicked.connect(self.Database_Update)
-        self.databasefilter = QPushButton("Database Filter Window")
+        self.databasefilter = QPushButton("Database Filter Window", objectName="GeneralButton")
         self.databasefilter.clicked.connect(self.DatabaseFilterWindow)
-        self.tablewidgetbutton = QPushButton("TableWidget DB Window")
+        self.tablewidgetbutton = QPushButton("TableWidget DB Window", objectName="GeneralButton")
         self.tablewidgetbutton.clicked.connect(self.TWDBWindowOpen)
         #TAB-4 Widgets END
 
@@ -425,7 +430,7 @@ class Window(QWidget):
         self.U_T_Value = QLineEdit()
         self.U_T_Value.setPlaceholderText("Yeni veriyi giriniz.")
 
-        self.U_Button = QPushButton("Kaydet")
+        self.U_Button = QPushButton("Kaydet", objectName="GeneralButton")
         self.U_Button.clicked.connect(self.Database_Update)
         # TAB-5 Widgets END
 
