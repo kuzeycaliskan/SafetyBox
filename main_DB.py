@@ -15,8 +15,8 @@ class main_DB():
         #                       database=DB_pm_list[3])
         #
         self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-                                                  host="192.168.43.146",
-                                                  database="cargosystem")
+                                                  host="192.168.1.33",
+                                                  database="safetybox_db")
 
         if (self.connection):
             print('baglanti başarili')
@@ -85,6 +85,17 @@ class main_DB():
         readRowCount = self.select_DB.fetchone()
         return readRowCount[0]
 
+    def getDB_All(self):
+        self.select_DB.execute("select * from kimlikler inner join kargolar krg on kimlikler.id = krg.kimlikler_id " +
+                               "inner join dolaplar dlp on krg.dolaplar_id = dlp.id inner join safetyboxs sftb on" +
+                               " dlp.safetyboxs_id = sftb.id inner join ilceler i on sftb.ilceler_id = i.id")
+        read_DB = self.select_DB.fetchall()
+        # print(oku.fetchall())
+        for get_DB in read_DB:
+            print(get_DB)
+
+        return read_DB
+
     def createRow(self, newrowlist):
         self.select_DB.execute("INSERT INTO cargosystem (Takip_Numarasi,Ad,Soyad,Tel_Num,Mail_adres,Qrkod,Pnr_Num," +
                                "Security,Box_Location,Cabin_Num,Cargo_Start_Time,Cargo_End_Time) VALUES (" + "'" +
@@ -99,14 +110,7 @@ class main_DB():
 
         self.connection.commit()  # confirm to new register
 
-    def getDB_All(self):
-        self.select_DB.execute('SELECT * FROM cargosystem')
-        read_DB = self.select_DB.fetchall()
-        # print(oku.fetchall())
-        for get_DB in read_DB:
-            print(get_DB)
 
-        return read_DB
 
     def getPNRList(self):
         self.select_DB.execute("SELECT Pnr_Num FROM cargosystem")

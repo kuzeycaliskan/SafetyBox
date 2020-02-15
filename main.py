@@ -7,7 +7,7 @@ import InfoWindow
 import main_DB
 import Window_FilterDB
 import Window_DB
-import Window_OldDB
+import Window_TWDB
 import CreateRow
 import DeliveryWindow
 
@@ -45,8 +45,9 @@ QPushButton#ReceivingButton:pressed {
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.setGeometry(0, 0, 1080, 732) #window size
         self.window_widget = Window()
-        self.setCentralWidget(self.window_widget) #Ana Widget olarak Window classını çapırıyoruz
+        self.setCentralWidget(self.window_widget) #Ana Widget olarak Window classını çağırıyoruz
 
 
         self.menubar()
@@ -73,19 +74,10 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()  # QWidget fonskiyonlarını kullanabilmek icin
 
-        # self.setGeometry(0, 0, 1080,732) #window size
+        self.setGeometry(0, 0, 1080, 732) #window size
         self.setWindowTitle("Safety Box")  #window title
         self.database = main_DB.main_DB()  # calling database class
 
-        # self.database.deleteTable()
-        # self.database.createTable()
-        # self.database.addRow_default()
-        # self.database.getDB_All()
-
-
-        # self.database.select_DB.execute('SELECT COUNT(*) FROM cargosystem')
-        # self.readRowCount = self.database.select_DB.fetchone()
-        # print(int(self.readRowCount[0]))
 
         self.tabs() #initialize tabs
         self.show()
@@ -243,25 +235,18 @@ class Window(QWidget):
         self.w.show()
 
     def DatabaseWindow(self): #calling database window class
-        # for i in self.read_DB:
-        #     print("check")
-        #     print(i)
         self.w_DB = Window_DB.Window_DB()
         self.w_DB.show()
-        # self.database.getDB_All()
+
 
     def DatabaseFilterWindow(self): #calling database window class
-        # for i in self.read_DB:
-        #     print("check")
-        #     print(i)
         self.w_FDB = Window_FilterDB.Window_FilterDB()
         self.w_FDB.show()
-        # self.database.getDB_All()
 
-    def NewDBWindowOpen(self):
-        self.w_DB = Window_OldDB.Window_OldDB()
-        self.w_DB.show()
-        # self.database.getDB_All()
+    def TWDBWindowOpen(self):
+        self.wTW_DB = Window_TWDB.Window_TWDB("İlçeler")
+        self.wTW_DB.show()
+
 
     def Database_CreateRow(self): #calling database CreateRow window class
         self.cr_W = CreateRow.CreateRow()
@@ -381,10 +366,6 @@ class Window(QWidget):
         if self.tab.currentWidget() == self.tab1:
             self.tab.removeTab(a)
 
-
-
-
-
     def BackMainButton(self):
 
         self.BackButton = QPushButton("Ana Menüye Dönmek için Tıklayınız")
@@ -425,8 +406,8 @@ class Window(QWidget):
         self.databaseUpdateRow.clicked.connect(self.Database_Update)
         self.databasefilter = QPushButton("Database Filter Window")
         self.databasefilter.clicked.connect(self.DatabaseFilterWindow)
-        self.newdbwindow = QPushButton("Old DB Window")
-        self.newdbwindow.clicked.connect(self.NewDBWindowOpen)
+        self.tablewidgetbutton = QPushButton("TableWidget DB Window")
+        self.tablewidgetbutton.clicked.connect(self.TWDBWindowOpen)
         #TAB-4 Widgets END
 
         # TAB-5 Widgets
@@ -461,7 +442,7 @@ class Window(QWidget):
         tab4_vbox.addWidget(self.databaseUpdateRow)
         tab4_vbox.addWidget(self.databaseButton)
         tab4_vbox.addWidget(self.databasefilter)
-        tab4_vbox.addWidget(self.newdbwindow)
+        tab4_vbox.addWidget(self.tablewidgetbutton)
         tab4_vbox.addWidget(self.BackMainButton())
         tab5_vbox.addStretch()
         tab5_vbox.addWidget(self.U_TextLabel)
