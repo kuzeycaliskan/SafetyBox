@@ -117,6 +117,7 @@ class Window(QWidget):
 
         vbox = QVBoxLayout()
         receivingButton = QPushButton("Kargo Teslim\nEtme", objectName="DeliveringButton") #button initialize
+        receivingButton.installEventFilter(self)
         receivingButton.setFixedSize(receivingButton.width(), receivingButton.height()) #button size maximize
         receivingButton.setFont(QFont("Arial", 50, QFont.Bold)) #button font
         receivingButton.clicked.connect(self.receivingFunction)
@@ -192,6 +193,7 @@ class Window(QWidget):
         self.PNRTextEditor.setStyleSheet("color : blue")
 
         PNRbutton = QPushButton("PNR Buttonu", objectName="GeneralButton")
+        PNRbutton.installEventFilter(self)
         PNRbutton.setFont(QFont("Time New Roman", 20))
         PNRbutton.clicked.connect(self.PNRFinder)
 
