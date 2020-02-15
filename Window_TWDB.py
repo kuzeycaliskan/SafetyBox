@@ -129,12 +129,12 @@ class Window_TWDB(QMainWindow):
             rowCount = self.database.getRowCount_Cargoes()
 
             self.table.setRowCount(rowCount)  # database satir sayisi duzenleme / DBRowCount function will create
-            self.table.setColumnCount(23)  # database sutun sayisi duzenleme
+            self.table.setColumnCount(21)  # database sutun sayisi duzenleme
             self.table.setHorizontalHeaderLabels(["Kimlik ID", "İsim", "Soyisim", "Telefon No", "Mail Adresi",
                                                   "Kargo ID", "Takip No", "QR Kod", "PNR No", "Ek Güvenlik",
                                                   "Kargo Oluşturma Tarihi", "Kargo Teslim Tarihi", "Teslim Edildi mi?",
-                                                  "Dolap ID", "Yerel Dolap No", "Boyut", "Boş mu?", "SafetyBox's ID",
-                                                  "SafetyBox's İsmi", "SafetyBox's Adres", "İlçe ID", "İlçe", "İl"])
+                                                  "Dolap ID", "Yerel Dolap No", "Boyut", "Boş mu?",
+                                                  "SafetyBox's İsmi", "SafetyBox's Adres", "İlçe", "İl"])
 
             row = 0
             for get_DB in read_db:
@@ -155,12 +155,10 @@ class Window_TWDB(QMainWindow):
                 self.table.setItem(row, 14, QTableWidgetItem(str(get_DB[16])))
                 self.table.setItem(row, 15, QTableWidgetItem(str(get_DB[17])))
                 self.table.setItem(row, 16, QTableWidgetItem(str(get_DB[18])))
-                self.table.setItem(row, 17, QTableWidgetItem(str(get_DB[20])))
-                self.table.setItem(row, 18, QTableWidgetItem(str(get_DB[21])))
-                self.table.setItem(row, 19, QTableWidgetItem(str(get_DB[22])))
-                self.table.setItem(row, 20, QTableWidgetItem(str(get_DB[24])))
-                self.table.setItem(row, 21, QTableWidgetItem(str(get_DB[25])))
-                self.table.setItem(row, 22, QTableWidgetItem(str(get_DB[26])))
+                self.table.setItem(row, 17, QTableWidgetItem(str(get_DB[21])))
+                self.table.setItem(row, 18, QTableWidgetItem(str(get_DB[22])))
+                self.table.setItem(row, 19, QTableWidgetItem(str(get_DB[25])))
+                self.table.setItem(row, 20, QTableWidgetItem(str(get_DB[26])))
                 row = row + 1
 
 
