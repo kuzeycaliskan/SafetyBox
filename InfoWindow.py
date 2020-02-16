@@ -3,25 +3,51 @@ import CabinNum_Window
 
 
 class InfoWindow(QWidget):  # <===
-    def __init__(self, DB_RowValue):
+    def __init__(self, info_type,DB_RowValue):
         super().__init__()
         #self.setGeometry(0, 0, 500, 250)
         self.setWindowTitle("Kullanıcı Bilgileri")
-        self.DBRowValue = DB_RowValue
 
-        self.confirmButton()
+
+        if info_type == "receiver":
+            print(DB_RowValue)
+            self.receiver_info(DB_RowValue)
+        elif info_type == "delivery":
+            print(DB_RowValue)
+            self.delivery_info(DB_RowValue)
+
         self.show()
 
-    def confirmButton(self):
+    def receiver_info(self, knowledge):
 
         vbox = QVBoxLayout()
 
         confirmbutton = QPushButton("Onayla")
         confirmbutton.clicked.connect(self.confirmFunction)
-        self.nameLabel = QLabel("Ad: " + self.DBRowValue[0][2])
-        self.surnameLabel = QLabel("Soyad: " + self.DBRowValue[0][3])
-        self.phoneLabel = QLabel("Telefon: " + self.DBRowValue[0][4])
-        self.mailLabel = QLabel("Mail: " + self.DBRowValue[0][5])
+        self.nameLabel = QLabel("Ad: " + knowledge[0][0])
+        self.surnameLabel = QLabel("Soyad: " + knowledge[0][1])
+        self.phoneLabel = QLabel("Telefon: " + str(knowledge[0][2]))
+        self.mailLabel = QLabel("Mail: " + knowledge[0][3])
+        self.box_no = knowledge[0][4]
+        vbox.addWidget(self.nameLabel)
+        vbox.addWidget(self.surnameLabel)
+        vbox.addWidget(self.phoneLabel)
+        vbox.addWidget(self.mailLabel)
+        vbox.addWidget(confirmbutton)
+        vbox.addStretch()
+
+        self.setLayout(vbox)
+
+    def delivery_info(self, knowledge):
+
+        vbox = QVBoxLayout()
+
+        confirmbutton = QPushButton("Onayla")
+        confirmbutton.clicked.connect(self.confirmFunction)
+        self.nameLabel = QLabel("Ad: " + knowledge[0][0])
+        self.surnameLabel = QLabel("Soyad: " + knowledge[0][1])
+        self.phoneLabel = QLabel("Telefon: " + str(knowledge[0][2]))
+        self.mailLabel = QLabel("Mail: " + knowledge[0][3])
 
         vbox.addWidget(self.nameLabel)
         vbox.addWidget(self.surnameLabel)
@@ -34,8 +60,7 @@ class InfoWindow(QWidget):  # <===
 
     def confirmFunction(self):
         self.hide()
-        print(self.DBRowValue[0][10])
-        self.w = CabinNum_Window.CabinNum_Window(self.DBRowValue[0][10])
+        self.w = CabinNum_Window.CabinNum_Window(self.box_no)
         self.w.show()
 
 

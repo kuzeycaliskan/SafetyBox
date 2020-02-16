@@ -96,55 +96,52 @@ class main_DB():
 
         return read_DB
 
-    def createRow(self, newrowlist):
-        self.select_DB.execute("INSERT INTO cargosystem (Takip_Numarasi,Ad,Soyad,Tel_Num,Mail_adres,Qrkod,Pnr_Num," +
-                               "Security,Box_Location,Cabin_Num,Cargo_Start_Time,Cargo_End_Time) VALUES (" + "'" +
-                               newrowlist[0] + "'" + "," +
-                               "'" + newrowlist[1] + "'" + "," + "'" + newrowlist[2] + "'" + "," + "'" + newrowlist[
-                                   3] + "'" + "," + "'" +
-                               newrowlist[4] + "'" + "," + "'" + newrowlist[5] + "'" + "," + "'" + newrowlist[
-                                   6] + "'" + "," + "'" +
-                               newrowlist[7] + "'" + "," + "'" + newrowlist[8] + "'" + "," + "'" + newrowlist[
-                                   9] + "'" + "," + "'" +
-                               newrowlist[10] + "'" + "," + "'" + newrowlist[11] + "'" + ")")
-
-        self.connection.commit()  # confirm to new register
+    # def createRow(self, newrowlist):
+    #     self.select_DB.execute("INSERT INTO cargosystem (Takip_Numarasi,Ad,Soyad,Tel_Num,Mail_adres,Qrkod,Pnr_Num," +
+    #                            "Security,Box_Location,Cabin_Num,Cargo_Start_Time,Cargo_End_Time) VALUES (" + "'" +
+    #                            newrowlist[0] + "'" + "," +
+    #                            "'" + newrowlist[1] + "'" + "," + "'" + newrowlist[2] + "'" + "," + "'" + newrowlist[
+    #                                3] + "'" + "," + "'" +
+    #                            newrowlist[4] + "'" + "," + "'" + newrowlist[5] + "'" + "," + "'" + newrowlist[
+    #                                6] + "'" + "," + "'" +
+    #                            newrowlist[7] + "'" + "," + "'" + newrowlist[8] + "'" + "," + "'" + newrowlist[
+    #                                9] + "'" + "," + "'" +
+    #                            newrowlist[10] + "'" + "," + "'" + newrowlist[11] + "'" + ")")
+    #
+    #     self.connection.commit()  # confirm to new register
 
 
 
     def getPNRList(self):
-        self.select_DB.execute("SELECT Pnr_Num FROM cargosystem")
+        self.select_DB.execute("SELECT PNR_num FROM kargolar")
         readPNR_DB = self.select_DB.fetchall()
         return readPNR_DB
 
     def getInfo_IW(self, PNR_num):
-        self.select_DB.execute('SELECT * FROM cargosystem WHERE Pnr_Num =' + PNR_num)
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no from kimlikler inner join kargolar krg on' +
+                               ' kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id' +
+                               ' WHERE PNR_num =' + PNR_num)
         readInfo_IW = self.select_DB.fetchall()
+
 
         return readInfo_IW
 
     def getTrackList(self):
-        self.select_DB.execute("SELECT Takip_Numarasi FROM cargosystem")
+        self.select_DB.execute("SELECT takip_no FROM kargolar")
         readTrack_DB = self.select_DB.fetchall()
 
         return readTrack_DB
 
     def getTracking_Num_DW(self, Tracking_num):
-        self.select_DB.execute('SELECT * FROM cargosystem WHERE Takip_Numarasi =' + Tracking_num)
+        self.select_DB.execute('select isim,soyisim,tel_num,mail from kimlikler inner join kargolar krg on ' +
+                               'kimlikler.id = krg.kimlikler_id where  takip_no =' + Tracking_num)
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW
 
 
-    def getCabin_Num(self):
-        self.select_DB.execute('SELECT Cabin_Num FROM cargosystem')
-        readCabin_Num = self.select_DB.fetchall()
-
-        return readCabin_Num
-
-
-    def deleteTable(self):
-        self.select_DB.execute("DROP TABLE cargosystem")
+    def deleteTable(self, table_name):
+        self.select_DB.execute('DROP TABLE ' + table_name)
 
         self.connection.commit()
         self.connection.close()

@@ -6,20 +6,21 @@ class DeliveryWindow(QWidget):  # <===
         #self.setGeometry(0, 0, 500, 250)
         self.setWindowTitle("Kargo Teslim Etme")
         self.DBRowValue = DB_RowValue
+        print(self.DBRowValue)
 
-        self.confirmButton()
+        self.delivery_info()
         self.show()
 
-    def confirmButton(self):
+    def delivery_info(self):
 
         vbox = QVBoxLayout()
 
         confirmbutton = QPushButton("Onayla")
         confirmbutton.clicked.connect(self.confirmFunction)
-        self.nameLabel = QLabel("Ad: " + self.DBRowValue[0][2])
-        self.surnameLabel = QLabel("Soyad: " + self.DBRowValue[0][3])
-        self.phoneLabel = QLabel("Telefon: " + self.DBRowValue[0][4])
-        self.mailLabel = QLabel("Mail: " + self.DBRowValue[0][5])
+        self.nameLabel = QLabel("Ad: " + self.DBRowValue[0][0])
+        self.surnameLabel = QLabel("Soyad: " + self.DBRowValue[0][1])
+        self.phoneLabel = QLabel("Telefon: " + str(self.DBRowValue[0][2]))
+        self.mailLabel = QLabel("Mail: " + self.DBRowValue[0][3])
 
         vbox.addWidget(self.nameLabel)
         vbox.addWidget(self.surnameLabel)

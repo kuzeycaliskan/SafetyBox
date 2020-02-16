@@ -7,7 +7,7 @@ import InfoWindow
 import main_DB
 import Window_FilterDB
 import Window_DB
-import Window_TWDB
+import Window_DB
 import CreateRow
 import DeliveryWindow
 
@@ -215,7 +215,7 @@ class Window(QWidget):
 
     def PNRFinder(self): #find person from PNR Number
         getPNRList = self.database.getPNRList() #calling all PNR list from Database
-        # print(int(self.PNRTextEditor.text()))
+
         i = 0
 
         if self.PNRTextEditor.text() != "":
@@ -223,7 +223,7 @@ class Window(QWidget):
                 if  int(self.PNRTextEditor.text()) == int(getPNR[0]): #if found open info window
                     self.PNRText.setText("Success")
                     print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
-                    self.InfoWindow(str(getPNR[0]))
+                    self.InfoWindow("receiver", str(getPNR[0]))
                     i = i+1
                     break
                 else:
@@ -238,23 +238,24 @@ class Window(QWidget):
             QMessageBox.information(self,"Bilgilendirme","PNR Numarası Girmediniz\n"
                                                              "Lütfen PNR Numarası Girip Tekrar Deneyiniz" )
 
-    def InfoWindow(self, PNR_Num): #calling info window class with PNR Number
-        list_InfoWindow = self.database.getInfo_IW(PNR_Num)
-        self.w = InfoWindow.InfoWindow(list_InfoWindow)
-        self.w.show()
+    def InfoWindow(self, info_type, PNR_Num): #calling info window class with PNR Number
+        if info_type == "receiver":
+            list_InfoWindow = self.database.getInfo_IW(PNR_Num)
+            self.w = InfoWindow.InfoWindow(info_type, list_InfoWindow)
+            self.w.show()
+        elif info_type == "delivery":
+            list_InfoWindow = self.database.getTracking_Num_DW(PNR_Num)
+            self.w = InfoWindow.InfoWindow(info_type, list_InfoWindow)
+            self.w.show()
 
     def DatabaseWindow(self): #calling database window class
-        self.w_DB = Window_DB.Window_DB()
+        self.w_DB = Window_DB.Window_DB("İlçeler")
         self.w_DB.show()
 
 
     def DatabaseFilterWindow(self): #calling database window class
         self.w_FDB = Window_FilterDB.Window_FilterDB()
         self.w_FDB.show()
-
-    def TWDBWindowOpen(self):
-        self.wTW_DB = Window_TWDB.Window_TWDB("İlçeler")
-        self.wTW_DB.show()
 
 
     def Database_CreateRow(self): #calling database CreateRow window class
@@ -311,7 +312,7 @@ class Window(QWidget):
                 if int(self.TrackTextEditor.text()) == int(getTrack[0]):
                     self.TrackText.setText("Success")
                     print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
-                    self.DeliveryWindow(str(getTrack[0]))
+                    self.InfoWindow("delivery", str(getTrack[0]))
                     i = i + 1
                     break
                 else:
@@ -343,18 +344,11 @@ class Window(QWidget):
         png = QPixmap("barcode.png")
         png.scaled(64,64)
         image.setPixmap(png)
-
-        hbox = QHBoxLayout()
-        hbox.addWidget(title)
-
-        hbox1 = QHBoxLayout()
-        hbox1.addStretch()
-        hbox1.addWidget(image)
-        hbox1.addStretch()
+        image.setAlignment(Qt.AlignCenter)
 
         vbox = QVBoxLayout()
-        vbox.addLayout(hbox)
-        vbox.addLayout(hbox1)
+        vbox.addWidget(title)
+        vbox.addWidget(image)
 
         grupbox.setLayout(vbox)
         return grupbox
@@ -363,13 +357,7 @@ class Window(QWidget):
         i = 0
         a = self.tab.indexOf(self.tab.currentWidget())
         self.tab.setCurrentWidget(self.tab1)
-        # self.tab.currentChanged(0)
-        # print(self.tab.indexOf(self.tab1))
 
-        # for i in (0,2):
-        #         if self.tab.currentWidget() == self.tab1:
-        #             self.tab.tabRemoved(a)
-        #             break
 
         if self.tab.currentWidget() == self.tab1:
             self.tab.removeTab(a)
@@ -413,8 +401,7 @@ class Window(QWidget):
         self.databaseUpdateRow.clicked.connect(self.Database_Update)
         self.databasefilter = QPushButton("Database Filter Window", objectName="GeneralButton")
         self.databasefilter.clicked.connect(self.DatabaseFilterWindow)
-        self.tablewidgetbutton = QPushButton("TableWidget DB Window", objectName="GeneralButton")
-        self.tablewidgetbutton.clicked.connect(self.TWDBWindowOpen)
+
         #TAB-4 Widgets END
 
         # TAB-5 Widgets
@@ -449,7 +436,6 @@ class Window(QWidget):
         tab4_vbox.addWidget(self.databaseUpdateRow)
         tab4_vbox.addWidget(self.databaseButton)
         tab4_vbox.addWidget(self.databasefilter)
-        tab4_vbox.addWidget(self.tablewidgetbutton)
         tab4_vbox.addWidget(self.BackMainButton())
         tab5_vbox.addStretch()
         tab5_vbox.addWidget(self.U_TextLabel)
