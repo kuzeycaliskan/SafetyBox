@@ -86,13 +86,16 @@ class main_DB():
         return readRowCount[0]
 
     def getDB_All(self):
-        self.select_DB.execute("select * from kimlikler inner join kargolar krg on kimlikler.id = krg.kimlikler_id " +
-                               "inner join dolaplar dlp on krg.dolaplar_id = dlp.id inner join safetyboxs sftb on" +
-                               " dlp.safetyboxs_id = sftb.id inner join ilceler i on sftb.ilceler_id = i.id")
+        self.select_DB.execute("select kimlikler_id,isim,soyisim,tel_num,mail,krg.id,krg.takip_no,krg.qr_kod," +
+                               "krg.PNR_num,krg.is_security,krg.created_at,krg.received_at, krg.is_received, dlp.id," +
+                               "dlp.dolap_no, dlp.boyut, dlp.is_empty, sftb.isim_sb, sftb.adres,i.ilce, i.il from " +
+                               "kimlikler inner join kargolar krg on kimlikler.id = krg.kimlikler_id inner join " +
+                               "dolaplar dlp on krg.dolaplar_id = dlp.id inner join safetyboxs sftb on " +
+                               "dlp.safetyboxs_id = sftb.id inner join ilceler i on sftb.ilceler_id = i.id")
         read_DB = self.select_DB.fetchall()
         # print(oku.fetchall())
-        for get_DB in read_DB:
-            print(get_DB)
+        # for get_DB in read_DB:
+        #     print(get_DB)
 
         return read_DB
 
