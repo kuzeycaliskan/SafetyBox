@@ -7,7 +7,7 @@ from time import sleep
 class RP4_GPIO():  # <===
     def __init__(self, Box_Pin):
         super().__init__()
-        self.factory = PiGPIOFactory(host='192.168.1.45')
+        self.factory = PiGPIOFactory(host='192.168.1.41')
 
         self.OpenBox(Box_Pin)
 
