@@ -15,7 +15,7 @@ class main_DB():
         #                       database=DB_pm_list[3])
         #
         self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-                                                  host="192.168.1.33",
+                                                  host="localhost",
                                                   database="safetybox_db")
 
         if (self.connection):
@@ -99,28 +99,12 @@ class main_DB():
 
         return read_DB
 
-    # def createRow(self, newrowlist):
-    #     self.select_DB.execute("INSERT INTO cargosystem (Takip_Numarasi,Ad,Soyad,Tel_Num,Mail_adres,Qrkod,Pnr_Num," +
-    #                            "Security,Box_Location,Cabin_Num,Cargo_Start_Time,Cargo_End_Time) VALUES (" + "'" +
-    #                            newrowlist[0] + "'" + "," +
-    #                            "'" + newrowlist[1] + "'" + "," + "'" + newrowlist[2] + "'" + "," + "'" + newrowlist[
-    #                                3] + "'" + "," + "'" +
-    #                            newrowlist[4] + "'" + "," + "'" + newrowlist[5] + "'" + "," + "'" + newrowlist[
-    #                                6] + "'" + "," + "'" +
-    #                            newrowlist[7] + "'" + "," + "'" + newrowlist[8] + "'" + "," + "'" + newrowlist[
-    #                                9] + "'" + "," + "'" +
-    #                            newrowlist[10] + "'" + "," + "'" + newrowlist[11] + "'" + ")")
-    #
-    #     self.connection.commit()  # confirm to new register
-
-
-
     def getPNRList(self):
         self.select_DB.execute("SELECT PNR_num FROM kargolar")
         readPNR_DB = self.select_DB.fetchall()
         return readPNR_DB
 
-    def getInfo_IW(self, PNR_num):
+    def getPerson_withPNRNo(self, PNR_num):
         self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no from kimlikler inner join kargolar krg on' +
                                ' kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id' +
                                ' WHERE PNR_num =' + PNR_num)
@@ -135,13 +119,33 @@ class main_DB():
 
         return readTrack_DB
 
-    def getTracking_Num_DW(self, Tracking_num):
+    def getPerson_withTrackingNo(self, Tracking_num):
         self.select_DB.execute('select isim,soyisim,tel_num,mail from kimlikler inner join kargolar krg on ' +
                                'kimlikler.id = krg.kimlikler_id where  takip_no =' + Tracking_num)
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW
 
+    def getPerson_withQRCode(self, QRCode):
+        self.select_DB.execute('select isim,soyisim,tel_num,mail from kimlikler inner join kargolar krg on ' +
+                               'kimlikler.id = krg.kimlikler_id where  krg.qr_kod =' + QRCode)
+        readDelivery_DW = self.select_DB.fetchall()
+
+        return readDelivery_DW
+
+    def getBoxNo_withTrackingNum(self, Tracking_num):
+        self.select_DB.execute("select dolaplar.dolap_no from dolaplar inner join kargolar k on" +
+                               " dolaplar.id = k.dolaplar_id where k.PNR_num = " + Tracking_num)
+
+        readBoxNo = self.select_DB.fetchone()
+        return readBoxNo[0]
+
+    def getBoxNo_withQRCode(self, QRCode):
+        self.select_DB.execute("select dolaplar.dolap_no from dolaplar inner join kargolar k on" +
+                               " dolaplar.id = k.dolaplar_id where k.qr_kod =" + QRCode)
+
+        readBoxNo = self.select_DB.fetchone()
+        return readBoxNo[0]
 
     def deleteTable(self, table_name):
         self.select_DB.execute('DROP TABLE ' + table_name)

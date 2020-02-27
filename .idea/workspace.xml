@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="355eaeca-6695-4e6f-a8ed-9ffa2bbd1306" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Window_DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/Window_DB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Window_FilterDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/Window_FilterDB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_DB.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +35,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../CargoBox" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -152,6 +151,10 @@
       <workItem from="1582234944655" duration="536000" />
       <workItem from="1582318601978" duration="1609000" />
       <workItem from="1582320359140" duration="2916000" />
+      <workItem from="1582362239119" duration="2501000" />
+      <workItem from="1582404814131" duration="2335000" />
+      <workItem from="1582524432163" duration="210000" />
+      <workItem from="1582709983717" duration="4450000" />
     </task>
     <servers />
   </component>
@@ -167,26 +170,26 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" key="DiffContextDialog/0.0.1536.824@0.0.1536.824" timestamp="1581773821592" />
-    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1581802127533">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1582709989168">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1581802127533" />
-    <state width="1493" height="120" key="GridCell.Tab.0.bottom" timestamp="1582323284208">
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1582709989168" />
+    <state width="1493" height="85" key="GridCell.Tab.0.bottom" timestamp="1582524641722">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="120" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1582323284208" />
-    <state width="1493" height="120" key="GridCell.Tab.0.center" timestamp="1582323284207">
+    <state width="1493" height="85" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1582524641722" />
+    <state width="1493" height="85" key="GridCell.Tab.0.center" timestamp="1582524641722">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="120" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1582323284207" />
-    <state width="1493" height="120" key="GridCell.Tab.0.left" timestamp="1582323284207">
+    <state width="1493" height="85" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1582524641722" />
+    <state width="1493" height="85" key="GridCell.Tab.0.left" timestamp="1582524641718">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="120" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1582323284207" />
-    <state width="1493" height="120" key="GridCell.Tab.0.right" timestamp="1582323284207">
+    <state width="1493" height="85" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1582524641718" />
+    <state width="1493" height="85" key="GridCell.Tab.0.right" timestamp="1582524641722">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="120" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1582323284207" />
+    <state width="1493" height="85" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1582524641722" />
     <state width="1493" height="278" key="GridCell.Tab.1.bottom" timestamp="1581884317566">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -203,10 +206,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1493" height="278" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581884317566" />
-    <state x="164" y="66" key="SettingsEditor" timestamp="1581805685147">
+    <state x="164" y="66" key="SettingsEditor" timestamp="1582830968528">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="164" y="66" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1581805685147" />
+    <state x="164" y="66" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1582830968528" />
     <state x="93" y="93" width="1350" height="638" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1581795418253">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -217,7 +220,7 @@
     <state x="578" y="329" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.824@0.0.1536.824" timestamp="1581773712376" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/SafetyBox$main.coverage" NAME="main Coverage Results" MODIFIED="1582323231264" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SafetyBox$main.coverage" NAME="main Coverage Results" MODIFIED="1582831039829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/SafetyBox$main_DB.coverage" NAME="main_DB Coverage Results" MODIFIED="1580509575899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

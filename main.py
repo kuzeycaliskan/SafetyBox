@@ -7,9 +7,9 @@ import InfoWindow
 import main_DB
 import Window_FilterDB
 import Window_DB
-import Window_DB
 import CreateRow
 import DeliveryWindow
+import QRCode_RPCam
 
 #GUI Button Shape
 StyleSheet = '''  
@@ -129,11 +129,12 @@ class Window(QWidget):
     def deliveringFunction(self):
         self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         self.tab.setCurrentWidget(self.tab2)
+        QRCode_RPCam
 
     def receivingFunction(self):
-
         self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
+        QRCode_RPCam
 
     def DBTool(self):#DB işlerleri tabını oluşturuyor menu bar için
         self.tab.addTab(self.tab4, "DataBase İşlemleri")
@@ -240,11 +241,11 @@ class Window(QWidget):
 
     def InfoWindow(self, info_type, PNR_Num): #calling info window class with PNR Number
         if info_type == "receiver":
-            list_InfoWindow = self.database.getInfo_IW(PNR_Num)
+            list_InfoWindow = self.database.getPerson_withPNRNo(PNR_Num)
             self.w = InfoWindow.InfoWindow(info_type, list_InfoWindow)
             self.w.show()
         elif info_type == "delivery":
-            list_InfoWindow = self.database.getTracking_Num_DW(PNR_Num)
+            list_InfoWindow = self.database.getPerson_withTrackingNo(PNR_Num)
             self.w = InfoWindow.InfoWindow(info_type, list_InfoWindow)
             self.w.show()
 
@@ -329,7 +330,7 @@ class Window(QWidget):
                                                             "Lütfen Bir Takip Numarası Giriniz.")
 
     def DeliveryWindow(self, Tracking_Num):  # calling Delivery window class with Tracking Number
-        list_DeliveryWindow = self.database.getTracking_Num_DW(Tracking_Num)
+        list_DeliveryWindow = self.database.getPerson_withTrackingNo(Tracking_Num)
         self.w = DeliveryWindow.DeliveryWindow(list_DeliveryWindow)
         self.w.show()
 
