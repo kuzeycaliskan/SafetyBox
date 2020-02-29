@@ -129,12 +129,14 @@ class Window(QWidget):
     def deliveringFunction(self):
         self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         self.tab.setCurrentWidget(self.tab2)
-        QRCode_RPCam.QRCode_Reader()
+        self.QRWindow = QRCode_RPCam.QRWindow()
+        self.QRWindow.show()
 
     def receivingFunction(self):
         self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
-        QRCode_RPCam.QRCode_Reader()
+        self.QRWindow = QRCode_RPCam.QRWindow()
+        self.QRWindow.show()
 
     def DBTool(self):#DB işlerleri tabını oluşturuyor menu bar için
         self.tab.addTab(self.tab4, "DataBase İşlemleri")
