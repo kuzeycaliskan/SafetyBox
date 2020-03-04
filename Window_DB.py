@@ -20,6 +20,16 @@ class Window_DB(QMainWindow):
 
         self.show()
 
+    def closeEvent(self, event):
+        close = QMessageBox.question(self,
+                                     "QUIT",
+                                     "Are you sure want to stop process?",
+                                     QMessageBox.Yes | QMessageBox.No)
+        if close == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
     def table_DB(self, table_name):
         self.model = QStandardItemModel(self)
         self.table = QTableView(self)  # Create a table

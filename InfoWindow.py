@@ -3,23 +3,22 @@ import CabinNum_Window
 
 
 class InfoWindow(QWidget):  # <===
-    def __init__(self, info_type,DB_RowValue):
+    def __init__(self, info_type, DB_RowValue):
         super().__init__()
         #self.setGeometry(0, 0, 500, 250)
         self.setWindowTitle("Kullanıcı Bilgileri")
 
 
         if info_type == "receiver":
-            print(DB_RowValue)
+            print("InfoWindowClass", DB_RowValue)
             self.receiver_info(DB_RowValue)
         elif info_type == "delivery":
-            print(DB_RowValue)
+            print("InfoWindowClass", DB_RowValue)
             self.delivery_info(DB_RowValue)
-
         self.show()
 
-    def receiver_info(self, knowledge):
 
+    def receiver_info(self, knowledge):
         vbox = QVBoxLayout()
 
         confirmbutton = QPushButton("Onayla")
@@ -59,7 +58,7 @@ class InfoWindow(QWidget):  # <===
         self.setLayout(vbox)
 
     def confirmFunction(self):
-        self.hide()
+        self.close()
         self.w = CabinNum_Window.CabinNum_Window(self.box_no)
         self.w.show()
 
