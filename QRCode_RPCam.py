@@ -46,7 +46,7 @@ class QRWindow(QWidget):
         for QRCode in getQRCodeList:
             if QRCode[0] == barcodeData:
                 print("success. I found a person")
-                self.InfoWindow("receiver", str(QRCode[0]))
+                # self.InfoWindow("receiver", str(QRCode[0]))
                 break
 
             else:
