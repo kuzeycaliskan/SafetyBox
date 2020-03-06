@@ -1,21 +1,18 @@
 import cv2
-from PyQt5 import QtCore
 from PyQt5.Qt import *
 from pyzbar import pyzbar
-import sys
-import main_DB
-import InfoWindow
 
 class QRWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.database = main_DB.main_DB()
-
         self.title = 'PyQt5 Video'
         self.left = 100
         self.top = 100
         self.width = 640
         self.height = 480
+
+        # self.InfoWindow("receiver", "q6cw165rq1vteg49638g416a6s5a6d")
+
         self.initUI()
         self.show()
 
@@ -23,9 +20,14 @@ class QRWindow(QWidget):
     def setImage(self, image):
         self.label.setPixmap(QPixmap.fromImage(image))
 
+    def setcllback2Main(self, cllbackFunc):
+        print("setcllback2main func girildi")
+        self.cllbackFunc = cllbackFunc
+
     def cllback(self, barcodeData):
         self.close()
-        self.QRCodeFinder(barcodeData)
+        # self.QRCodeFinder(barcodeData)
+        self.cllbackFunc(barcodeData)
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -40,29 +42,6 @@ class QRWindow(QWidget):
         self.th.changePixmap.connect(self.setImage)
         self.th.start()
 
-    def QRCodeFinder(self, barcodeData):
-        getQRCodeList = self.database.getQRCodeList()
-
-        for QRCode in getQRCodeList:
-            if QRCode[0] == barcodeData:
-                print("success. I found a person")
-                # self.InfoWindow("receiver", str(QRCode[0]))
-                break
-
-            else:
-                print(type)
-                print("trying another QRCode")
-
-    def InfoWindow(self, info_type, QRCode):  # calling info window class with PNR Number
-        if info_type == "receiver":
-            getPerson = self.database.getPerson_withQRCode(QRCode)
-            self.w = InfoWindow.InfoWindow(info_type, getPerson)
-            self.w.show()
-        elif info_type == "delivery":
-            getPerson = self.database.getPerson_withQRCode(QRCode)
-            self.w = InfoWindow.InfoWindow(info_type, getPerson)
-            self.w.show()
-
     def closeEvent(self, event):
         # self.th.quit()
         # self.th.wait()
@@ -75,6 +54,7 @@ class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
 
     def setCllback(self, cllbck):
+        print("thread setcllback func girildi")
         self.cllbck = cllbck
 
     def run(self):

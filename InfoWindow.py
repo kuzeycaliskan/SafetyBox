@@ -15,6 +15,7 @@ class InfoWindow(QWidget):  # <===
         elif info_type == "delivery":
             print("InfoWindowClass", DB_RowValue)
             self.delivery_info(DB_RowValue)
+
         self.show()
 
 

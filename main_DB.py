@@ -15,7 +15,7 @@ class main_DB():
         #                       database=DB_pm_list[3])
         #
         self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-                                                  host="192.168.1.39",
+                                                  host="localhost",
                                                   database="safetybox_db")
 
         if (self.connection):

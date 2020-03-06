@@ -122,24 +122,35 @@ class Window(QWidget):
 
         return groupBox
 
+    def cllbackFromQRCode(self, barcodeData):
+        print("main class cllback check", barcodeData)
+        self.QRCodeFinder(barcodeData)
+
     def receivingFunction(self):
         self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         self.tab.setCurrentWidget(self.tab2)
         self.QRWindow = QRCode_RPCam.QRWindow()
+        self.QRWindow.setcllback2Main(self.cllbackFromQRCode)
         self.QRWindow.show()
-        print("activated", self.QRWindow.isActiveWindow())
+
+    def QRCodeFinder(self, barcodeData):
+        getQRCodeList = self.database.getQRCodeList()
+
+        for QRCode in getQRCodeList:
+            if QRCode[0] == barcodeData:
+                print("success. I found a person")
+                self.InfoWindowFunc("receiver", "QRCode", str(QRCode[0]))
+                break
+
+            else:
+                print(type)
+                print("trying another QRCode")
 
     def deliveringFunction(self):
         self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
         self.QRWindow = QRCode_RPCam.QRWindow()
         self.QRWindow.show()
-
-    def cllbackFromQRCode(self, barcodeData):
-        getPerson = self.database.getPerson_withQRCode(barcodeData)
-        self.w = InfoWindow.InfoWindow("receiver", getPerson)
-        self.w.show()
-
 
     def DBTool(self):  # Menu Bar Database İslemleri
         self.tab.addTab(self.tab4, "DataBase İşlemleri")
@@ -226,7 +237,7 @@ class Window(QWidget):
                 if int(self.PNRTextEditor.text()) == int(getPNR[0]):  # if found open info window
                     self.PNRText.setText("Success")
                     print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
-                    self.InfoWindow("receiver", str(getPNR[0]))
+                    self.InfoWindowFunc("receiver", "PNR", str(getPNR[0]))
                     i = i + 1
                     break
                 else:
@@ -241,14 +252,23 @@ class Window(QWidget):
             QMessageBox.information(self, "Bilgilendirme", "PNR Numarası Girmediniz\n"
                                                            "Lütfen PNR Numarası Girip Tekrar Deneyiniz")
 
-    def InfoWindow(self, info_type, PNR_Num):  # calling info window class with PNR Number
-        if info_type == "receiver":
-            list_InfoWindow = self.database.getPerson_withPNRNo(PNR_Num)
-            self.w = InfoWindow.InfoWindow(info_type, list_InfoWindow)
+    def InfoWindowFunc(self, cargo_type, info_type, info):  # calling info window class with PNR Number
+        if cargo_type == "receiver" and info_type == "PNR":
+            list_InfoWindow = self.database.getPerson_withPNRNo(info)
+            self.w = InfoWindow.InfoWindow(cargo_type, list_InfoWindow)
             self.w.show()
-        elif info_type == "delivery":
-            list_InfoWindow = self.database.getPerson_withTrackingNo(PNR_Num)
-            self.w = InfoWindow.InfoWindow(info_type, list_InfoWindow)
+        elif cargo_type == "delivery" and info_type == "PNR":
+            list_InfoWindow = self.database.getPerson_withTrackingNo(info)
+            self.w = InfoWindow.InfoWindow(cargo_type, list_InfoWindow)
+            self.w.show()
+        elif cargo_type == "receiver" and info_type == "QRCode":
+            print("Info Window from main")
+            getPerson = self.database.getPerson_withQRCode(info)
+            self.w = InfoWindow.InfoWindow(info_type, getPerson)
+            self.w.show()
+        elif cargo_type == "delivery" and info_type == "QRCode":
+            getPerson = self.database.getPerson_withQRCode(info)
+            self.w = InfoWindow.InfoWindow(info_type, getPerson)
             self.w.show()
 
     def DatabaseWindow(self):  # calling database window class
@@ -313,7 +333,7 @@ class Window(QWidget):
                 if int(self.TrackTextEditor.text()) == int(getTrack[0]):
                     self.TrackText.setText("Success")
                     print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
-                    self.InfoWindow("delivery", str(getTrack[0]))
+                    self.InfoWindowFunc("delivery", "PNR", str(getTrack[0]))
                     i = i + 1
                     break
                 else:
