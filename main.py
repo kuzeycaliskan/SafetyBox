@@ -123,8 +123,13 @@ class Window(QWidget):
         return groupBox
 
     def cllbackFromQRCode(self, barcodeData):
-        print("main class cllback check", barcodeData)
-        self.QRCodeFinder(barcodeData)
+        if barcodeData is not None:
+            print("main class cllback check", barcodeData)
+            # print("deneme",self.QRWindow.isActiveWindow())
+            # self.QRWindow.close()
+            self.QRCodeFinder(barcodeData)
+        else:
+            pass
 
     def receivingFunction(self):
         self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
@@ -264,11 +269,11 @@ class Window(QWidget):
         elif cargo_type == "receiver" and info_type == "QRCode":
             print("Info Window from main")
             getPerson = self.database.getPerson_withQRCode(info)
-            self.w = InfoWindow.InfoWindow(info_type, getPerson)
+            self.w = InfoWindow.InfoWindow(cargo_type, getPerson)
             self.w.show()
         elif cargo_type == "delivery" and info_type == "QRCode":
             getPerson = self.database.getPerson_withQRCode(info)
-            self.w = InfoWindow.InfoWindow(info_type, getPerson)
+            self.w = InfoWindow.InfoWindow(cargo_type, getPerson)
             self.w.show()
 
     def DatabaseWindow(self):  # calling database window class

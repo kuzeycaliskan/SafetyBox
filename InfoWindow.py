@@ -11,6 +11,11 @@ class InfoWindow(QWidget):  # <===
 
         if info_type == "receiver":
             print("InfoWindowClass", DB_RowValue)
+            print(type(DB_RowValue[0][0]))
+            print(type(DB_RowValue[0][1]))
+            print(type(DB_RowValue[0][2]))
+            print(type(DB_RowValue[0][3]))
+            print(type(DB_RowValue[0][4]))
             self.receiver_info(DB_RowValue)
         elif info_type == "delivery":
             print("InfoWindowClass", DB_RowValue)
@@ -37,6 +42,7 @@ class InfoWindow(QWidget):  # <===
         vbox.addStretch()
 
         self.setLayout(vbox)
+        print("Label Kontrol")
 
     def delivery_info(self, knowledge):
 

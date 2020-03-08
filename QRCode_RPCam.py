@@ -48,6 +48,8 @@ class QRWindow(QWidget):
         # self.th.cap.release()
         self.th.threadactive = False
         self.close()
+        self.cllbackFunc("q6cw165rq1vteg49638g416a6s5a6d")
+
 
 
 class Thread(QThread):
