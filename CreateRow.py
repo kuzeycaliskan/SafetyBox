@@ -84,7 +84,7 @@ class CreateRow(QWidget):  # <===
         self.database.createRow(newrowlist)
 
         QMessageBox.information(self, "Bilgilendirme", "Kişiniz başarı ile kaydedilmiştir.")
-        self.hide()
+        self.close()
 
 
 

@@ -15,7 +15,7 @@ class main_DB():
         #                       database=DB_pm_list[3])
         #
         self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-                                                  host="192.168.1.39",
+                                                  host="localhost",
                                                   database="safetybox_db")
 
         if (self.connection):
@@ -118,6 +118,14 @@ class main_DB():
 
         return readInfo_IW
 
+    def getPerson_withQRCode(self, QRCode):
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no from kimlikler inner join kargolar krg on ' +
+                               'kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id ' +
+                               'where  krg.qr_kod =' + '"' + str(QRCode) + '"')
+        readDelivery_DW = self.select_DB.fetchall()
+
+        return readDelivery_DW
+
     def getTrackList(self):
         self.select_DB.execute("SELECT takip_no FROM kargolar")
         readTrack_DB = self.select_DB.fetchall()
@@ -127,14 +135,6 @@ class main_DB():
     def getPerson_withTrackingNo(self, Tracking_num):
         self.select_DB.execute('select isim,soyisim,tel_num,mail from kimlikler inner join kargolar krg on ' +
                                'kimlikler.id = krg.kimlikler_id where  takip_no =' + Tracking_num)
-        readDelivery_DW = self.select_DB.fetchall()
-
-        return readDelivery_DW
-
-    def getPerson_withQRCode(self, QRCode):
-        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no from kimlikler inner join kargolar krg on ' +
-                               'kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id ' +
-                               'where  krg.qr_kod =' + '"' + str(QRCode) + '"')
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW

@@ -1,8 +1,13 @@
 import cv2
 from PyQt5.Qt import *
 from pyzbar import pyzbar
+import Finder
+import time
 
 class QRWindow(QWidget):
+    Finder = Finder.Finder()
+    Widget = 1
+
     def __init__(self):
         super().__init__()
         self.title = 'PyQt5 Video'
@@ -18,42 +23,60 @@ class QRWindow(QWidget):
 
     @pyqtSlot(QImage)
     def setImage(self, image):
-        self.label.setPixmap(QPixmap.fromImage(image))
-
-    def setcllback2Main(self, cllbackFunc):
-        print("setcllback2main func girildi")
-        self.cllbackFunc = cllbackFunc
+        self.CameraLabel.setPixmap(QPixmap.fromImage(image))
+    #
+    # def setcllback2Main(self, cllbackFunc):
+    #     print("setcllback2main func girildi")
+    #     self.cllbackFunc = cllbackFunc
 
     def cllback(self, barcodeData):
-        self.close()
-        # self.QRCodeFinder(barcodeData)
-        self.cllbackFunc(barcodeData)
+        self.barcodeData = barcodeData
+        self.Widget.setHidden(False)
+        # self.close()
+        return
 
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.resize(640, 480)
+
+        self.Widget = QWidget()
+        self.Widget.show()
+        self.Widget.setHidden(True)
+
         # create a label
-        self.label = QLabel(self)
+        self.CameraLabel = QLabel(self)
         # self.label.move(280, 120)
-        self.label.resize(640, 480)
+        self.CameraLabel.resize(640, 480)
         self.th = Thread(self)
         self.th.setCllback(self.cllback)
         self.th.changePixmap.connect(self.setImage)
         self.th.start()
 
+        button = QPushButton("Info Window")
+        button.clicked.connect(self.testfunc)
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.CameraLabel)
+        vbox.addWidget(button)
+        self.setLayout(vbox)
+
+    def testfunc(self):
+        self.cllbackFunc("fsdg984sdg84fdd121df154asdqzs7")
+
     def closeEvent(self, event):
+        self.Finder.QRCodeFinder(self.barcodeData)
         # self.th.quit()
         # self.th.wait()
         # self.th.cap.release()
-        self.th.threadactive = False
-        self.close()
-        self.cllbackFunc("q6cw165rq1vteg49638g416a6s5a6d")
+        # self.th.threadactive = False
+        # self.close()
+        # self.cllbackFunc("fsdg984sdg84fdd121df154asdqzs7")
 
 
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
+    counter = 0
 
     def setCllback(self, cllbck):
         print("thread setcllback func girildi")
@@ -61,12 +84,12 @@ class Thread(QThread):
 
     def run(self):
         counter = 0
-        cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(0)
         self.threadactive = True
 
         while (self.threadactive):
-            ret, frame = cap.read()
-            if cap.read() is None:
+            ret, frame = self.cap.read()
+            if self.cap.read() is None:
                 break
             barcodes = pyzbar.decode(frame)
             found = set()
@@ -101,7 +124,8 @@ class Thread(QThread):
                 self.changePixmap.emit(p)
 
         if(self.threadactive is False):
-            cap.release()
+            print('Thread continue')
+            self.cap.release()
             self.cllbck(barcodeData)
 
 

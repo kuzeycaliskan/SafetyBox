@@ -11,6 +11,9 @@ import CreateRow
 import DeliveryWindow
 import QRCode_RPCam
 import time
+import cv2
+import Finder
+from pyzbar import pyzbar
 
 # GUI Button Shape
 StyleSheet = '''  
@@ -53,12 +56,12 @@ QPushButton#GeneralButton:hover{
 
 
 class MainWindow(QMainWindow):
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setGeometry(0, 0, 1080, 732)  # window size
         self.window_widget = Window()
         self.setCentralWidget(self.window_widget)  # Ana Widget olarak Window classını çağırıyoruz
-
         self.menubar()
         self.show()
 
@@ -78,13 +81,14 @@ class MainWindow(QMainWindow):
 
 
 class Window(QWidget):
+    Finder = Finder.Finder()
+
     def __init__(self):
         super().__init__()  # QWidget fonskiyonlarını kullanabilmek icin
 
         self.setGeometry(0, 0, 1080, 732)  # window size
         self.setWindowTitle("Safety Box")  # window title
         self.database = main_DB.main_DB()  # calling database class
-
         self.tabs()  # initialize tabs
         self.show()
 
@@ -122,36 +126,13 @@ class Window(QWidget):
 
         return groupBox
 
-    def cllbackFromQRCode(self, barcodeData):
-        if barcodeData is not None:
-            print("main class cllback check", barcodeData)
-            # print("deneme",self.QRWindow.isActiveWindow())
-            # self.QRWindow.close()
-            self.QRCodeFinder(barcodeData)
-        else:
-            pass
-
-    def receivingFunction(self):
+    def receivingFunction(self): #receiving button function
         self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         self.tab.setCurrentWidget(self.tab2)
-        self.QRWindow = QRCode_RPCam.QRWindow()
-        self.QRWindow.setcllback2Main(self.cllbackFromQRCode)
-        self.QRWindow.show()
 
-    def QRCodeFinder(self, barcodeData):
-        getQRCodeList = self.database.getQRCodeList()
 
-        for QRCode in getQRCodeList:
-            if QRCode[0] == barcodeData:
-                print("success. I found a person")
-                self.InfoWindowFunc("receiver", "QRCode", str(QRCode[0]))
-                break
 
-            else:
-                print(type)
-                print("trying another QRCode")
-
-    def deliveringFunction(self):
+    def deliveringFunction(self): #delivering button function
         self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
         self.QRWindow = QRCode_RPCam.QRWindow()
@@ -166,7 +147,28 @@ class Window(QWidget):
         self.tab.addTab(self.tab5, "DB Güncelleme")
         self.tab.setCurrentWidget(self.tab5)
 
+    @pyqtSlot(QImage)
+    def setImage(self, image):
+        self.CameraLabel.setPixmap(QPixmap.fromImage(image))
+
+    def cllback(self, barcodeData):
+        self.barcodeData = barcodeData
+        cargo_type, infoList = self.Finder.QRCodeFinder(barcodeData)
+        # print(cargo_type)
+        self.infoWin.showInfoWindow(cargo_type, infoList)
+        return
+
     def instructions(self):  # Talimatlar Group Box - Step2
+        self.infoWin = InfoWindow.InfoWindow()
+
+        self.CameraLabel = QLabel(self)
+        # self.label.move(280, 120)
+        self.CameraLabel.resize(640, 480)
+        self.th = Thread(self)
+        self.th.setCllback(self.cllback)
+        self.th.changePixmap.connect(self.setImage)
+        self.th.start()
+
 
         groupBox = QGroupBox("Talimatlar")  # create groupbox
 
@@ -196,7 +198,13 @@ class Window(QWidget):
         vbox.addWidget(info_instructions)
         vbox.addLayout(hbox)
 
-        groupBox.setLayout(vbox)  # hbox is placed in groupbox
+        main_hbox = QHBoxLayout()
+        main_hbox.addLayout(hbox)
+        main_hbox.addLayout(vbox)
+        main_hbox.addWidget(self.CameraLabel)
+
+
+        groupBox.setLayout(main_hbox)  # hbox is placed in groupbox
 
         return groupBox
 
@@ -232,49 +240,14 @@ class Window(QWidget):
 
         return groupBox
 
-    def PNRFinder(self):  # find person from PNR Number
-        getPNRList = self.database.getPNRList()  # calling all PNR list from Database
-
-        i = 0
-
+    def PNRFinder(self):
         if self.PNRTextEditor.text() != "":
-            for getPNR in getPNRList:  # search in database
-                if int(self.PNRTextEditor.text()) == int(getPNR[0]):  # if found open info window
-                    self.PNRText.setText("Success")
-                    print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
-                    self.InfoWindowFunc("receiver", "PNR", str(getPNR[0]))
-                    i = i + 1
-                    break
-                else:
-                    self.PNRText.setText("Failed")
-                    print(getPNR[0])
-                    print(int(self.PNRTextEditor.text()) == int(getPNR[0]))
-
-            if i == 0:  # if not found give information is provided
-                QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
-                                                               "Kontrol edip tekrar deneyiniz.")
+            currernttext = self.PNRTextEditor.text()
+            values = self.Finder.PNRFinder(currernttext)
+            self.infoWin.showInfoWindow(values[0], values[1])
         else:
             QMessageBox.information(self, "Bilgilendirme", "PNR Numarası Girmediniz\n"
                                                            "Lütfen PNR Numarası Girip Tekrar Deneyiniz")
-
-    def InfoWindowFunc(self, cargo_type, info_type, info):  # calling info window class with PNR Number
-        if cargo_type == "receiver" and info_type == "PNR":
-            list_InfoWindow = self.database.getPerson_withPNRNo(info)
-            self.w = InfoWindow.InfoWindow(cargo_type, list_InfoWindow)
-            self.w.show()
-        elif cargo_type == "delivery" and info_type == "PNR":
-            list_InfoWindow = self.database.getPerson_withTrackingNo(info)
-            self.w = InfoWindow.InfoWindow(cargo_type, list_InfoWindow)
-            self.w.show()
-        elif cargo_type == "receiver" and info_type == "QRCode":
-            print("Info Window from main")
-            getPerson = self.database.getPerson_withQRCode(info)
-            self.w = InfoWindow.InfoWindow(cargo_type, getPerson)
-            self.w.show()
-        elif cargo_type == "delivery" and info_type == "QRCode":
-            getPerson = self.database.getPerson_withQRCode(info)
-            self.w = InfoWindow.InfoWindow(cargo_type, getPerson)
-            self.w.show()
 
     def DatabaseWindow(self):  # calling database window class
         self.w_DB = Window_DB.Window_DB("İlçeler")
@@ -482,6 +455,59 @@ class Window(QWidget):
         mainLayout.addWidget(self.tab)
 
         self.setLayout(mainLayout)
+
+class Thread(QThread):
+    changePixmap = pyqtSignal(QImage)
+    oldBarcode = 0
+
+    def setCllback(self, cllbck):
+        print("thread setcllback func girildi")
+        self.cllbck = cllbck
+
+    def run(self):
+        counter = 0
+        self.cap = cv2.VideoCapture(0)
+        self.threadactive = True
+
+        while (True):
+            ret, frame = self.cap.read()
+            if self.cap.read() is None:
+                break
+            barcodes = pyzbar.decode(frame)
+            found = set()
+
+            for barcode in barcodes:
+                counter = counter + 1
+                # extract the bounding box location of the barcode and draw
+                # the bounding box surrounding the barcode on the image
+                (x, y, w, h) = barcode.rect
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                # the barcode data is a bytes object so if we want to draw it
+                # on our output image we need to convert it to a string first
+                barcodeData = barcode.data.decode("utf-8")
+                barcodeType = barcode.type
+                print(counter, barcodeData)
+                # draw the barcode data and barcode type on the image
+                text = "{} ({})".format(barcodeData, barcodeType)
+                cv2.putText(frame, text, (x, y - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                # if the barcode text is currently not in our CSV file, write
+                # the timestamp + barcode   q to disk and update the set
+                if barcodeData not in found:
+                    if counter % 10 == 0 :
+                        self.cllbck(barcodeData)
+
+
+            if ret:
+                # https://stackoverflow.com/a/55468544/6622587
+                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                h, w, ch = rgbImage.shape
+                bytesPerLine = ch * w
+                convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine, QImage.Format_RGB888)
+                p = convertToQtFormat.scaled(640, 480, Qt.KeepAspectRatio)
+                self.changePixmap.emit(p)
+
+
 
 
 app = QApplication([])
