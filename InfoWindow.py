@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 import CabinNum_Window
-
+import Mail
 
 class InfoWindow(QWidget):  # <===
     def __init__(self):
@@ -10,11 +10,6 @@ class InfoWindow(QWidget):  # <===
         vbox = QVBoxLayout()
         confirmbutton = QPushButton("Onayla")
         confirmbutton.clicked.connect(self.confirmFunction)
-        # self.nameLabel = QLabel("Ad: " + knowledge[0][0])
-        # self.surnameLabel = QLabel("Soyad: " + knowledge[0][1])
-        # self.phoneLabel = QLabel("Telefon: " + str(knowledge[0][2]))
-        # self.mailLabel = QLabel("Mail: " + knowledge[0][3])
-        # self.box_no = knowledge[0][4]
         self.nameLabel = QLabel()
         self.surnameLabel = QLabel()
         self.phoneLabel = QLabel()
@@ -59,6 +54,10 @@ class InfoWindow(QWidget):  # <===
             self.receiver_info(DB_RowValue)
         elif info_type == "delivery":
             print("Shouldn't write this sentence", DB_RowValue)
+            print(DB_RowValue[0][0])
+            print(DB_RowValue[0][1])
+            print(DB_RowValue[0][2])
+            print(DB_RowValue[0][3])
             self.delivery_info(DB_RowValue)
 
         self.setHidden(False)

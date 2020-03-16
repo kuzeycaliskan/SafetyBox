@@ -93,9 +93,6 @@ class main_DB():
                                "dolaplar dlp on krg.dolaplar_id = dlp.id inner join safetyboxs sftb on " +
                                "dlp.safetyboxs_id = sftb.id inner join ilceler i on sftb.ilceler_id = i.id")
         read_DB = self.select_DB.fetchall()
-        # print(oku.fetchall())
-        # for get_DB in read_DB:
-        #     print(get_DB)
 
         return read_DB
 
@@ -114,7 +111,6 @@ class main_DB():
                                ' kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id' +
                                ' WHERE PNR_num =' + PNR_num)
         readInfo_IW = self.select_DB.fetchall()
-
 
         return readInfo_IW
 
@@ -138,6 +134,16 @@ class main_DB():
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW
+
+    def getMailinfo_withTrackingNo(self, Tracking_num):
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,krg.takip_no,krg.PNR_num,sftb.isim_sb,sftb.adres,i.ilce, i.il from '
+                               'kimlikler inner join kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id '
+                               'inner join safetyboxs sftb on dlp.safetyboxs_id = sftb.id inner join ilceler i on sftb.ilceler_id = i.id inner join kargolar '
+                               'on kimlikler.id = kargolar.kimlikler_id where krg.takip_no =' + Tracking_num)
+
+        mailinfo_Track = self.select_DB.fetchall()
+
+        return mailinfo_Track
 
     def getBoxNo_withTrackingNum(self, Tracking_num):
         self.select_DB.execute("select dolaplar.dolap_no from dolaplar inner join kargolar k on" +

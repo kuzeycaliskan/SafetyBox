@@ -13,6 +13,7 @@ import QRCode_RPCam
 import time
 import cv2
 import Finder
+import Mail
 from pyzbar import pyzbar
 
 # GUI Button Shape
@@ -75,8 +76,8 @@ class MainWindow(QMainWindow):
         dbt = QAction("DataBase İşlemleri", self)
         file.addAction(dbt)
 
-        dbt.triggered.connect(self.window_widget.DBTool)
-        dbu.triggered.connect(self.window_widget.DBU)
+        dbt.triggered.connect(self.window_widget.MB_DBTool)
+        dbu.triggered.connect(self.window_widget.MB_DBU)
         # file.triggered[QAction].connect(self.window_widget.DBTool)
 
 
@@ -85,14 +86,22 @@ class Window(QWidget):
 
     def __init__(self):
         super().__init__()  # QWidget fonskiyonlarını kullanabilmek icin
-
         self.setGeometry(0, 0, 1080, 732)  # window size
         self.setWindowTitle("Safety Box")  # window title
         self.database = main_DB.main_DB()  # calling database class
         self.tabs()  # initialize tabs
         self.show()
 
-    def cargoReceive(self):  # Kargo Teslim Alma - Step1
+    def MB_DBTool(self):  # Menu Bar Database İslemleri
+        self.tab.addTab(self.tab4, "DataBase İşlemleri")
+        self.tab.setCurrentWidget(self.tab4)
+        # self.tab.setCurrentIndex(0) İndex numarasına gidiyor
+
+    def MB_DBU(self):  # Menu Bar Database Güncelleme
+        self.tab.addTab(self.tab5, "DB Güncelleme")
+        self.tab.setCurrentWidget(self.tab5)
+
+    def GB_cargoReceive(self):  # Kargo Teslim Alma - Step1
 
         groupBox = QGroupBox("Kargo Teslim Alma")
 
@@ -103,7 +112,7 @@ class Window(QWidget):
         receivingButton.setFixedSize(receivingButton.width(), receivingButton.height())  # button size maximize
         receivingButton.setFont(QFont("Arial", 50, QFont.Bold))  # button font
         # deliveringButton.setVisible(False)
-        receivingButton.clicked.connect(self.receivingFunction)
+        receivingButton.clicked.connect(self.B_receivingFunction)
         # unclicked unvisible
         # print(groupBox.width())
         # vbox.setContentsMargins((groupBox.width()-deliveringButton.width()),0,0,0)
@@ -112,7 +121,7 @@ class Window(QWidget):
 
         return groupBox
 
-    def cargoDelivery(self):  # Kargo Teslim Etme - Step1
+    def GB_cargoDelivery(self):  # Kargo Teslim Etme - Step1
         groupBox = QGroupBox("Kargo Teslim Etme")
 
         vbox = QVBoxLayout()
@@ -120,50 +129,51 @@ class Window(QWidget):
         deliveringButton.installEventFilter(self)
         deliveringButton.setFixedSize(deliveringButton.width(), deliveringButton.height())  # button size maximize
         deliveringButton.setFont(QFont("Arial", 50, QFont.Bold))  # button font
-        deliveringButton.clicked.connect(self.deliveringFunction)
+        deliveringButton.clicked.connect(self.B_deliveringFunction)
         vbox.addWidget(deliveringButton)
         groupBox.setLayout(vbox)
 
         return groupBox
 
-    def receivingFunction(self): #receiving button function
-        self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
-        self.tab.setCurrentWidget(self.tab2)
 
+    def GB_cargoPNR(self):  # Kargo Teslim Grup Box - Step2
 
+        groupBox = QGroupBox("Kargo Teslim")
 
-    def deliveringFunction(self): #delivering button function
-        self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
-        self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
-        self.QRWindow = QRCode_RPCam.QRWindow()
-        self.QRWindow.show()
+        info_PNRDelivery = QLabel("Kargonuzu PNR ile teslim almak için butona basınız.")
+        info_PNRDelivery.setFont(QFont("Arial", 30, QFont.Bold))
+        info_PNRDelivery.setAlignment(Qt.AlignCenter)
 
-    def DBTool(self):  # Menu Bar Database İslemleri
-        self.tab.addTab(self.tab4, "DataBase İşlemleri")
-        self.tab.setCurrentWidget(self.tab4)
-        # self.tab.setCurrentIndex(0) İndex numarasına gidiyor
+        self.PNRTextEditor = QLineEdit(self)
+        self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
+        self.PNRTextEditor.setStyleSheet("color : blue")
 
-    def DBU(self):  # Menu Bar Database Güncelleme
-        self.tab.addTab(self.tab5, "DB Güncelleme")
-        self.tab.setCurrentWidget(self.tab5)
+        PNRbutton = QPushButton("PNR Buttonu", objectName="GeneralButton")
+        PNRbutton.installEventFilter(self)
+        PNRbutton.setFont(QFont("Time New Roman", 20))
+        PNRbutton.clicked.connect(self.PNRFinder)
 
-    @pyqtSlot(QImage)
-    def setImage(self, image):
-        self.CameraLabel.setPixmap(QPixmap.fromImage(image))
+        self.PNRText = QLabel("")  # success failed text
 
-    def cllback(self, barcodeData):
-        self.barcodeData = barcodeData
-        cargo_type, infoList = self.Finder.QRCodeFinder(barcodeData)
-        # print(cargo_type)
-        self.infoWin.showInfoWindow(cargo_type, infoList)
-        return
+        vbox = QVBoxLayout()
+        vbox.addStretch()
+        vbox.addWidget(info_PNRDelivery)
+        vbox.addWidget(self.PNRTextEditor)
+        vbox.addWidget(self.PNRText)
+        vbox.addWidget(PNRbutton)
+        vbox.addWidget(self.B_BackMainButton())
+        vbox.addStretch()
+        groupBox.size().setHeight(320)
+        groupBox.setLayout(vbox)
 
-    def instructions(self):  # Talimatlar Group Box - Step2
+        return groupBox
+
+    def GB_instructions(self):  # Talimatlar Group Box - Step2
         self.infoWin = InfoWindow.InfoWindow()
 
-        self.CameraLabel = QLabel(self)
+        self.CameraLabel_R = QLabel(self)
         # self.label.move(280, 120)
-        self.CameraLabel.resize(640, 480)
+        self.CameraLabel_R.resize(640, 480)
         self.th = Thread(self)
         self.th.setCllback(self.cllback)
         self.th.changePixmap.connect(self.setImage)
@@ -201,79 +211,14 @@ class Window(QWidget):
         main_hbox = QHBoxLayout()
         main_hbox.addLayout(hbox)
         main_hbox.addLayout(vbox)
-        main_hbox.addWidget(self.CameraLabel)
+        main_hbox.addWidget(self.CameraLabel_R)
 
 
         groupBox.setLayout(main_hbox)  # hbox is placed in groupbox
 
         return groupBox
 
-    def cargoPNR(self):  # Kargo Teslim Grup Box - Step2
-
-        groupBox = QGroupBox("Kargo Teslim")
-
-        info_PNRDelivery = QLabel("Kargonuzu PNR ile teslim almak için butona basınız.")
-        info_PNRDelivery.setFont(QFont("Arial", 30, QFont.Bold))
-        info_PNRDelivery.setAlignment(Qt.AlignCenter)
-
-        self.PNRTextEditor = QLineEdit(self)
-        self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
-        self.PNRTextEditor.setStyleSheet("color : blue")
-
-        PNRbutton = QPushButton("PNR Buttonu", objectName="GeneralButton")
-        PNRbutton.installEventFilter(self)
-        PNRbutton.setFont(QFont("Time New Roman", 20))
-        PNRbutton.clicked.connect(self.PNRFinder)
-
-        self.PNRText = QLabel("")  # success failed text
-
-        vbox = QVBoxLayout()
-        vbox.addStretch()
-        vbox.addWidget(info_PNRDelivery)
-        vbox.addWidget(self.PNRTextEditor)
-        vbox.addWidget(self.PNRText)
-        vbox.addWidget(PNRbutton)
-        vbox.addWidget(self.BackMainButton())
-        vbox.addStretch()
-        groupBox.size().setHeight(320)
-        groupBox.setLayout(vbox)
-
-        return groupBox
-
-    def PNRFinder(self):
-        if self.PNRTextEditor.text() != "":
-            currernttext = self.PNRTextEditor.text()
-            values = self.Finder.PNRFinder(currernttext)
-            self.infoWin.showInfoWindow(values[0], values[1])
-        else:
-            QMessageBox.information(self, "Bilgilendirme", "PNR Numarası Girmediniz\n"
-                                                           "Lütfen PNR Numarası Girip Tekrar Deneyiniz")
-
-    def DatabaseWindow(self):  # calling database window class
-        self.w_DB = Window_DB.Window_DB("İlçeler")
-        self.w_DB.show()
-
-    def DatabaseFilterWindow(self):  # calling database window class
-        self.w_FDB = Window_FilterDB.Window_FilterDB()
-        self.w_FDB.show()
-
-    def Database_CreateRow(self):  # calling database CreateRow window class
-        self.cr_W = CreateRow.CreateRow()
-        self.cr_W.show()
-
-    def Database_Update(self):  # Database value uptade
-        # self.database.updateRow(column, U_Name, U_T_Value)
-        self.tab.setCurrentWidget(self.tab4)
-        U_CurrentCombo = self.U_Combo.currentText()
-        U_CurrentName = self.U_Name.text()
-        U_CurrentValue = self.U_T_Value.text()
-
-        if U_CurrentCombo == "Değiştirmek istediğiniz sütunu seçiniz.":
-            QMessageBox.critical(self, "Hata", "Sütun seçimi boş bırakılamaz.")
-        else:
-            self.database.updateRow(U_CurrentCombo, U_CurrentName, U_CurrentValue)
-
-    def cargoTrack(self):  # Kargo teslim verme
+    def GB_cargoTrack(self):  # Kargo teslim verme
         groupBox = QGroupBox("Kargo Teslim Verme ")
 
         info_PNRDelivery = QLabel("Kargoyu Teslim Vermek İçin Butona Basınız")
@@ -294,45 +239,17 @@ class Window(QWidget):
         vbox.addWidget(self.TrackTextEditor)
         vbox.addWidget(self.TrackText)
         vbox.addWidget(Trackbutton)
-        vbox.addWidget(self.BackMainButton())
+        vbox.addWidget(self.B_BackMainButton())
         vbox.addStretch()
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
 
         return groupBox
 
-    def TrackingFinder(self):
-        getTrackList = self.database.getTrackList()  # calling all Tracking num. list from Database
-        # print(getTrackList)
-        i = 0
-
-        if self.TrackTextEditor.text() != "":
-            for getTrack in getTrackList:  # search in database
-                if int(self.TrackTextEditor.text()) == int(getTrack[0]):
-                    self.TrackText.setText("Success")
-                    print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
-                    self.InfoWindowFunc("delivery", "PNR", str(getTrack[0]))
-                    i = i + 1
-                    break
-                else:
-                    self.TrackText.setText("Failed")
-                    print(getTrack[0])
-                    print(int(self.TrackTextEditor.text()) == int(getTrack[0]))
-
-            if i == 0:  # if not found give information is provided
-                QMessageBox.information(self, "Bilgilendirme", "Girdiğiniz takip numarası bulunamamıştır.\n"
-                                                               "Kontrol edip tekrar deneyiniz.")
-
-        else:
-            QMessageBox.information(self, "Bilgilendirme", "Takip Numarası Girmediniz.\n"
-                                                           "Lütfen Bir Takip Numarası Giriniz.")
-
-    def DeliveryWindow(self, Tracking_Num):  # calling Delivery window class with Tracking Number
-        list_DeliveryWindow = self.database.getPerson_withTrackingNo(Tracking_Num)
-        self.w = DeliveryWindow.DeliveryWindow(list_DeliveryWindow)
-        self.w.show()
-
-    def BarCode(self):
+    def GB_BarCode(self):
+        self.CameraLabel_D = QLabel(self)
+        # self.label.move(280, 120)
+        self.CameraLabel_D.resize(640, 480)
         grupbox = QGroupBox("Barkod Okuyucu")
 
         title = QLabel("Kargonuzun barkodunu Aşağıya Okutunuz")
@@ -349,17 +266,23 @@ class Window(QWidget):
         vbox.addWidget(title)
         vbox.addWidget(image)
 
-        grupbox.setLayout(vbox)
+        main_hbox = QHBoxLayout()
+        main_hbox.addLayout(vbox)
+        main_hbox.addWidget(self.CameraLabel_D)
+
+        grupbox.setLayout(main_hbox)
         return grupbox
 
-    def BackMainFunction(self):
-        a = self.tab.indexOf(self.tab.currentWidget())
-        self.tab.setCurrentWidget(self.tab1)
+    def B_receivingFunction(self): #receiving button function
+        self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
+        self.tab.setCurrentWidget(self.tab2)
 
-        if self.tab.currentWidget() == self.tab1:
-            self.tab.removeTab(a)
 
-    def BackMainButton(self):
+    def B_deliveringFunction(self): #delivering button function
+        self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
+        self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
+
+    def B_BackMainButton(self):
 
         self.BackButton = QPushButton("Ana Menüye Dönmek için Tıklayınız", objectName="GeneralButton")
         self.BackButton.setFont(QFont("Arial", 20))
@@ -368,6 +291,69 @@ class Window(QWidget):
         self.BackButton.clicked.connect(self.BackMainFunction)
 
         return self.BackButton
+
+    def W_DatabaseWindow(self):  # calling database window class
+        self.w_DB = Window_DB.Window_DB("İlçeler")
+        self.w_DB.show()
+
+    def W_DatabaseFilterWindow(self):  # calling database window class
+        self.w_FDB = Window_FilterDB.Window_FilterDB()
+        self.w_FDB.show()
+
+    def W_Database_CreateRow(self):  # calling database CreateRow window class
+        self.cr_W = CreateRow.CreateRow()
+        self.cr_W.show()
+
+    @pyqtSlot(QImage)
+    def setImage(self, image): #set camera image for thread class
+        self.CameraLabel_R.setPixmap(QPixmap.fromImage(image))
+        self.CameraLabel_D.setPixmap(QPixmap.fromImage(image))
+
+    def cllback(self, barcodeData): #take back barcode value from thread class
+        self.barcodeData = barcodeData
+        cargo_type, infoList = self.Finder.QRCodeFinder(barcodeData)
+        # print(cargo_type)
+        self.infoWin.showInfoWindow(cargo_type, infoList)
+        return
+
+    def PNRFinder(self):
+        if self.PNRTextEditor.text() != "":
+            currernttext = self.PNRTextEditor.text()
+            values = self.Finder.PNRFinder(currernttext)
+            self.infoWin.showInfoWindow(values[0], values[1])
+        else:
+            QMessageBox.information(self, "Bilgilendirme", "PNR Numarası Girmediniz\n"
+                                                           "Lütfen PNR Numarası Girip Tekrar Deneyiniz")
+
+    def TrackingFinder(self):
+        if self.TrackTextEditor.text() != "":
+            currernttext = self.TrackTextEditor.text()
+            values = self.Finder.TrackFinder(currernttext)
+            self.infoWin.showInfoWindow(values[0], values[1])
+            Mail.Mailinfo(values[2]) # Gelen 3.değeri mail dosyasına yolluyor.
+
+        else:
+            QMessageBox.information(self, "Bilgilendirme", "Takip Numarası Girmediniz\n"
+                                                           "Lütfen Takip Numarası Girip Tekrar Deneyiniz")
+
+    def Database_Update(self):  # Database value uptade
+        self.tab.setCurrentWidget(self.tab4)
+        U_CurrentCombo = self.U_Combo.currentText()
+        U_CurrentName = self.U_Name.text()
+        U_CurrentValue = self.U_T_Value.text()
+
+        if U_CurrentCombo == "Değiştirmek istediğiniz sütunu seçiniz.":
+            QMessageBox.critical(self, "Hata", "Sütun seçimi boş bırakılamaz.")
+        else:
+            self.database.updateRow(U_CurrentCombo, U_CurrentName, U_CurrentValue)
+
+
+    def BackMainFunction(self):
+        currenttab = self.tab.indexOf(self.tab.currentWidget())
+        self.tab.setCurrentWidget(self.tab1)
+
+        if self.tab.currentWidget() == self.tab1:
+            self.tab.removeTab(currenttab)
 
     def tabs(self):  # tabs function
 
@@ -389,13 +375,13 @@ class Window(QWidget):
 
         # TAB-4 Widgets
         self.databaseAddRow = QPushButton("Add Row", objectName="GeneralButton")
-        self.databaseAddRow.clicked.connect(self.Database_CreateRow)
+        self.databaseAddRow.clicked.connect(self.W_Database_CreateRow)
         self.databaseButton = QPushButton("DB Table", objectName="GeneralButton")
-        self.databaseButton.clicked.connect(self.DatabaseWindow)
+        self.databaseButton.clicked.connect(self.W_DatabaseWindow)
         self.databaseUpdateRow = QPushButton("Update Row", objectName="GeneralButton")
         self.databaseUpdateRow.clicked.connect(self.Database_Update)
         self.databasefilter = QPushButton("Database Filter Window", objectName="GeneralButton")
-        self.databasefilter.clicked.connect(self.DatabaseFilterWindow)
+        self.databasefilter.clicked.connect(self.W_DatabaseFilterWindow)
 
         # TAB-4 Widgets END
 
@@ -419,24 +405,24 @@ class Window(QWidget):
         # TAB-5 Widgets END
 
         # widgets are placed
-        tab1_grid.addWidget(self.cargoReceive(), 0, 0)
-        tab1_grid.addWidget(self.cargoDelivery(), 0, 1)
-        tab2_grid.addWidget(self.instructions(), 1, 0)
-        tab2_grid.addWidget(self.cargoPNR(), 0, 0)
-        tab3_grid.addWidget(self.cargoTrack(), 0, 0)
-        tab3_grid.addWidget(self.BarCode(), 1, 0)
+        tab1_grid.addWidget(self.GB_cargoReceive(), 0, 0)
+        tab1_grid.addWidget(self.GB_cargoDelivery(), 0, 1)
+        tab2_grid.addWidget(self.GB_instructions(), 1, 0)
+        tab2_grid.addWidget(self.GB_cargoPNR(), 0, 0)
+        tab3_grid.addWidget(self.GB_cargoTrack(), 0, 0)
+        tab3_grid.addWidget(self.GB_BarCode(), 1, 0)
         tab4_vbox.addWidget(self.databaseAddRow)
         tab4_vbox.addWidget(self.databaseUpdateRow)
         tab4_vbox.addWidget(self.databaseButton)
         tab4_vbox.addWidget(self.databasefilter)
-        tab4_vbox.addWidget(self.BackMainButton())
+        tab4_vbox.addWidget(self.B_BackMainButton())
         tab5_vbox.addStretch()
         tab5_vbox.addWidget(self.U_TextLabel)
         tab5_vbox.addWidget(self.U_Combo)
         tab5_vbox.addWidget(self.U_Name)
         tab5_vbox.addWidget(self.U_T_Value)
         tab5_vbox.addWidget(self.U_Button)
-        tab5_vbox.addWidget(self.BackMainButton())
+        tab5_vbox.addWidget(self.B_BackMainButton())
         tab5_vbox.addStretch()
 
         # tab's layout setted
@@ -504,7 +490,7 @@ class Thread(QThread):
                 h, w, ch = rgbImage.shape
                 bytesPerLine = ch * w
                 convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine, QImage.Format_RGB888)
-                p = convertToQtFormat.scaled(640, 480, Qt.KeepAspectRatio)
+                p = convertToQtFormat.scaled(360, 270, Qt.KeepAspectRatio)
                 self.changePixmap.emit(p)
 
 

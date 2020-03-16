@@ -26,6 +26,27 @@ class Finder():
             QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
                                                            "Kontrol edip tekrar deneyiniz.")
 
+    def TrackFinder(self, currenttext):  # Takip numarası karşılaştırma
+        print('TrackFINDER')
+        getTrackList = self.database.getTrackList()
+        i = 0
+
+        for getTrack in getTrackList:
+
+            if int(currenttext) == int(getTrack[0]):
+
+                i = i + 1
+
+                return self.getValues("delivery", "PNR", str(getTrack[0]))
+            else:
+                pass
+
+            print(int(currenttext) == int(getTrack[0]))
+
+        if i == 0:
+            QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
+                                                           "Kontrol edip tekrar deneyiniz.")
+
 
     def QRCodeFinder(self, barcodeData): #find person with QR Code
         getQRCodeList = self.database.getQRCodeList()
@@ -48,7 +69,9 @@ class Finder():
             return cargo_type, list_InfoWindow
         elif cargo_type == "delivery" and info_type == "PNR":
             list_InfoWindow = self.database.getPerson_withTrackingNo(info)
-            return cargo_type, list_InfoWindow
+            mail_track = self.database.getMailinfo_withTrackingNo(info) #Takip numarası ile mail içerikleri çekme
+            return cargo_type, list_InfoWindow,mail_track
+
         elif cargo_type == "receiver" and info_type == "QRCode":
             getPerson = self.database.getPerson_withQRCode(info)
             # print("main deneme", getPerson, type(getPerson))
