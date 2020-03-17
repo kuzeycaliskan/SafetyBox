@@ -72,14 +72,12 @@ class CreateRow(QWidget):  # <===
             self.CB_SafetyBoxs.addItem(item)
 
     def confirmFunction(self):
-        print("111111")
         self.checkIdenties()
-        print("222222")
         name = self.name.text().upper()
         surname = self.surname.text().upper()
         phone = self.phone.text()
         email = self.email.text()
-        security = 0
+
         if self.security.isChecked() is True:
             security = 1
         else:
@@ -88,18 +86,11 @@ class CreateRow(QWidget):  # <===
         safetybox = self.CB_SafetyBoxs.currentText()
         county = self.CB_Counties.currentText()
         city = self.CB_Cities.currentText()
-        print("333333")
         identities_ID = self.database.getIdentity_ID(phone)
-        print("444444")
 
         PNR, Tracking, QRCode, datetime = self.Code_Generator.create_QRCode(surname, name, county, city)
-        print(QRCode)
-        print(security)
-        print(datetime)
 
-        print("555555")
         self.database.create_Cargo(Tracking, QRCode, PNR, security, 25, identities_ID, datetime, datetime, 0)
-        print("666666")
 
     def checkIdenties(self):
         name = self.name.text().upper()
