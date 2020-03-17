@@ -23,11 +23,10 @@ class Mailinfo():
 
         message["Subject"] = "SAFETYBOX İLE KARGO TESLİMİ"
 
-        # body = "Sayın " + value[0][0] + value[0][1] + "\n" + value[0][4] + " Takip numaralı kargonuz "+ Saat + "Tarihinde"+ value[0][6]+ "şubemize teslim edilmiştir." +"Kargonuzu " + Saat3 + " Tarihine kadar teslim noktasından almanız gerekmektedir.\n" + "Şube Adresi: " + value[0][6]+" " + value[0][7] + " " + value[0][8]  + " " + value[0][9] + "Safety Box iyi günler diler."
 
         body = "Sayın " + value[0][0] + " " + value[0][1] + ": \n" + str(value[0][4]) + " Takip numaralı kargonuz " + Saat + \
-               " tarihinde" + value[0][6] + "şubemize teslim edilmiştir.\n\n" + "Kargonuzu " + Saat3 + " tarihine kadar " \
-               + str(value[0][5]) + " PNR numaranız ile teslim alabilirsiniz.\n\n" + " Şube adresimiz : " + value[0][6] + " " \
+               " tarihinde " + value[0][6] + " şubemize teslim edilmiştir.\n\n" + "Kargonuzu " + Saat3 + " tarihine kadar " \
+               + str(value[0][5]) + " PNR numaranız ile teslim alabilirsiniz.\n\n" + "Şube adresimiz : " + value[0][6] + " " \
                + value[0][7] + " " + value[0][8] + " " + value[0][9] + "\n" + "Safety Box iyi günler diler."
 
 

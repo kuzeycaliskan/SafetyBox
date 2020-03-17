@@ -5,12 +5,8 @@ from PyQt5.Qt import *
 from PyQt5 import QtCore
 import InfoWindow
 import main_DB
-import Window_FilterDB
 import Window_DB
 import CreateRow
-import DeliveryWindow
-import QRCode_RPCam
-import time
 import cv2
 import Finder
 import Mail
@@ -296,10 +292,6 @@ class Window(QWidget):
         self.w_DB = Window_DB.Window_DB("İlçeler")
         self.w_DB.show()
 
-    def W_DatabaseFilterWindow(self):  # calling database window class
-        self.w_FDB = Window_FilterDB.Window_FilterDB()
-        self.w_FDB.show()
-
     def W_Database_CreateRow(self):  # calling database CreateRow window class
         self.cr_W = CreateRow.CreateRow()
         self.cr_W.show()
@@ -380,8 +372,6 @@ class Window(QWidget):
         self.databaseButton.clicked.connect(self.W_DatabaseWindow)
         self.databaseUpdateRow = QPushButton("Update Row", objectName="GeneralButton")
         self.databaseUpdateRow.clicked.connect(self.Database_Update)
-        self.databasefilter = QPushButton("Database Filter Window", objectName="GeneralButton")
-        self.databasefilter.clicked.connect(self.W_DatabaseFilterWindow)
 
         # TAB-4 Widgets END
 
@@ -414,7 +404,6 @@ class Window(QWidget):
         tab4_vbox.addWidget(self.databaseAddRow)
         tab4_vbox.addWidget(self.databaseUpdateRow)
         tab4_vbox.addWidget(self.databaseButton)
-        tab4_vbox.addWidget(self.databasefilter)
         tab4_vbox.addWidget(self.B_BackMainButton())
         tab5_vbox.addStretch()
         tab5_vbox.addWidget(self.U_TextLabel)

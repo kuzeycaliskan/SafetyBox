@@ -31,12 +31,24 @@ class main_DB():
 
         return read_DB
 
+    def getCounties_withCities(self, city):
+        self.select_DB.execute('SELECT ilce FROM ilceler where il = ' + '"' + city + '"')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
+
     def getSafetyBoxs(self):
         self.select_DB.execute('SELECT * FROM safetyboxs')
         read_DB = self.select_DB.fetchall()
 
         return read_DB
 
+    def getSafetyBoxs_withCounties(self, county):
+        self.select_DB.execute('select safetyboxs.isim_sb, safetyboxs.adres from safetyboxs inner join ilceler i on' +
+                               ' safetyboxs.ilceler_id = i.id where i.ilce = ' + '"' + county + '"')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
     def getAllBoxs(self):
         self.select_DB.execute('SELECT * FROM dolaplar')
         read_DB = self.select_DB.fetchall()
@@ -55,34 +67,60 @@ class main_DB():
 
         return read_DB
 
+    # def getIdentities_ID(self, phone):
+    #     print("check", phone)
+    #     print(type(phone))
+    #     phone = "gündüz"
+    #     self.select_DB.execute('SELECT id FROM kimlikler where soyisim =' + '"' + phone + '"')
+    #     print("check 2")
+    #     readRowCount = self.select_DB.fetchone()
+    #     print("database check", readRowCount[0])
+    #
+    #     return readRowCount[0]
+
+    def getIdentity_ID(self, phone):
+        print("check", phone)
+        print(type(phone))
+        self.select_DB.execute("SELECT id FROM kimlikler where tel_num =" + phone)
+        print("check2")
+        read_DB = self.select_DB.fetchone()
+        print("check3", read_DB)
+        return read_DB[0]
+
     def getRowCount_Counties(self):
         self.select_DB.execute('SELECT COUNT(*) FROM ilceler')
         readRowCount = self.select_DB.fetchone()
+
         return readRowCount[0]
 
     def getRowCount_SafetyBoxs(self):
         self.select_DB.execute('SELECT COUNT(*) FROM safetyboxs')
         readRowCount = self.select_DB.fetchone()
+
         return readRowCount[0]
 
     def getRowCount_AllBoxs(self):
         self.select_DB.execute('SELECT COUNT(*) FROM dolaplar')
         readRowCount = self.select_DB.fetchone()
+
         return readRowCount[0]
 
     def getRowCount_Cargoes(self):
         self.select_DB.execute('SELECT COUNT(*) FROM kargolar')
         readRowCount = self.select_DB.fetchone()
+
         return readRowCount[0]
 
     def getRowCount_Identities(self):
         self.select_DB.execute('SELECT COUNT(*) FROM kimlikler')
         readRowCount = self.select_DB.fetchone()
+
         return readRowCount[0]
 
     def getRowCount(self):
         self.select_DB.execute('SELECT COUNT(*) FROM cargosystem')
         readRowCount = self.select_DB.fetchone()
+
         return readRowCount[0]
 
     def getDB_All(self):
@@ -158,6 +196,22 @@ class main_DB():
 
         readBoxNo = self.select_DB.fetchone()
         return readBoxNo[0]
+
+    def create_Cargo(self, tracking, QRCode, PNR, security, dolap_id, kimlik_id, create_date, receiver_date, received):
+        self.select_DB.execute('INSERT INTO kargolar (takip_no, qr_kod, pnr_num, is_security, dolaplar_id,' +
+                               ' kimlikler_id, created_at, received_at, is_received) VALUES (' + str(tracking) + ',' + '"' +
+                                QRCode + '"' + ',' + str(PNR) + ',' + str(security) + ',' + str(dolap_id) + ',' +
+                                str(kimlik_id) + ',' + '"' + str(create_date) + '"' + ',' + '"' + str(receiver_date) +
+                                '"' + ',' + str(received) + ')')
+
+        self.connection.commit()
+
+    def create_Identity(self, name, surname, phone, email):
+        self.select_DB.execute("INSERT INTO kimlikler (isim, soyisim, tel_num, mail) VALUES (" + '"' +
+                               str(name) + '"' + ',' + '"' + str(surname) + '"' +  ',' + str(phone) + "," +
+                               '"' + str(email) + '"' + ')')
+
+        self.connection.commit()
 
     def deleteTable(self, table_name):
         self.select_DB.execute('DROP TABLE ' + table_name)
