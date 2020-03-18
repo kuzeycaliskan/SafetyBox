@@ -55,6 +55,13 @@ class main_DB():
 
         return read_DB
 
+    def getBoxs_WhichAvailable_WithSize(self, safety_name, size):
+        self.select_DB.execute("SELECT dolaplar.id, dolap_no, boyut, is_empty, safetyboxs_id FROM dolaplar " +
+                               " INNER JOIN safetyboxs s ON dolaplar.safetyboxs_id = s.id where isim_sb = " + '"' +
+                               safety_name + '"' + " and is_empty = 1 and boyut = " + '"' + size + '"')
+        read_DB = self.select_DB.fetchall()
+
+        return read_DB
     def getCargoes(self):
         self.select_DB.execute('SELECT * FROM kargolar')
         read_DB = self.select_DB.fetchall()
@@ -67,24 +74,10 @@ class main_DB():
 
         return read_DB
 
-    # def getIdentities_ID(self, phone):
-    #     print("check", phone)
-    #     print(type(phone))
-    #     phone = "gündüz"
-    #     self.select_DB.execute('SELECT id FROM kimlikler where soyisim =' + '"' + phone + '"')
-    #     print("check 2")
-    #     readRowCount = self.select_DB.fetchone()
-    #     print("database check", readRowCount[0])
-    #
-    #     return readRowCount[0]
-
     def getIdentity_ID(self, phone):
-        print("check", phone)
-        print(type(phone))
         self.select_DB.execute("SELECT id FROM kimlikler where tel_num =" + phone)
-        print("check2")
         read_DB = self.select_DB.fetchone()
-        print("check3", read_DB)
+
         return read_DB[0]
 
     def getRowCount_Counties(self):
