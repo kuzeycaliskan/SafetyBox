@@ -37,9 +37,6 @@ class CreateRow(QWidget):  # <===
         self.CB_Counties = QComboBox()
         self.CB_SafetyBoxs = QComboBox()
         self.emptyBoxCount = QLabel()
-
-        safetybox_FormL = QFormLayout()
-        safetybox_FormL.addRow(self.CB_SafetyBoxs, self.emptyBoxCount)
         # Widgets definition end
 
         for city in self.database.getCounties():
@@ -61,29 +58,33 @@ class CreateRow(QWidget):  # <===
         vbox.addLayout(security_FormL)
         vbox.addWidget(self.CB_Cities)
         vbox.addWidget(self.CB_Counties)
-        vbox.addLayout(safetybox_FormL)
+        vbox.addWidget(self.CB_SafetyBoxs)
+        vbox.addWidget(self.emptyBoxCount)
         vbox.addWidget(confirmbutton)
         self.setLayout(vbox)
 
     def getSafetyName(self):
         value = self.CB_SafetyBoxs.currentText()
         value = value.split(" - ")
-        self.findEmptyBox(value[0])
+        if not value[0]:
+            pass
+        else:
+            self.box_no = self.findEmptyBox(value[0])
 
-    def setCounties(self):
+    def setCounties(self): #set county's combobox widget
         self.CB_Counties.clear()
         for county in self.database.getCounties_withCities(self.CB_Cities.currentText()):
             if self.CB_Counties.findText(county[0]) == -1:
                 self.CB_Counties.addItem(county[0])
 
-    def setSafetyBoxs(self):
+    def setSafetyBoxs(self): #set safetybox's combobox widget
         self.CB_SafetyBoxs.clear()
         for safetybox in self.database.getSafetyBoxs_withCounties(self.CB_Counties.currentText()):
             item = safetybox[0] + " - " + safetybox[1]
             self.CB_SafetyBoxs.addItem(item)
 
-    def confirmFunction(self):
-        # self.checkIdenties() #Checking if ID is registered
+    def confirmFunction(self): #run function when confirmbutton clicked
+        self.checkIdenties() #Checking if ID is registered
         name = self.name.text().upper()
         surname = self.surname.text().upper()
         phone = self.phone.text()
@@ -101,31 +102,31 @@ class CreateRow(QWidget):  # <===
 
         PNR, Tracking, QRCode, datetime = self.Code_Generator.create_QRCode(surname, name, county, city)
 
-        # self.database.create_Cargo(Tracking, QRCode, PNR, security, 25, identities_ID, datetime, datetime, 0)
+        self.database.create_Cargo(Tracking, QRCode, PNR, security, self.box_no, identities_ID, datetime, 0)
+        self.database.setBoxState_isEmpty("0", str(self.box_no))
+        self.getSafetyName()
 
-    def checkIdenties(self): #Checking if ID is registered
+    def checkIdenties(self):  # Checking if ID is registered
         name = self.name.text().upper()
         surname = self.surname.text().upper()
         phone = self.phone.text()
         email = self.email.text()
 
         for identity in self.database.getIdentities():
-            if (str(phone) == str(identity[3])) or (str(email) == str(identity[4])): #returning if ID found
+            if (str(phone) == str(identity[3])) or (str(email) == str(identity[4])):  # returning if ID found
                 return
 
         self.database.create_Identity(name, surname, phone, email)
         return
 
     def findEmptyBox(self, text):
-        # text = self.CB_SafetyBoxs.currentText()
-        # text = text.split(" - ")
         available_box = self.database.getBoxs_WhichAvailable_WithSize(text, "M")
         if len(available_box) > 0:
-            self.emptyBoxCount.setText(str(len(available_box)))
-            self.emptyBoxCount.setStyleSheet('color: green')
+            self.emptyBoxCount.setText("Seçtiğiniz SafetyBox'ta Boş Kutu Sayısı: " + str(len(available_box)))
+            self.emptyBoxCount.setStyleSheet('font-weight: bold; color: green')
         else:
-            self.emptyBoxCount.setText(str(len(available_box)))
-            self.emptyBoxCount.setStyleSheet('color: red')
+            self.emptyBoxCount.setText("Seçtiğiniz SafetyBox'ta Boş Kutu Sayısı: " + str(len(available_box)))
+            self.emptyBoxCount.setStyleSheet('font-weight: bold; color: red')
         if not available_box:
             print("Boş kutu kalmamıştır")
             return

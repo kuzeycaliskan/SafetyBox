@@ -5,18 +5,18 @@ class main_DB():
     def __init__(self):
         super().__init__()
         print(mysql.connector.version)
-        # with open("DBparameters.txt", "r") as DB_pm:
-        #     DB_pm_list = DB_pm.read().splitlines()
-        #     print(DB_pm_list)
+        with open("DBparameters.txt", "r") as DB_pm:
+            DB_pm_list = DB_pm.read().splitlines()
+            print(DB_pm_list)
+
+
+        self.connection = mysql.connector.connect(user=DB_pm_list[0], password=DB_pm_list[1],
+                                                  host=DB_pm_list[2],
+                                                  database=DB_pm_list[3])
         #
-        #
-        # self.connection = mysql.connector.connect(user=DB_pm_list[0], password=DB_pm_list[1],
-        #                       host=DB_pm_list[2],
-        #                       database=DB_pm_list[3])
-        #
-        self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-                                                  host="localhost",
-                                                  database="safetybox_db")
+        # self.connection = mysql.connector.connect(user="root", password="kuzey7174",
+        #                                           host="localhost",
+        #                                           database="safetybox_db")
 
         if (self.connection):
             print('baglanti başarili')
@@ -24,6 +24,26 @@ class main_DB():
             print('bağlanti basarisiz')
 
         self.select_DB = self.connection.cursor()
+
+    def setBoxState_isEmpty(self, state, box_no):
+        self.select_DB.execute('UPDATE dolaplar SET is_empty = ' + '"' + state + '"' + ' WHERE id = ' + '"' + box_no + '"')
+        self.connection.commit()
+
+    def setCargoState_isReceived_withPNR(self, state, PNR_num):
+        self.select_DB.execute('UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE PNR_num = ' + '"' + PNR_num + '"')
+        self.connection.commit()
+
+    def setCargoState_isReceiver_withQRCode(self, state, QR_Code):
+        self.select_DB.execute('UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE qr_kod = ' + '"' + QR_Code + '"')
+        self.connection.commit()
+
+    def setCargoState_delivered_at_withTracking(self, date, Tracking):
+        self.select_DB.execute('UPDATE kargolar SET delivered_at = ' + '"' + date + '"' + ' WHERE takip_no = ' + Tracking)
+        self.connection.commit()
+
+    def setCargoState_received_at_withPNR(self, date, PNR):
+        self.select_DB.execute('UPDATE kargolar SET received_at = ' + '"' + date + '"' + ' WHERE PNR_num = ' + PNR)
+        self.connection.commit()
 
     def getCounties(self):
         self.select_DB.execute('SELECT * FROM ilceler')
@@ -50,7 +70,8 @@ class main_DB():
 
         return read_DB
     def getAllBoxs(self):
-        self.select_DB.execute('SELECT * FROM dolaplar')
+        self.select_DB.execute('select d.id, d.dolap_no, d.boyut, d.is_empty, d.safetyboxs_id, s.isim_sb, s.adres '
+                               ' from dolaplar d inner join safetyboxs s on d.safetyboxs_id = s.id')
         read_DB = self.select_DB.fetchall()
 
         return read_DB
@@ -62,6 +83,7 @@ class main_DB():
         read_DB = self.select_DB.fetchall()
 
         return read_DB
+
     def getCargoes(self):
         self.select_DB.execute('SELECT * FROM kargolar')
         read_DB = self.select_DB.fetchall()
@@ -138,17 +160,17 @@ class main_DB():
         return readQRCode
 
     def getPerson_withPNRNo(self, PNR_num):
-        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no from kimlikler inner join kargolar krg on' +
-                               ' kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id' +
-                               ' WHERE PNR_num =' + PNR_num)
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
+                               'kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
+                               ' krg.dolaplar_id = dlp.id WHERE PNR_num = ' + PNR_num)
         readInfo_IW = self.select_DB.fetchall()
 
         return readInfo_IW
 
     def getPerson_withQRCode(self, QRCode):
-        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no from kimlikler inner join kargolar krg on ' +
-                               'kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id ' +
-                               'where  krg.qr_kod =' + '"' + str(QRCode) + '"')
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
+                               ' kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
+                               ' krg.dolaplar_id = dlp.id where  krg.qr_kod =' + '"' + str(QRCode) + '"')
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW
@@ -190,12 +212,11 @@ class main_DB():
         readBoxNo = self.select_DB.fetchone()
         return readBoxNo[0]
 
-    def create_Cargo(self, tracking, QRCode, PNR, security, dolap_id, kimlik_id, create_date, receiver_date, received):
+    def create_Cargo(self, tracking, QRCode, PNR, security, dolap_id, kimlik_id, create_date,  received):
         self.select_DB.execute('INSERT INTO kargolar (takip_no, qr_kod, pnr_num, is_security, dolaplar_id,' +
-                               ' kimlikler_id, created_at, received_at, is_received) VALUES (' + str(tracking) + ',' + '"' +
+                               ' kimlikler_id, created_at, is_received) VALUES (' + str(tracking) + ',' + '"' +
                                 QRCode + '"' + ',' + str(PNR) + ',' + str(security) + ',' + str(dolap_id) + ',' +
-                                str(kimlik_id) + ',' + '"' + str(create_date) + '"' + ',' + '"' + str(receiver_date) +
-                                '"' + ',' + str(received) + ')')
+                                str(kimlik_id) + ',' + '"' + str(create_date) + '"' + ',' + str(received) + ')')
 
         self.connection.commit()
 
@@ -210,4 +231,3 @@ class main_DB():
         self.select_DB.execute('DROP TABLE ' + table_name)
 
         self.connection.commit()
-        self.connection.close()

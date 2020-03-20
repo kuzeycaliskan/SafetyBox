@@ -5,11 +5,9 @@ import sys
 import time
 
 
-class Mailinfo():
+class SendMail():
 
-
-
-    def __init__(self,value):
+    def __init__(self, value):
 
         Saat = time.strftime("%d/%m/%Y %H:%M")
         localtime = time.localtime(time.time() + 259200)

@@ -322,7 +322,7 @@ class Window(QWidget):
             currernttext = self.TrackTextEditor.text()
             values = self.Finder.TrackFinder(currernttext)
             self.infoWin.showInfoWindow(values[0], values[1])
-            Mail.Mailinfo(values[2]) # Gelen 3.değeri mail dosyasına yolluyor.
+            Mail.SendMail(values[2]) # Gelen 3.değeri mail dosyasına yolluyor.
 
         else:
             QMessageBox.information(self, "Bilgilendirme", "Takip Numarası Girmediniz\n"

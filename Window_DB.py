@@ -78,7 +78,8 @@ class Window_DB(QMainWindow):
             print("Checked for Access Dolaplar Case")
             read_db = self.database.getAllBoxs()
 
-            self.model.setHorizontalHeaderLabels(["ID", "Dolap No", "Boyut", "Boş Mu?", "Kayıtlı SafetyBox ID"])
+            self.model.setHorizontalHeaderLabels(["ID", "Dolap No", "Boyut", "Boş Mu?", "Kayıtlı SafetyBox ID",
+                                                  "SafetyBox İsim", "SafetyBox Adres"])
 
             for get_DB in read_db:
                 self.model.invisibleRootItem().appendRow(
