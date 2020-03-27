@@ -3,7 +3,6 @@ from random import randint
 import main_DB
 import random
 import string
-import pyqrcode
 import qrcode
 
 
