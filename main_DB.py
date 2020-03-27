@@ -5,18 +5,18 @@ class main_DB():
     def __init__(self):
         super().__init__()
         print(mysql.connector.version)
-        with open("DBparameters.txt", "r") as DB_pm:
-            DB_pm_list = DB_pm.read().splitlines()
-            print(DB_pm_list)
-
-
-        self.connection = mysql.connector.connect(user=DB_pm_list[0], password=DB_pm_list[1],
-                                                  host=DB_pm_list[2],
-                                                  database=DB_pm_list[3])
+        # with open("DBparameters.txt", "r") as DB_pm:
+        #     DB_pm_list = DB_pm.read().splitlines()
+        #     print(DB_pm_list)
         #
-        # self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-        #                                           host="localhost",
-        #                                           database="safetybox_db")
+        #
+        # self.connection = mysql.connector.connect(user=DB_pm_list[0], password=DB_pm_list[1],
+        #                                           host=DB_pm_list[2],
+        #                                           database=DB_pm_list[3])
+
+        self.connection = mysql.connector.connect(user="root", password="kuzey7174",
+                                                  host="192.168.1.37",
+                                                  database="safetybox_db")
 
         if (self.connection):
             print('baglanti başarili')
@@ -33,7 +33,7 @@ class main_DB():
         self.select_DB.execute('UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE PNR_num = ' + '"' + PNR_num + '"')
         self.connection.commit()
 
-    def setCargoState_isReceiver_withQRCode(self, state, QR_Code):
+    def setCargoState_isReceived_withQRCode(self, state, QR_Code):
         self.select_DB.execute('UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE qr_kod = ' + '"' + QR_Code + '"')
         self.connection.commit()
 
@@ -43,6 +43,14 @@ class main_DB():
 
     def setCargoState_received_at_withPNR(self, date, PNR):
         self.select_DB.execute('UPDATE kargolar SET received_at = ' + '"' + date + '"' + ' WHERE PNR_num = ' + PNR)
+        self.connection.commit()
+
+    def setCargoState_received_at_withQRCode(self, date, QR_Code):
+        self.select_DB.execute('UPDATE kargolar SET received_at = ' + '"' + date + '"' + ' WHERE qr_kod = ' + '"' + QR_Code + '"')
+        self.connection.commit()
+
+    def setQRCode(self, new_QR, old_QR):
+        self.select_DB.execute('UPDATE kargolar SET qr_kod = ' + '"' + new_QR + '"' + ' WHERE kargolar.qr_kod = ' + '"' + old_QR + '"')
         self.connection.commit()
 
     def getCounties(self):

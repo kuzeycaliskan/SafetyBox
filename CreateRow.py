@@ -102,6 +102,7 @@ class CreateRow(QWidget):  # <===
 
         PNR, Tracking, QRCode, datetime = self.Code_Generator.create_QRCode(surname, name, county, city)
 
+
         self.database.create_Cargo(Tracking, QRCode, PNR, security, self.box_no, identities_ID, datetime, 0)
         self.database.setBoxState_isEmpty("0", str(self.box_no))
         self.getSafetyName()

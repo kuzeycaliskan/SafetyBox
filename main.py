@@ -2,7 +2,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QFont
 from PyQt5.Qt import *
+from PyQt5 import QtWidgets
 from PyQt5 import QtCore
+from PyQt5 import QtGui
 import InfoWindow
 import main_DB
 import Window_DB
@@ -87,6 +89,18 @@ class Window(QWidget):
         self.database = main_DB.main_DB()  # calling database class
         self.tabs()  # initialize tabs
         self.show()
+
+        self.info_dialog = QtWidgets.QMessageBox(self)
+        self.info_dialog.setIcon(QMessageBox.Information)
+        self.info_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint) #no title bar
+        self.info_dialog.setWindowIcon(QIcon('icons/icon.png'))
+        # self.info_dialog.setIconPixmap(QPixmap('icons/icon.png'))
+        self.info_dialog.setWindowTitle("Uyarı")
+        self.info_dialog.setText("Program Başlamıştır")
+        self.info_dialog.addButton('Tekrar Dene', self.info_dialog.ActionRole)
+        self.info_dialog.show()
+
+
 
     def MB_DBTool(self):  # Menu Bar Database İslemleri
         self.tab.addTab(self.tab4, "DataBase İşlemleri")
@@ -303,16 +317,34 @@ class Window(QWidget):
 
     def cllback(self, barcodeData): #take back barcode value from thread class
         self.barcodeData = barcodeData
-        cargo_type, infoList = self.Finder.QRCodeFinder(barcodeData)
+        values = self.Finder.QRCodeFinder(barcodeData)
+        print("Values: ", values)
         # print(cargo_type)
-        self.infoWin.showInfoWindow(cargo_type, infoList)
-        return
+        if values is None:
+            print("QR CODE KİŞİSİ BULUNAMADI")
+            self.info_dialog.setText("Aradığınız kişi bulunamamıştır.\n "
+                                                           "Kontrol edip tekrar deneyiniz.")
+            self.info_dialog.setHidden(False)
+            # QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
+            #                                                "Kontrol edip tekrar deneyiniz.")
+        else:
+            self.infoWin.showInfoWindow(values[0], values[1])
+            return
+
 
     def PNRFinder(self):
         if self.PNRTextEditor.text() != "":
             currernttext = self.PNRTextEditor.text()
             values = self.Finder.PNRFinder(currernttext)
-            self.infoWin.showInfoWindow(values[0], values[1])
+            if values is None:
+
+                self.info_dialog.setText("Aradığınız kişi bulunamamıştır.\n "
+                                                           "Kontrol edip tekrar deneyiniz.")
+                self.info_dialog.setHidden(False)
+                # QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
+                #                                                "Kontrol edip tekrar deneyiniz.")
+            else:
+                self.infoWin.showInfoWindow(values[0], values[1])
         else:
             QMessageBox.information(self, "Bilgilendirme", "PNR Numarası Girmediniz\n"
                                                            "Lütfen PNR Numarası Girip Tekrar Deneyiniz")
@@ -321,8 +353,14 @@ class Window(QWidget):
         if self.TrackTextEditor.text() != "":
             currernttext = self.TrackTextEditor.text()
             values = self.Finder.TrackFinder(currernttext)
-            self.infoWin.showInfoWindow(values[0], values[1])
-            Mail.SendMail(values[2]) # Gelen 3.değeri mail dosyasına yolluyor.
+            if values is None:
+                self.info_dialog.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
+                                                                     "Kontrol edip tekrar deneyiniz.")
+                # QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
+                #                                                "Kontrol edip tekrar deneyiniz.")
+            else:
+                self.infoWin.showInfoWindow(values[0], values[1])
+                Mail.SendMail(values[2]) # Gelen 3.değeri mail dosyasına yolluyor.
 
         else:
             QMessageBox.information(self, "Bilgilendirme", "Takip Numarası Girmediniz\n"
@@ -433,7 +471,7 @@ class Window(QWidget):
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
-    oldBarcode = 0
+    mem_barcodeData = ""
 
     def setCllback(self, cllbck):
         print("thread setcllback func girildi")
@@ -461,7 +499,6 @@ class Thread(QThread):
                 # on our output image we need to convert it to a string first
                 barcodeData = barcode.data.decode("utf-8")
                 barcodeType = barcode.type
-                print(counter, barcodeData)
                 # draw the barcode data and barcode type on the image
                 text = "{} ({})".format(barcodeData, barcodeType)
                 cv2.putText(frame, text, (x, y - 10),
@@ -469,8 +506,11 @@ class Thread(QThread):
                 # if the barcode text is currently not in our CSV file, write
                 # the timestamp + barcode   q to disk and update the set
                 if barcodeData not in found:
-                    if counter % 10 == 0 :
-                        self.cllbck(barcodeData)
+                    if counter % 10 == 0:
+                        if barcodeData != self.mem_barcodeData:
+                            print(counter, barcodeData)
+                            self.mem_barcodeData = barcodeData
+                            self.cllbck(barcodeData)
 
 
             if ret:
