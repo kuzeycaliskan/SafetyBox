@@ -35,7 +35,7 @@ class SendMail():
                            "<b><i>Safety Box iyi günler diler.</i></b> \n" +
                            '<br><img src="cid:image1"><br>', 'html')
 
-        for file in os.listdir("qr_images/"):
+        for file in os.listdir("/home/pi/Desktop/qr_images/"):
             if file.find(str(value[0][4])) != -1:
                 self.image_path = os.path.join("qr_images/", file)
                 print(os.path.join("qr_images/", file))

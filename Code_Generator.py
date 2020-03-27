@@ -84,5 +84,5 @@ class Code_Generator():
         currenttime = datetime.datetime.now().strftime("%Y_%m_%dat%H.%M.%S")
         image_name = currenttime + "_" + str(tracking) + "_" + surname.lower() + name.lower() + ".png"
 
-        self.qr.make_image().save("qr_images/" + image_name)
+        self.qr.make_image().save("/home/pi/Desktop/qr_images/" + image_name)
 
