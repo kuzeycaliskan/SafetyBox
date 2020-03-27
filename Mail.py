@@ -37,8 +37,8 @@ class SendMail():
 
         for file in os.listdir("/home/pi/Desktop/qr_images/"):
             if file.find(str(value[0][4])) != -1:
-                self.image_path = os.path.join("qr_images/", file)
-                print(os.path.join("qr_images/", file))
+                self.image_path = os.path.join("/home/pi/Desktop/qr_images/", file)
+                print(os.path.join("/home/pi/Desktop/qr_images/", file))
 
         fp = open(self.image_path, 'rb')
         msgImage = MIMEImage(fp.read())
