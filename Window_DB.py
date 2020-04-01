@@ -160,6 +160,7 @@ class Window_DB(QMainWindow):
 
         hbox = QHBoxLayout()
         vbox = QVBoxLayout()
+        vbox.setSizeConstraint(QLayout.SetMinimumSize)
 
         central_widget.setLayout(hbox)  # Install this placement in the central widget
 
@@ -173,18 +174,17 @@ class Window_DB(QMainWindow):
         self.checkbox = QCheckBox("Detaylı Sorgulama")
         self.checkbox.stateChanged.connect(self.DetailSearch)
 
-        self.textbox_DetailSearch = QLineEdit()
-        self.textbox_DetailSearch.setPlaceholderText("Arama Parametresini Yazınız")
-        self.textbox_DetailSearch.setVisible(False)
-        self.textbox_DetailSearch.textChanged.connect(self.on_lineEdit_textChanged)
-
         self.combobox_Column = QComboBox(self)
         self.combobox_Column.addItems(["Takip_Numarasi", "Ad", "Soyad",  "Tel_num"])
         self.combobox_Column.setVisible(False)
         self.combobox_Column.currentIndexChanged.connect(self.on_comboBox_currentIndexChanged)
         self.combobox_Column.setCurrentIndex(0)
 
-
+        self.textbox_DetailSearch = QLineEdit()
+        self.textbox_DetailSearch.setPlaceholderText("Arama Parametresini Yazınız")
+        self.textbox_DetailSearch.setFixedWidth(self.combobox_Column.width()*2)
+        self.textbox_DetailSearch.setVisible(False)
+        self.textbox_DetailSearch.textChanged.connect(self.on_lineEdit_textChanged)
 
 
         self.button = QPushButton("Onayla")
@@ -202,7 +202,8 @@ class Window_DB(QMainWindow):
 
     def DetailSearch(self):
         if self.checkbox.isChecked():
-            # self.table_DB("Detaylı Tablo")
+            self.table_DB("Detaylı Tablo")
+            
             self.combobox_Tablename.setVisible(False)
             self.button.setVisible(False)
             self.textbox_DetailSearch.setVisible(True)

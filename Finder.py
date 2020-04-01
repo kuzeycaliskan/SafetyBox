@@ -3,15 +3,15 @@ import main_DB
 import datetime
 import InfoWindow
 
+
 class Finder():
     database = main_DB.main_DB()
     currenttime = datetime.datetime.now()
 
-    def PNRFinder(self,currenttext):  # find person from PNR Number
+    def PNRFinder(self, currenttext):  # find person from PNR Number
         print('PNRFINDER')
         getPNRList = self.database.getPNRList()  # calling all PNR list from Database
         self.i = 0
-
 
         for getPNR in getPNRList:  # search in database
             if int(currenttext) == int(getPNR[0]):  # if found open info window
@@ -25,7 +25,6 @@ class Finder():
 
         if self.i == 0:  # if not found give information is provided
             return None
-
 
     def TrackFinder(self, currenttext):  # Takip numarası karşılaştırma
         print('TrackFINDER')
@@ -45,11 +44,10 @@ class Finder():
             print(int(currenttext) == int(getTrack[0]))
 
         if i == 0:
-            QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
-                                                           "Kontrol edip tekrar deneyiniz.")
 
+            return None
 
-    def QRCodeFinder(self, barcodeData): #find person with QR Code
+    def QRCodeFinder(self, barcodeData):  # find person with QR Code
         getQRCodeList = self.database.getQRCodeList()
         i = 0
         for QRCode in getQRCodeList:
@@ -77,7 +75,7 @@ class Finder():
             return cargo_type, list_InfoWindow
         elif cargo_type == "delivery" and info_type == "Tracking":
             list_InfoWindow = self.database.getPerson_withTrackingNo(info)
-            mail_track = self.database.getMailinfo_withTrackingNo(info) #Takip numarası ile mail içerikleri çekme
+            mail_track = self.database.getMailinfo_withTrackingNo(info)  # Takip numarası ile mail içerikleri çekme
             self.database.setCargoState_delivered_at_withTracking(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, list_InfoWindow, mail_track
 

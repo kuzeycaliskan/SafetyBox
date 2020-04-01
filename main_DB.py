@@ -53,6 +53,11 @@ class main_DB():
         self.select_DB.execute('UPDATE kargolar SET qr_kod = ' + '"' + new_QR + '"' + ' WHERE kargolar.qr_kod = ' + '"' + old_QR + '"')
         self.connection.commit()
 
+    def updateIdentity(self, n_column, n_value, tel_num, o_value):
+        self.select_DB.execute('UPDATE kimlikler SET ' + n_column + ' = ' + '"' + n_value + '"' + ' WHERE ' + tel_num +
+                               ' = ' + '"' + o_value + '"')
+        self.connection.commit()
+
     def getCounties(self):
         self.select_DB.execute('SELECT * FROM ilceler')
         read_DB = self.select_DB.fetchall()
@@ -77,6 +82,7 @@ class main_DB():
         read_DB = self.select_DB.fetchall()
 
         return read_DB
+
     def getAllBoxs(self):
         self.select_DB.execute('select d.id, d.dolap_no, d.boyut, d.is_empty, d.safetyboxs_id, s.isim_sb, s.adres '
                                ' from dolaplar d inner join safetyboxs s on d.safetyboxs_id = s.id')
@@ -189,9 +195,16 @@ class main_DB():
 
         return readTrack_DB
 
+    def getTrackingNo_withPNRNo(self, PNR_No):
+        self.select_DB.execute('SELECT takip_no from kargolar where PNR_num = ' + '"' + PNR_No + '"')
+        read_DB = self.select_DB.fetchone()
+
+        return read_DB[0]
+
     def getPerson_withTrackingNo(self, Tracking_num):
-        self.select_DB.execute('select isim,soyisim,tel_num,mail from kimlikler inner join kargolar krg on ' +
-                               'kimlikler.id = krg.kimlikler_id where  takip_no =' + Tracking_num)
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
+                               ' kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
+                               ' krg.dolaplar_id = dlp.id where  takip_no =' + '"' + str(Tracking_num) + '"')
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW

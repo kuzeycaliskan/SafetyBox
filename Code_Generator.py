@@ -77,12 +77,11 @@ class Code_Generator():
         self.image_QRCode(QRCode, name, surname, Tracking)
         return PNR, Tracking, QRCode, currenttime.strftime("%Y-%m-%d %H:%M:%S")
 
-    def image_QRCode(self, qrcode, name, surname, tracking):
-        self.qr.add_data(qrcode)
+    def image_QRCode(self, QRCode, name, surname, tracking):
+        self.qr.add_data(QRCode)
         self.qr.make(fit=True)
 
         currenttime = datetime.datetime.now().strftime("%Y_%m_%dat%H.%M.%S")
         image_name = currenttime + "_" + str(tracking) + "_" + surname.lower() + name.lower() + ".png"
 
-        self.qr.make_image().save("/home/pi/Desktop/qr_images/" + image_name)
-
+        self.qr.make_image().save("qr_images/" + image_name)

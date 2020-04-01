@@ -1,18 +1,17 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtGui import QFont
-from PyQt5.Qt import *
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-import InfoWindow
-import main_DB
-import Window_DB
-import CreateRow
+import datetime
+
 import cv2
-import Finder
-import Mail
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5.Qt import *
 from pyzbar import pyzbar
+
+import CreateRow
+import Finder
+import InfoWindow
+import Mail
+import Window_DB
+import main_DB
 
 # GUI Button Shape
 StyleSheet = '''  
@@ -84,7 +83,7 @@ class Window(QWidget):
 
     def __init__(self):
         super().__init__()  # QWidget fonskiyonlarını kullanabilmek icin
-        self.setGeometry(0, 0, 1080, 732)  # window size
+        self.setGeometry(0, 0, 800, 640)  # window size
         self.setWindowTitle("Safety Box")  # window title
         self.database = main_DB.main_DB()  # calling database class
         self.tabs()  # initialize tabs
@@ -92,15 +91,14 @@ class Window(QWidget):
 
         self.info_dialog = QtWidgets.QMessageBox(self)
         self.info_dialog.setIcon(QMessageBox.Information)
-        self.info_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint) #no title bar
+        self.info_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint)  # no title bar
         self.info_dialog.setWindowIcon(QIcon('icons/icon.png'))
         # self.info_dialog.setIconPixmap(QPixmap('icons/icon.png'))
         self.info_dialog.setWindowTitle("Uyarı")
         self.info_dialog.setText("Program Başlamıştır")
-        self.info_dialog.addButton('Tekrar Dene', self.info_dialog.ActionRole)
+        self.button = QPushButton("Tamam", self)
+        self.info_dialog.addButton(self.button, QMessageBox.RejectRole)
         self.info_dialog.show()
-
-
 
     def MB_DBTool(self):  # Menu Bar Database İslemleri
         self.tab.addTab(self.tab4, "DataBase İşlemleri")
@@ -145,7 +143,6 @@ class Window(QWidget):
 
         return groupBox
 
-
     def GB_cargoPNR(self):  # Kargo Teslim Grup Box - Step2
 
         groupBox = QGroupBox("Kargo Teslim")
@@ -189,7 +186,6 @@ class Window(QWidget):
         self.th.changePixmap.connect(self.setImage)
         self.th.start()
 
-
         groupBox = QGroupBox("Talimatlar")  # create groupbox
 
         info_instructions = QLabel("QR Kodunuzu Aşağıdaki Cihaza Okutunuz")
@@ -222,7 +218,6 @@ class Window(QWidget):
         main_hbox.addLayout(hbox)
         main_hbox.addLayout(vbox)
         main_hbox.addWidget(self.CameraLabel_R)
-
 
         groupBox.setLayout(main_hbox)  # hbox is placed in groupbox
 
@@ -283,12 +278,11 @@ class Window(QWidget):
         grupbox.setLayout(main_hbox)
         return grupbox
 
-    def B_receivingFunction(self): #receiving button function
+    def B_receivingFunction(self):  # receiving button function
         self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         self.tab.setCurrentWidget(self.tab2)
 
-
-    def B_deliveringFunction(self): #delivering button function
+    def B_deliveringFunction(self):  # delivering button function
         self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
 
@@ -311,11 +305,11 @@ class Window(QWidget):
         self.cr_W.show()
 
     @pyqtSlot(QImage)
-    def setImage(self, image): #set camera image for thread class
+    def setImage(self, image):  # set camera image for thread class
         self.CameraLabel_R.setPixmap(QPixmap.fromImage(image))
         self.CameraLabel_D.setPixmap(QPixmap.fromImage(image))
 
-    def cllback(self, barcodeData): #take back barcode value from thread class
+    def cllback(self, barcodeData):  # take back barcode value from thread class
         self.barcodeData = barcodeData
         values = self.Finder.QRCodeFinder(barcodeData)
         print("Values: ", values)
@@ -323,14 +317,12 @@ class Window(QWidget):
         if values is None:
             print("QR CODE KİŞİSİ BULUNAMADI")
             self.info_dialog.setText("Aradığınız kişi bulunamamıştır.\n "
-                                                           "Kontrol edip tekrar deneyiniz.")
+                                     "Kontrol edip tekrar deneyiniz.")
+            self.button.setText("Tekrar Dene")
             self.info_dialog.setHidden(False)
-            # QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
-            #                                                "Kontrol edip tekrar deneyiniz.")
         else:
             self.infoWin.showInfoWindow(values[0], values[1])
             return
-
 
     def PNRFinder(self):
         if self.PNRTextEditor.text() != "":
@@ -339,12 +331,15 @@ class Window(QWidget):
             if values is None:
 
                 self.info_dialog.setText("Aradığınız kişi bulunamamıştır.\n "
-                                                           "Kontrol edip tekrar deneyiniz.")
+                                         "Kontrol edip tekrar deneyiniz.")
+                self.button.setText("Tekrar Dene")
                 self.info_dialog.setHidden(False)
-                # QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
-                #                                                "Kontrol edip tekrar deneyiniz.")
             else:
                 self.infoWin.showInfoWindow(values[0], values[1])
+
+                tracking_no = self.database.getTrackingNo_withPNRNo(currernttext)
+                values_PNR = [values[1][0][3], values[1][0][0], values[1][0][1], tracking_no]
+                Mail.SendMail("Receiving_Cargo", values_PNR)
         else:
             QMessageBox.information(self, "Bilgilendirme", "PNR Numarası Girmediniz\n"
                                                            "Lütfen PNR Numarası Girip Tekrar Deneyiniz")
@@ -354,13 +349,13 @@ class Window(QWidget):
             currernttext = self.TrackTextEditor.text()
             values = self.Finder.TrackFinder(currernttext)
             if values is None:
-                self.info_dialog.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
-                                                                     "Kontrol edip tekrar deneyiniz.")
-                # QMessageBox.information(self, "Bilgilendirme", "Aradığınız kişi bulunamamıştır.\n "
-                #                                                "Kontrol edip tekrar deneyiniz.")
+                self.info_dialog.setText("Aradığınız kişi bulunamamıştır.\n "
+                                         "Kontrol edip tekrar deneyiniz.")
+                self.button.setText("Tekrar Dene")
+                self.info_dialog.setHidden(False)
             else:
                 self.infoWin.showInfoWindow(values[0], values[1])
-                Mail.SendMail(values[2]) # Gelen 3.değeri mail dosyasına yolluyor.
+                Mail.SendMail("Delivering_Cargo", values[2])  # Gelen 3.değeri mail dosyasına yolluyor.
 
         else:
             QMessageBox.information(self, "Bilgilendirme", "Takip Numarası Girmediniz\n"
@@ -368,15 +363,14 @@ class Window(QWidget):
 
     def Database_Update(self):  # Database value uptade
         self.tab.setCurrentWidget(self.tab4)
-        U_CurrentCombo = self.U_Combo.currentText()
-        U_CurrentName = self.U_Name.text()
-        U_CurrentValue = self.U_T_Value.text()
+        U_CurrentColumn = self.U_Column.currentText()
+        U_CurrentN_Value = self.U_N_Value.text()
+        U_CurrentTel = self.U_Tel_Num.text()
 
-        if U_CurrentCombo == "Değiştirmek istediğiniz sütunu seçiniz.":
+        if U_CurrentColumn == "Değiştirmek istediğiniz sütunu seçiniz.":
             QMessageBox.critical(self, "Hata", "Sütun seçimi boş bırakılamaz.")
         else:
-            self.database.updateRow(U_CurrentCombo, U_CurrentName, U_CurrentValue)
-
+            self.database.updateIdentity(U_CurrentColumn, U_CurrentN_Value, "tel_Num", U_CurrentTel)
 
     def BackMainFunction(self):
         currenttab = self.tab.indexOf(self.tab.currentWidget())
@@ -416,17 +410,14 @@ class Window(QWidget):
         # TAB-5 Widgets
         self.U_TextLabel = QLabel("")
 
-        self.U_Combo = QComboBox(self)
-        self.U_Combo.addItems(["Değiştirmek istediğiniz sütunu seçiniz.", "Takip_Numarasi", "Ad", "Soyad", "Tel_Num",
-                               "Mail_adres", "Qrkod", "Pnr_Num", "Security", "Box_Location", "Cabin_Num",
-                               "Cargo_Start_Time",
-                               "Cargo_End_Time"])
+        self.U_Column = QComboBox(self)
+        self.U_Column.addItems(["Değiştirmek istediğiniz sütunu seçiniz.", "isim", "soyisim", "mail"])
 
-        self.U_Name = QLineEdit()
-        self.U_Name.setPlaceholderText("Verisi değiştirilmek istenin kişinin adını giriniz.")
+        self.U_Tel_Num = QLineEdit()
+        self.U_Tel_Num.setPlaceholderText("Verisi değiştirilmek istenin kişinin telefon numarasını giriniz.")
 
-        self.U_T_Value = QLineEdit()
-        self.U_T_Value.setPlaceholderText("Yeni veriyi giriniz.")
+        self.U_N_Value = QLineEdit()
+        self.U_N_Value.setPlaceholderText("Yeni veriyi giriniz.")
 
         self.U_Button = QPushButton("Kaydet", objectName="GeneralButton")
         self.U_Button.clicked.connect(self.Database_Update)
@@ -435,8 +426,8 @@ class Window(QWidget):
         # widgets are placed
         tab1_grid.addWidget(self.GB_cargoReceive(), 0, 0)
         tab1_grid.addWidget(self.GB_cargoDelivery(), 0, 1)
-        tab2_grid.addWidget(self.GB_instructions(), 1, 0)
         tab2_grid.addWidget(self.GB_cargoPNR(), 0, 0)
+        tab2_grid.addWidget(self.GB_instructions(), 1, 0)
         tab3_grid.addWidget(self.GB_cargoTrack(), 0, 0)
         tab3_grid.addWidget(self.GB_BarCode(), 1, 0)
         tab4_vbox.addWidget(self.databaseAddRow)
@@ -445,9 +436,9 @@ class Window(QWidget):
         tab4_vbox.addWidget(self.B_BackMainButton())
         tab5_vbox.addStretch()
         tab5_vbox.addWidget(self.U_TextLabel)
-        tab5_vbox.addWidget(self.U_Combo)
-        tab5_vbox.addWidget(self.U_Name)
-        tab5_vbox.addWidget(self.U_T_Value)
+        tab5_vbox.addWidget(self.U_Column)
+        tab5_vbox.addWidget(self.U_N_Value)
+        tab5_vbox.addWidget(self.U_Tel_Num)
         tab5_vbox.addWidget(self.U_Button)
         tab5_vbox.addWidget(self.B_BackMainButton())
         tab5_vbox.addStretch()
@@ -460,6 +451,7 @@ class Window(QWidget):
         self.tab5.setLayout(tab5_vbox)
 
         self.tab.addTab(self.tab1, "Ana Sayfa")
+        #TABS WILL OPEN WHEN YOU CLICK BUTTON
         # self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         # self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         # self.tab.addTab(self.tab4, "DataBase İşlemleri")
@@ -468,6 +460,7 @@ class Window(QWidget):
         mainLayout.addWidget(self.tab)
 
         self.setLayout(mainLayout)
+
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
@@ -480,9 +473,10 @@ class Thread(QThread):
     def run(self):
         counter = 0
         self.cap = cv2.VideoCapture(0)
+
         self.threadactive = True
 
-        while (True):
+        while True:
             ret, frame = self.cap.read()
             if self.cap.read() is None:
                 break
@@ -512,7 +506,6 @@ class Thread(QThread):
                             self.mem_barcodeData = barcodeData
                             self.cllbck(barcodeData)
 
-
             if ret:
                 # https://stackoverflow.com/a/55468544/6622587
                 rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -521,8 +514,6 @@ class Thread(QThread):
                 convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine, QImage.Format_RGB888)
                 p = convertToQtFormat.scaled(360, 270, Qt.KeepAspectRatio)
                 self.changePixmap.emit(p)
-
-
 
 
 app = QApplication([])

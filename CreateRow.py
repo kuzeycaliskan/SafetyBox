@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 import Code_Generator
 import main_DB
+import Mail
 
 
 class CreateRow(QWidget):  # <===
@@ -71,20 +72,20 @@ class CreateRow(QWidget):  # <===
         else:
             self.box_no = self.findEmptyBox(value[0])
 
-    def setCounties(self): #set county's combobox widget
+    def setCounties(self):  # set county's combobox widget
         self.CB_Counties.clear()
         for county in self.database.getCounties_withCities(self.CB_Cities.currentText()):
             if self.CB_Counties.findText(county[0]) == -1:
                 self.CB_Counties.addItem(county[0])
 
-    def setSafetyBoxs(self): #set safetybox's combobox widget
+    def setSafetyBoxs(self):  # set safetybox's combobox widget
         self.CB_SafetyBoxs.clear()
         for safetybox in self.database.getSafetyBoxs_withCounties(self.CB_Counties.currentText()):
             item = safetybox[0] + " - " + safetybox[1]
             self.CB_SafetyBoxs.addItem(item)
 
-    def confirmFunction(self): #run function when confirmbutton clicked
-        self.checkIdenties() #Checking if ID is registered
+    def confirmFunction(self):  # run function when confirmbutton clicked
+        self.checkIdenties()  # Checking if ID is registered
         name = self.name.text().upper()
         surname = self.surname.text().upper()
         phone = self.phone.text()
@@ -102,10 +103,15 @@ class CreateRow(QWidget):  # <===
 
         PNR, Tracking, QRCode, datetime = self.Code_Generator.create_QRCode(surname, name, county, city)
 
-
         self.database.create_Cargo(Tracking, QRCode, PNR, security, self.box_no, identities_ID, datetime, 0)
         self.database.setBoxState_isEmpty("0", str(self.box_no))
         self.getSafetyName()
+
+        SB_Split = self.CB_SafetyBoxs.currentText().split(" - ")
+
+        value = [name, surname, "", email.lower(), Tracking, PNR, SB_Split[0], SB_Split[1], county, city]
+        Mail.SendMail("Creating_Cargo", value)
+
 
     def checkIdenties(self):  # Checking if ID is registered
         name = self.name.text().upper()

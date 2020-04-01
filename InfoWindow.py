@@ -41,10 +41,12 @@ class InfoWindow(QWidget):  # <===
         self.surnameLabel.setText("Soyad: " + knowledge[0][1])
         self.phoneLabel.setText("Telefon: " + str(knowledge[0][2]))
         self.mailLabel.setText("Mail: " + knowledge[0][3])
+        self.box_no = knowledge[0][4]
         print('PRINTED INFO')
 
     def showInfoWindow(self, info_type, DB_RowValue):
         if info_type == "receiver":
+            self.info_type = info_type
             print("InfoWindowClass", DB_RowValue)
             print(DB_RowValue[0][0])
             print(DB_RowValue[0][1])
@@ -53,6 +55,7 @@ class InfoWindow(QWidget):  # <===
             print(DB_RowValue[0][4])
             self.receiver_info(DB_RowValue)
         elif info_type == "delivery":
+            self.info_type = info_type
             print("Shouldn't write this sentence", DB_RowValue)
             print(DB_RowValue[0][0])
             print(DB_RowValue[0][1])
@@ -67,7 +70,7 @@ class InfoWindow(QWidget):  # <===
 
     def confirmFunction(self):
         self.closeInfoWindow()
-        # self.w = CabinNum_Window.CabinNum_Window(self.box_no)
-        # self.w.show()
+        self.w = CabinNum_Window.CabinNum_Window(self.info_type, self.box_no)
+        self.w.show()
 
 
