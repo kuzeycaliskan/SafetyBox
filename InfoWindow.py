@@ -2,6 +2,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 import CabinNum_Window
 import Mail
+import time
+
 
 class InfoWindow(QWidget):  # <===
     def __init__(self):
@@ -23,11 +25,9 @@ class InfoWindow(QWidget):  # <===
 
         self.setLayout(vbox)
 
-        self.setWindowFlag(Qt.WindowStaysOnTopHint)#pencerenin önde kalmasını sağlıyor
+        self.setWindowFlag(Qt.WindowStaysOnTopHint)  # pencerenin önde kalmasını sağlıyor
         self.show()
         self.setHidden(True)
-
-
 
     def receiver_info(self, knowledge):
         self.nameLabel.setText("Ad: " + knowledge[0][0])
@@ -35,6 +35,8 @@ class InfoWindow(QWidget):  # <===
         self.phoneLabel.setText("Telefon: " + str(knowledge[0][2]))
         self.mailLabel.setText("Mail: " + knowledge[0][3])
         self.box_no = knowledge[0][4]
+
+        self.receiver_ID = knowledge[0][3]
 
     def delivery_info(self, knowledge):
         self.nameLabel.setText("Ad: " + knowledge[0][0])
@@ -44,7 +46,11 @@ class InfoWindow(QWidget):  # <===
         self.box_no = knowledge[0][4]
         print('PRINTED INFO')
 
-    def showInfoWindow(self, info_type, DB_RowValue):
+        self.receiver_ID = knowledge[0][3]
+
+    def showInfoWindow(self, info_type, DB_RowValue, tracking_no):
+        self.tracking_no = tracking_no
+        self.DB_RowValue = DB_RowValue
         if info_type == "receiver":
             self.info_type = info_type
             print("InfoWindowClass", DB_RowValue)
@@ -68,9 +74,19 @@ class InfoWindow(QWidget):  # <===
     def closeInfoWindow(self):
         self.setHidden(True)
 
+    def setCllBack_TakePicture(self, cllback):  # callback function for take picture from main.py
+        self.cllback = cllback
+
     def confirmFunction(self):
         self.closeInfoWindow()
+
+        # send mail and take picture process
+        current_time = time.strftime("%d_%m_%Y_%H.%M.%S")  # creating current time value
+        receiver_ID = self.receiver_ID.split("@")
+        self.cllback(receiver_ID[0], current_time)
+        values_PNR = [self.DB_RowValue[0][3], self.DB_RowValue[0][0], self.DB_RowValue[0][1],
+                      self.tracking_no, current_time]  # creating values for mail
+        Mail.SendMail("Receiving_Cargo", values_PNR)
+
         self.w = CabinNum_Window.CabinNum_Window(self.info_type, self.box_no)
         self.w.show()
-
-

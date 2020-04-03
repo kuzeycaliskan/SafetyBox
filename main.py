@@ -1,6 +1,7 @@
 import datetime
 
 import cv2
+import time
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.Qt import *
@@ -155,7 +156,7 @@ class Window(QWidget):
         self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
         self.PNRTextEditor.setStyleSheet("color : blue")
 
-        PNRbutton = QPushButton("PNR Buttonu", objectName="GeneralButton")
+        PNRbutton = QPushButton("Kargo Teslim Al", objectName="GeneralButton")
         PNRbutton.installEventFilter(self)
         PNRbutton.setFont(QFont("Time New Roman", 20))
         PNRbutton.clicked.connect(self.PNRFinder)
@@ -177,6 +178,7 @@ class Window(QWidget):
 
     def GB_instructions(self):  # Talimatlar Group Box - Step2
         self.infoWin = InfoWindow.InfoWindow()
+        self.infoWin.setCllBack_TakePicture(self.cllback_TakePicture)
 
         self.CameraLabel_R = QLabel(self)
         # self.label.move(280, 120)
@@ -232,7 +234,7 @@ class Window(QWidget):
         self.TrackTextEditor = QLineEdit(self)
         self.TrackTextEditor.setPlaceholderText("Takip Numarasını Giriniz")
 
-        Trackbutton = QPushButton("Takip  Button", objectName="GeneralButton")
+        Trackbutton = QPushButton("Kargo Teslim Et", objectName="GeneralButton")
         Trackbutton.setFont(QFont("Time New Roman", 20))
         Trackbutton.clicked.connect(self.TrackingFinder)
 
@@ -321,8 +323,12 @@ class Window(QWidget):
             self.button.setText("Tekrar Dene")
             self.info_dialog.setHidden(False)
         else:
-            self.infoWin.showInfoWindow(values[0], values[1])
+            tracking_no = self.database.getTrackingNo_withQRCode(barcodeData)  # taking tracking no with PNR
+            self.infoWin.showInfoWindow(values[0], values[1], tracking_no)
             return
+
+    def cllback_TakePicture(self, receiver_ID, current_time):
+        self.th.takePicture(receiver_ID, current_time)
 
     def PNRFinder(self):
         if self.PNRTextEditor.text() != "":
@@ -335,11 +341,10 @@ class Window(QWidget):
                 self.button.setText("Tekrar Dene")
                 self.info_dialog.setHidden(False)
             else:
-                self.infoWin.showInfoWindow(values[0], values[1])
+                tracking_no = self.database.getTrackingNo_withPNRNo(currernttext)  # taking tracking no with PNR
+                self.infoWin.showInfoWindow(values[0], values[1], tracking_no)  # showing info window
 
-                tracking_no = self.database.getTrackingNo_withPNRNo(currernttext)
-                values_PNR = [values[1][0][3], values[1][0][0], values[1][0][1], tracking_no]
-                Mail.SendMail("Receiving_Cargo", values_PNR)
+
         else:
             QMessageBox.information(self, "Bilgilendirme", "PNR Numarası Girmediniz\n"
                                                            "Lütfen PNR Numarası Girip Tekrar Deneyiniz")
@@ -354,7 +359,7 @@ class Window(QWidget):
                 self.button.setText("Tekrar Dene")
                 self.info_dialog.setHidden(False)
             else:
-                self.infoWin.showInfoWindow(values[0], values[1])
+                self.infoWin.showInfoWindow(values[0], values[1], None)
                 Mail.SendMail("Delivering_Cargo", values[2])  # Gelen 3.değeri mail dosyasına yolluyor.
 
         else:
@@ -451,7 +456,7 @@ class Window(QWidget):
         self.tab5.setLayout(tab5_vbox)
 
         self.tab.addTab(self.tab1, "Ana Sayfa")
-        #TABS WILL OPEN WHEN YOU CLICK BUTTON
+        # TABS WILL OPEN WHEN YOU CLICK BUTTON
         # self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         # self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         # self.tab.addTab(self.tab4, "DataBase İşlemleri")
@@ -477,10 +482,10 @@ class Thread(QThread):
         self.threadactive = True
 
         while True:
-            ret, frame = self.cap.read()
+            ret, self.frame = self.cap.read()
             if self.cap.read() is None:
                 break
-            barcodes = pyzbar.decode(frame)
+            barcodes = pyzbar.decode(self.frame)
             found = set()
 
             for barcode in barcodes:
@@ -488,14 +493,14 @@ class Thread(QThread):
                 # extract the bounding box location of the barcode and draw
                 # the bounding box surrounding the barcode on the image
                 (x, y, w, h) = barcode.rect
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                cv2.rectangle(self.frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
                 # the barcode data is a bytes object so if we want to draw it
                 # on our output image we need to convert it to a string first
                 barcodeData = barcode.data.decode("utf-8")
                 barcodeType = barcode.type
                 # draw the barcode data and barcode type on the image
                 text = "{} ({})".format(barcodeData, barcodeType)
-                cv2.putText(frame, text, (x, y - 10),
+                cv2.putText(self.frame, text, (x, y - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                 # if the barcode text is currently not in our CSV file, write
                 # the timestamp + barcode   q to disk and update the set
@@ -503,17 +508,22 @@ class Thread(QThread):
                     if counter % 10 == 0:
                         if barcodeData != self.mem_barcodeData:
                             print(counter, barcodeData)
+
                             self.mem_barcodeData = barcodeData
                             self.cllbck(barcodeData)
 
             if ret:
                 # https://stackoverflow.com/a/55468544/6622587
-                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                rgbImage = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
                 h, w, ch = rgbImage.shape
                 bytesPerLine = ch * w
                 convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine, QImage.Format_RGB888)
                 p = convertToQtFormat.scaled(360, 270, Qt.KeepAspectRatio)
                 self.changePixmap.emit(p)
+
+    def takePicture(self, receiver_ID, saving_name):
+        cv2.imwrite("receiver_Person/" + str(receiver_ID) + "/" + str(saving_name) + ".jpg",
+                    self.frame)
 
 
 app = QApplication([])

@@ -75,6 +75,7 @@ class Finder():
             return cargo_type, list_InfoWindow
         elif cargo_type == "delivery" and info_type == "Tracking":
             list_InfoWindow = self.database.getPerson_withTrackingNo(info)
+            print("deneme ", list_InfoWindow)
             mail_track = self.database.getMailinfo_withTrackingNo(info)  # Takip numarası ile mail içerikleri çekme
             self.database.setCargoState_delivered_at_withTracking(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, list_InfoWindow, mail_track

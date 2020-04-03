@@ -201,6 +201,12 @@ class main_DB():
 
         return read_DB[0]
 
+    def getTrackingNo_withQRCode(self, QRCode):
+        self.select_DB.execute('SELECT takip_no from kargolar where qr_kod = ' + '"' + QRCode + '"')
+        read_DB = self.select_DB.fetchone()
+
+        return read_DB[0]
+
     def getPerson_withTrackingNo(self, Tracking_num):
         self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
                                ' kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '

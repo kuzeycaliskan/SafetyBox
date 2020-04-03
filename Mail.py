@@ -48,8 +48,17 @@ class SendMail():
                     self.image_path = os.path.join("qr_images/", file)
                     print(os.path.join("qr_images/", file))
 
+            fp = open(self.image_path, 'rb')
+            msgImage = MIMEImage(fp.read())
+            fp.close()
+
+            message.attach(self.msgText)
+            msgImage.add_header('Content-ID', '<image1>')
+            message.attach(msgImage)
+
 
         elif mail_type == "Delivering_Cargo":
+            print("**********")
             message["To"] = knowledge[0][3]
             # msgText = MIMEText('<b>Sayın </b> and an image.<br><img src="cid:image1"><br>Nifty!', 'html')
             self.msgText = MIMEText("<p><b>Sayın " + knowledge[0][0] + " " + knowledge[0][1] + ";</b></p>" +
@@ -70,10 +79,17 @@ class SendMail():
                     self.image_path = os.path.join("qr_images/", file)
                     print(os.path.join("qr_images/", file))
 
+            fp = open(self.image_path, 'rb')
+            msgImage = MIMEImage(fp.read())
+            fp.close()
+
+            message.attach(self.msgText)
+            msgImage.add_header('Content-ID', '<image1>')
+            message.attach(msgImage)
+
         elif mail_type == "Receiving_Cargo":
             message["To"] = knowledge[0]
             receiver_Person_ID = message["To"].split("@")
-
             self.msgText = MIMEText("<p><b>Sayın " + knowledge[1] + " " + knowledge[2] + ";</b></p>" +
                                     "<p><b>" + str(knowledge[3]) + "</b>" + " Takip numaralı kargonuz aşağıda resmi bulunan " +
                                     "kişi tarafından teslim alınmıştır.</p>" +
@@ -83,18 +99,19 @@ class SendMail():
             print("--------------------------------------")
             Path("receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
                                                                    exist_ok=True)  # create folder if not exist
-            # for file in os.listdir("receiver_Person/" + receiver_Person_ID[0]):
-            #     if file.find(str(knowledge[4])) != -1:
-            #         self.image_path = os.path.join("receiver_Person/" + receiver_Person_ID[0], file)
-            #         print(os.path.join("receiver_Person/" + receiver_Person_ID[0], file))
+            for file in os.listdir("receiver_Person/" + receiver_Person_ID[0]):
+                if file.find(str(knowledge[4])) != -1:
+                    self.image_path = os.path.join("receiver_Person/" + receiver_Person_ID[0], file)
+                    print(os.path.join("receiver_Person/" + receiver_Person_ID[0], file))
 
-        # fp = open(self.image_path, 'rb')
-        # msgImage = MIMEImage(fp.read())
-        # fp.close()
-        #
-        message.attach(self.msgText)
-        # msgImage.add_header('Content-ID', '<image1>')
-        # message.attach(msgImage)
+            fp = open(self.image_path, 'rb')
+            msgImage = MIMEImage(fp.read())
+            fp.close()
+
+            message.attach(self.msgText)
+            msgImage.add_header('Content-ID', '<image1>')
+            message.attach(msgImage)
+
 
         try:
             mail = smtplib.SMTP("smtp.gmail.com", 587)  # connection STMP Port 587-GmailPort
