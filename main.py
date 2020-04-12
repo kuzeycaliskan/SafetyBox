@@ -13,6 +13,7 @@ import InfoWindow
 import Mail
 import Window_DB
 import main_DB
+import adminPassWindow
 
 # GUI Button Shape
 StyleSheet = '''  
@@ -45,39 +46,50 @@ QPushButton#ReceivingButton:pressed {
 }
 
 QPushButton#GeneralButton{
-background-color : #FF9E00 
+    background-color : #48E0FA;
+    border-radius: 14px;
+    font-size: 15pt;
 }
 
 QPushButton#GeneralButton:hover{
- background-color: #FFDBA0 
+    background-color: #FFDBA0;
 }
+
+QPushButton#GeneralButton:pressed {
+    background-color: #F9EDC7;
+}
+
+QPushButton#SmallButton{
+    background-color : #48E0FA;
+    border-radius: 14px;
+    font-size: 10pt;
+}
+
+QPushButton#SmallButton:hover{
+    background-color: #FFDBA0;
+}
+
+QPushButton#SmallButton:pressed {
+    background-color: #F9EDC7;
+}
+
+QPushButton#SettingsButton {
+    qproperty-icon: url("icons/setting.png"); 
+    qproperty-iconSize: 35px 35px; 
+    background-color: #FFF;
+    border-radius: 48px;
+}
+
+QPushButton#SettingsButton:hover {
+    background-color: #D3D3D3;
+    color: #fff;
+}
+
+QPushButton#SettingsButton:pressed {
+    background-color: #FFF;
+}
+
 '''
-
-
-class MainWindow(QMainWindow):
-
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        self.setGeometry(0, 0, 1080, 732)  # window size
-        self.window_widget = Window()
-        self.setCentralWidget(self.window_widget)  # Ana Widget olarak Window classını çağırıyoruz
-        self.menubar()
-        self.show()
-
-    def menubar(self):  # Menu Bar oluşturma
-        bar = self.menuBar()
-        file = bar.addMenu("Ayarlar")
-
-        dbu = QAction("DataBase Güncelleme", self)
-        file.addAction(dbu)
-
-        dbt = QAction("DataBase İşlemleri", self)
-        file.addAction(dbt)
-
-        dbt.triggered.connect(self.window_widget.MB_DBTool)
-        dbu.triggered.connect(self.window_widget.MB_DBU)
-        # file.triggered[QAction].connect(self.window_widget.DBTool)
-
 
 class Window(QWidget):
     Finder = Finder.Finder()
@@ -86,10 +98,20 @@ class Window(QWidget):
         super().__init__()  # QWidget fonskiyonlarını kullanabilmek icin
         self.setGeometry(0, 0, 800, 640)  # window size
         self.setWindowTitle("Safety Box")  # window title
+        background_Color = self.palette()
+        background_Color.setColor(self.backgroundRole(), Qt.white)
+        self.setPalette(background_Color)
+
+
         self.database = main_DB.main_DB()  # calling database class
+
+
         self.tabs()  # initialize tabs
         self.show()
 
+        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint)
+
+        # messagebox opened, when no cargo is found
         self.info_dialog = QtWidgets.QMessageBox(self)
         self.info_dialog.setIcon(QMessageBox.Information)
         self.info_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint)  # no title bar
@@ -101,14 +123,20 @@ class Window(QWidget):
         self.info_dialog.addButton(self.button, QMessageBox.RejectRole)
         self.info_dialog.show()
 
-    def MB_DBTool(self):  # Menu Bar Database İslemleri
-        self.tab.addTab(self.tab4, "DataBase İşlemleri")
-        self.tab.setCurrentWidget(self.tab4)
-        # self.tab.setCurrentIndex(0) İndex numarasına gidiyor
+    def OpenSettingWindow(self):  # Menu Bar Database Güncelleme
+        self.admin_W = adminPassWindow.adminPassWindow()
+        self.admin_W.setCllback_Admin(self.cllback_AdminPass)
+        self.admin_W.show()
 
-    def MB_DBU(self):  # Menu Bar Database Güncelleme
-        self.tab.addTab(self.tab5, "DB Güncelleme")
-        self.tab.setCurrentWidget(self.tab5)
+
+    def cllback_AdminPass(self, result):
+        if result is True:
+            self.tab.addTab(self.tab4, "Ayarlar")
+            self.tab.setCurrentWidget(self.tab4)
+            self.settingButton.setVisible(False)
+            self.admin_W.close()
+        else:
+            print("Giriş başarısız")
 
     def GB_cargoReceive(self):  # Kargo Teslim Alma - Step1
 
@@ -118,13 +146,12 @@ class Window(QWidget):
 
         receivingButton = QPushButton("Kargo Teslim\nAlma", objectName="ReceivingButton")  # button initialize
         receivingButton.installEventFilter(self)
-        receivingButton.setFixedSize(receivingButton.width(), receivingButton.height())  # button size maximize
+        # receivingButton.setFixedSize(receivingButton.width(), receivingButton.height())  # button size maximize
+        receivingButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         receivingButton.setFont(QFont("Arial", 50, QFont.Bold))  # button font
-        # deliveringButton.setVisible(False)
+
         receivingButton.clicked.connect(self.B_receivingFunction)
-        # unclicked unvisible
-        # print(groupBox.width())
-        # vbox.setContentsMargins((groupBox.width()-deliveringButton.width()),0,0,0)
+
         vbox.addWidget(receivingButton)
         groupBox.setLayout(vbox)
 
@@ -136,7 +163,8 @@ class Window(QWidget):
         vbox = QVBoxLayout()
         deliveringButton = QPushButton("Kargo Teslim\nEtme", objectName="DeliveringButton")  # button initialize
         deliveringButton.installEventFilter(self)
-        deliveringButton.setFixedSize(deliveringButton.width(), deliveringButton.height())  # button size maximize
+        # deliveringButton.setFixedSize(deliveringButton.width(), deliveringButton.height())  # button size maximize
+        deliveringButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         deliveringButton.setFont(QFont("Arial", 50, QFont.Bold))  # button font
         deliveringButton.clicked.connect(self.B_deliveringFunction)
         vbox.addWidget(deliveringButton)
@@ -152,14 +180,18 @@ class Window(QWidget):
         info_PNRDelivery.setFont(QFont("Arial", 30, QFont.Bold))
         info_PNRDelivery.setAlignment(Qt.AlignCenter)
 
-        self.PNRTextEditor = QLineEdit(self)
+        self.PNRTextEditor = QLineEdit()
         self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
+        self.PNRTextEditor.setValidator(QIntValidator())
         self.PNRTextEditor.setStyleSheet("color : blue")
 
         PNRbutton = QPushButton("Kargo Teslim Al", objectName="GeneralButton")
+
+        # PNRbutton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         PNRbutton.installEventFilter(self)
         PNRbutton.setFont(QFont("Time New Roman", 20))
         PNRbutton.clicked.connect(self.PNRFinder)
+        PNRbutton.setFixedSize(int(PNRbutton.sizeHint().width())+50, PNRbutton.sizeHint().height()+10)
 
         self.PNRText = QLabel("")  # success failed text
 
@@ -168,8 +200,8 @@ class Window(QWidget):
         vbox.addWidget(info_PNRDelivery)
         vbox.addWidget(self.PNRTextEditor)
         vbox.addWidget(self.PNRText)
-        vbox.addWidget(PNRbutton)
-        vbox.addWidget(self.B_BackMainButton())
+        vbox.addWidget(PNRbutton, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
         vbox.addStretch()
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
@@ -192,7 +224,6 @@ class Window(QWidget):
 
         info_instructions = QLabel("QR Kodunuzu Aşağıdaki Cihaza Okutunuz")
         info_instructions.setFont(QFont("Arial", 30, QFont.Bold))
-        info_instructions.setAlignment(Qt.AlignCenter)
 
         image1 = QLabel(self)  # instruction picture one
         image1.setPixmap(QPixmap("qrkod1.jpg"))
@@ -213,7 +244,7 @@ class Window(QWidget):
 
         vbox = QVBoxLayout()
 
-        vbox.addWidget(info_instructions)
+        vbox.addWidget(info_instructions, alignment=QtCore.Qt.AlignCenter)
         vbox.addLayout(hbox)
 
         main_hbox = QHBoxLayout()
@@ -233,10 +264,12 @@ class Window(QWidget):
 
         self.TrackTextEditor = QLineEdit(self)
         self.TrackTextEditor.setPlaceholderText("Takip Numarasını Giriniz")
+        self.TrackTextEditor.setValidator(QIntValidator())
 
         Trackbutton = QPushButton("Kargo Teslim Et", objectName="GeneralButton")
         Trackbutton.setFont(QFont("Time New Roman", 20))
         Trackbutton.clicked.connect(self.TrackingFinder)
+        Trackbutton.setFixedSize(int(Trackbutton.sizeHint().width()) + 50, Trackbutton.sizeHint().height() + 10)
 
         self.TrackText = QLabel("")  # success failed text
 
@@ -245,8 +278,8 @@ class Window(QWidget):
         vbox.addWidget(info_PNRDelivery)
         vbox.addWidget(self.TrackTextEditor)
         vbox.addWidget(self.TrackText)
-        vbox.addWidget(Trackbutton)
-        vbox.addWidget(self.B_BackMainButton())
+        vbox.addWidget(Trackbutton, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
         vbox.addStretch()
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
@@ -294,6 +327,7 @@ class Window(QWidget):
         self.BackButton.setFont(QFont("Arial", 20))
         self.BackButton.setIcon(QIcon("Home.png"))
         self.BackButton.setIconSize(QtCore.QSize(45, 45))
+        self.BackButton.setFixedSize(int(self.BackButton.sizeHint().width())+50, self.BackButton.sizeHint().height()+10)
         self.BackButton.clicked.connect(self.BackMainFunction)
 
         return self.BackButton
@@ -367,17 +401,11 @@ class Window(QWidget):
                                                            "Lütfen Takip Numarası Girip Tekrar Deneyiniz")
 
     def Database_Update(self):  # Database value uptade
-        self.tab.setCurrentWidget(self.tab4)
-        U_CurrentColumn = self.U_Column.currentText()
-        U_CurrentN_Value = self.U_N_Value.text()
-        U_CurrentTel = self.U_Tel_Num.text()
-
-        if U_CurrentColumn == "Değiştirmek istediğiniz sütunu seçiniz.":
-            QMessageBox.critical(self, "Hata", "Sütun seçimi boş bırakılamaz.")
-        else:
-            self.database.updateIdentity(U_CurrentColumn, U_CurrentN_Value, "tel_Num", U_CurrentTel)
+        self.tab.addTab(self.tab5, "DB Güncelleme")
+        self.tab.setCurrentWidget(self.tab5)
 
     def BackMainFunction(self):
+        self.settingButton.setVisible(True)
         currenttab = self.tab.indexOf(self.tab.currentWidget())
         self.tab.setCurrentWidget(self.tab1)
 
@@ -401,6 +429,14 @@ class Window(QWidget):
         tab5_vbox = QVBoxLayout()  # tab-3's layout
         tab4_vbox = QVBoxLayout()  # tab-4's layout
         tab3_grid = QGridLayout()  # tab-5's layout
+
+        #Main TAB Settings Button
+        self.settingButton = QPushButton(objectName="SettingsButton")
+        self.settingButton.clicked.connect(self.OpenSettingWindow)
+        # self.settingButton.setIcon(QIcon("icons/setting.png"))
+        # self.settingButton.setIconSize(QSize(64,64))
+        # self.settingButton.setFixedWidth(60)
+        # self.settingButton.setFixedHeight(60)
 
         # TAB-4 Widgets
         self.databaseAddRow = QPushButton("Add Row", objectName="GeneralButton")
@@ -462,7 +498,10 @@ class Window(QWidget):
         # self.tab.addTab(self.tab4, "DataBase İşlemleri")
         # self.tab.addTab(self.tab5, "DB Güncelleme")
 
+
+        mainLayout.addWidget(self.settingButton, alignment=QtCore.Qt.AlignRight)
         mainLayout.addWidget(self.tab)
+        self.tab2.setStyleSheet("QTabBar::tab::disabled {width: 0; height: 0; margin: 0; padding: 0; border: none;} ")
 
         self.setLayout(mainLayout)
 
@@ -528,6 +567,6 @@ class Thread(QThread):
 
 app = QApplication([])
 app.setStyleSheet(StyleSheet)
-mainwindow = MainWindow()
+mainwindow = Window()
 mainwindow.show()
 app.exec_()

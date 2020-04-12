@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 import Code_Generator
 import main_DB
 import Mail
-
+from pathlib import Path
 
 class CreateRow(QWidget):  # <===
     Code_Generator = Code_Generator.Code_Generator()
@@ -91,6 +91,8 @@ class CreateRow(QWidget):  # <===
         phone = self.phone.text()
         email = self.email.text()
 
+        receiver_Person_ID = email.split("@")
+
         if self.security.isChecked() is True:
             security = 1
         else:
@@ -112,6 +114,8 @@ class CreateRow(QWidget):  # <===
         value = [name, surname, "", email.lower(), Tracking, PNR, SB_Split[0], SB_Split[1], county, city]
         Mail.SendMail("Creating_Cargo", value)
 
+        Path("receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
+                                                               exist_ok=True)  # create folder if not exist
 
     def checkIdenties(self):  # Checking if ID is registered
         name = self.name.text().upper()
