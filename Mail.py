@@ -43,10 +43,10 @@ class SendMail():
                                     "<b><i>Safety Box iyi günler diler.</i></b> \n" +
                                     '<br><img src="cid:image1"><br>', 'html')
 
-            for file in os.listdir("qr_images/"):
+            for file in os.listdir("/home/pi/Desktop/qr_images/"):
                 if file.find(str(knowledge[4])) != -1:
-                    self.image_path = os.path.join("qr_images/", file)
-                    print(os.path.join("qr_images/", file))
+                    self.image_path = os.path.join("/home/pi/Desktop/qr_images/", file)
+                    print(os.path.join("/home/pi/Desktop/qr_images/", file))
 
             fp = open(self.image_path, 'rb')
             msgImage = MIMEImage(fp.read())
@@ -74,10 +74,10 @@ class SendMail():
                                     "<b><i>Safety Box iyi günler diler.</i></b>" +
                                     '<br><img src="cid:image1"><br>', 'html')
 
-            for file in os.listdir("qr_images/"):
+            for file in os.listdir("/home/pi/Desktop/qr_images/"):
                 if file.find(str(knowledge[0][4])) != -1:
-                    self.image_path = os.path.join("qr_images/", file)
-                    print(os.path.join("qr_images/", file))
+                    self.image_path = os.path.join("/home/pi/Desktop/qr_images/", file)
+                    print(os.path.join("/home/pi/Desktop/qr_images/", file))
 
             fp = open(self.image_path, 'rb')
             msgImage = MIMEImage(fp.read())
@@ -97,12 +97,12 @@ class SendMail():
                                     "<b><i>Bir sonraki kargonuzda görüşmek üzere. </b></i>" +
                                     '<br><img src="cid:image1"><br>', 'html')
             print("--------------------------------------")
-            Path("receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
+            Path("/home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
                                                                    exist_ok=True)  # create folder if not exist
-            for file in os.listdir("receiver_Person/" + receiver_Person_ID[0]):
+            for file in os.listdir("/home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0]):
                 if file.find(str(knowledge[4])) != -1:
-                    self.image_path = os.path.join("receiver_Person/" + receiver_Person_ID[0], file)
-                    print(os.path.join("receiver_Person/" + receiver_Person_ID[0], file))
+                    self.image_path = os.path.join("/home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0], file)
+                    print(os.path.join("/home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0], file))
 
             fp = open(self.image_path, 'rb')
             msgImage = MIMEImage(fp.read())

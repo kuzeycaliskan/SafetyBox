@@ -561,7 +561,7 @@ class Thread(QThread):
                 self.changePixmap.emit(p)
 
     def takePicture(self, receiver_ID, saving_name):
-        cv2.imwrite("receiver_Person/" + str(receiver_ID) + "/" + str(saving_name) + ".jpg",
+        cv2.imwrite("/home/pi/Desktop/receiver_Person/" + str(receiver_ID) + "/" + str(saving_name) + ".jpg",
                     self.frame)
 
 
