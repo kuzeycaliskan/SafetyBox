@@ -9,7 +9,7 @@ class adminPassWindow(QWidget):  # <===
         #self.setGeometry(0, 0, 500, 250)
         self.setWindowTitle("Admin")
 
-        with open("admin.txt", "r") as DB_pm:
+        with open("/home/pi/Desktop/SafetyBox/admin.txt", "r") as DB_pm:
             data_admin = DB_pm.read().splitlines()
 
         self.username_txt = data_admin[0]

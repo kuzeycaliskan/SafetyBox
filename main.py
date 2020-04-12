@@ -74,7 +74,7 @@ QPushButton#SmallButton:pressed {
 }
 
 QPushButton#SettingsButton {
-    qproperty-icon: url("icons/setting.png"); 
+    qproperty-icon: url("/home/pi/Desktop/SafetyBox/icons/setting.png"); 
     qproperty-iconSize: 35px 35px; 
     background-color: #FFF;
     border-radius: 48px;
@@ -115,7 +115,7 @@ class Window(QWidget):
         self.info_dialog = QtWidgets.QMessageBox(self)
         self.info_dialog.setIcon(QMessageBox.Information)
         self.info_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint)  # no title bar
-        self.info_dialog.setWindowIcon(QIcon('icons/icon.png'))
+        self.info_dialog.setWindowIcon(QIcon('/home/pi/Desktop/SafetyBox/icons/icon.png'))
         # self.info_dialog.setIconPixmap(QPixmap('icons/icon.png'))
         self.info_dialog.setWindowTitle("Uyarı")
         self.info_dialog.setText("Program Başlamıştır")
