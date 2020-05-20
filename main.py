@@ -45,6 +45,20 @@ QPushButton#ReceivingButton:pressed {
     background-color: #FABCAF;
 }
 
+QPushButton#LockerButton {
+    background-color: #68BA48;
+    border-radius: 48px;
+}
+
+QPushButton#LockerButton:hover {
+    background-color: #8FDC72;
+    color: #fff;
+}
+
+QPushButton#LockerButton:pressed {
+    background-color: #C1F3AE;
+}
+
 QPushButton#GeneralButton{
     background-color : #48E0FA;
     border-radius: 14px;
@@ -74,7 +88,7 @@ QPushButton#SmallButton:pressed {
 }
 
 QPushButton#SettingsButton {
-    qproperty-icon: url("/home/pi/Desktop/SafetyBox/icons/setting.png"); 
+    qproperty-icon: url("home/pi/Desktop/SafetyBox/icons/setting.png"); 
     qproperty-iconSize: 35px 35px; 
     background-color: #FFF;
     border-radius: 48px;
@@ -144,15 +158,15 @@ class Window(QWidget):
 
         vbox = QVBoxLayout()
 
-        receivingButton = QPushButton("Kargo Teslim\nAlma", objectName="ReceivingButton")  # button initialize
-        receivingButton.installEventFilter(self)
+        self.receivingButton = QPushButton("Kargo Teslim\nAlma", objectName="ReceivingButton")  # button initialize
+        self.receivingButton.installEventFilter(self)
         # receivingButton.setFixedSize(receivingButton.width(), receivingButton.height())  # button size maximize
-        receivingButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        receivingButton.setFont(QFont("Arial", 50, QFont.Bold))  # button font
+        self.receivingButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.receivingButton.setFont(QFont("Arial", 40, QFont.Bold))  # button font
 
-        receivingButton.clicked.connect(self.B_receivingFunction)
+        self.receivingButton.clicked.connect(self.B_receivingFunction)
 
-        vbox.addWidget(receivingButton)
+        vbox.addWidget(self.receivingButton)
         groupBox.setLayout(vbox)
 
         return groupBox
@@ -161,54 +175,38 @@ class Window(QWidget):
         groupBox = QGroupBox("Kargo Teslim Etme")
 
         vbox = QVBoxLayout()
-        deliveringButton = QPushButton("Kargo Teslim\nEtme", objectName="DeliveringButton")  # button initialize
-        deliveringButton.installEventFilter(self)
+        self.deliveringButton = QPushButton("Kargo Teslim\nEtme", objectName="DeliveringButton")  # button initialize
+        self.deliveringButton.installEventFilter(self)
         # deliveringButton.setFixedSize(deliveringButton.width(), deliveringButton.height())  # button size maximize
-        deliveringButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        deliveringButton.setFont(QFont("Arial", 50, QFont.Bold))  # button font
-        deliveringButton.clicked.connect(self.B_deliveringFunction)
-        vbox.addWidget(deliveringButton)
+        self.deliveringButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.deliveringButton.setFont(QFont("Arial", 40, QFont.Bold))  # button font
+        self.deliveringButton.clicked.connect(self.B_deliveringFunction)
+        vbox.addWidget(self.deliveringButton)
+        groupBox.setLayout(vbox)
+
+        return groupBox
+
+    def GB_LockerSystem(self):  # Kargo Teslim Alma - Step1
+
+        groupBox = QGroupBox("Emanet Dolabı")
+
+        vbox = QVBoxLayout()
+
+        self.lockerbutton = QPushButton("Emanet Dolabı", objectName="LockerButton")  # button initialize
+        self.lockerbutton.installEventFilter(self)
+        # receivingButton.setFixedSize(receivingButton.width(), receivingButton.height())  # button size maximize
+        self.lockerbutton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.lockerbutton.setFont(QFont("Arial", 40, QFont.Bold))  # button font
+
+        self.lockerbutton.clicked.connect(self.B_LockerFunction)
+
+        vbox.addWidget(self.lockerbutton)
         groupBox.setLayout(vbox)
 
         return groupBox
 
     def GB_cargoPNR(self):  # Kargo Teslim Grup Box - Step2
 
-        groupBox = QGroupBox("Kargo Teslim")
-
-        info_PNRDelivery = QLabel("Kargonuzu PNR ile teslim almak için butona basınız.")
-        info_PNRDelivery.setFont(QFont("Arial", 30, QFont.Bold))
-        info_PNRDelivery.setAlignment(Qt.AlignCenter)
-
-        self.PNRTextEditor = QLineEdit()
-        self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
-        self.PNRTextEditor.setValidator(QIntValidator())
-        self.PNRTextEditor.setStyleSheet("color : blue")
-
-        PNRbutton = QPushButton("Kargo Teslim Al", objectName="GeneralButton")
-
-        # PNRbutton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        PNRbutton.installEventFilter(self)
-        PNRbutton.setFont(QFont("Time New Roman", 20))
-        PNRbutton.clicked.connect(self.PNRFinder)
-        PNRbutton.setFixedSize(int(PNRbutton.sizeHint().width())+50, PNRbutton.sizeHint().height()+10)
-
-        self.PNRText = QLabel("")  # success failed text
-
-        vbox = QVBoxLayout()
-        vbox.addStretch()
-        vbox.addWidget(info_PNRDelivery)
-        vbox.addWidget(self.PNRTextEditor)
-        vbox.addWidget(self.PNRText)
-        vbox.addWidget(PNRbutton, alignment=QtCore.Qt.AlignCenter)
-        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
-        vbox.addStretch()
-        groupBox.size().setHeight(320)
-        groupBox.setLayout(vbox)
-
-        return groupBox
-
-    def GB_instructions(self):  # Talimatlar Group Box - Step2
         self.infoWin = InfoWindow.InfoWindow()
         self.infoWin.setCllBack_TakePicture(self.cllback_TakePicture)
 
@@ -220,54 +218,68 @@ class Window(QWidget):
         self.th.changePixmap.connect(self.setImage)
         self.th.start()
 
-        groupBox = QGroupBox("Talimatlar")  # create groupbox
+        groupBox = QGroupBox("Kargo Teslim")
 
-        info_instructions = QLabel("QR Kodunuzu Aşağıdaki Cihaza Okutunuz")
-        info_instructions.setFont(QFont("Arial", 30, QFont.Bold))
+        info_PNRDelivery = QLabel("Kargonuzu Teslim Almak İçin \nQR Kod Okutunuz veya PNR Girip Butona Basınız.")
+        info_PNRDelivery.setFont(QFont("Arial", 18, QFont.Bold))
+        info_PNRDelivery.setAlignment(Qt.AlignCenter)
+        info_PNRDelivery.setMargin(20)
 
-        image1 = QLabel(self)  # instruction picture one
-        image1.setPixmap(QPixmap("qrkod1.jpg"))
+        self.PNRTextEditor = QLineEdit()
+        self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
+        self.PNRTextEditor.setValidator(QIntValidator())
+        self.PNRTextEditor.setStyleSheet("color:black; background-color: #AEF3EE; border-radius: 20px; padding: 10px;")
+        self.PNRTextEditor.setFixedSize(int(self.PNRTextEditor.sizeHint().width() + 50),
+                                        int(self.PNRTextEditor.sizeHint().height() + 10))
 
-        image2 = QLabel(self)  # instruction picture two
-        image2.setPixmap(QPixmap("qrkod1.jpg"))
+        PNRbutton = QPushButton("Kargo Teslim Al", objectName="GeneralButton")
 
-        image3 = QLabel(self)  # instruction picture three
-        image3.setPixmap(QPixmap("qrkod1.jpg"))
+        # PNRbutton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        PNRbutton.installEventFilter(self)
+        PNRbutton.setFont(QFont("Time New Roman", 25))
+        PNRbutton.clicked.connect(self.PNRFinder)
+        PNRbutton.setFixedSize(int(PNRbutton.sizeHint().width())+50, PNRbutton.sizeHint().height()+10)
 
-        hbox = QHBoxLayout()  # create layout
-
-        hbox.addStretch()
-        hbox.addWidget(image1)
-        hbox.addWidget(image2)
-        hbox.addWidget(image3)
-        hbox.addStretch()
+        self.PNRText = QLabel("")  # success failed text
 
         vbox = QVBoxLayout()
+        vbox.addStretch()
+        vbox.addWidget(info_PNRDelivery)
+        vbox.addStretch()
+        vbox.addWidget(self.PNRTextEditor, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.PNRText)
+        vbox.addWidget(PNRbutton, alignment=QtCore.Qt.AlignCenter)
+        vbox.addStretch()
+        vbox.addWidget(self.CameraLabel_R, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
 
-        vbox.addWidget(info_instructions, alignment=QtCore.Qt.AlignCenter)
-        vbox.addLayout(hbox)
-
-        main_hbox = QHBoxLayout()
-        main_hbox.addLayout(hbox)
-        main_hbox.addLayout(vbox)
-        main_hbox.addWidget(self.CameraLabel_R)
-
-        groupBox.setLayout(main_hbox)  # hbox is placed in groupbox
+        groupBox.size().setHeight(320)
+        groupBox.setLayout(vbox)
 
         return groupBox
 
+
     def GB_cargoTrack(self):  # Kargo teslim verme
+        self.CameraLabel_D = QLabel(self)
+        # self.label.move(280, 120)
+        self.CameraLabel_D.resize(640, 480)
+
         groupBox = QGroupBox("Kargo Teslim Verme ")
 
-        info_PNRDelivery = QLabel("Kargoyu Teslim Vermek İçin Butona Basınız")
-        info_PNRDelivery.setFont(QFont("Arial", 15, QFont.Bold))
+        info_PNRDelivery = QLabel("Kargoyu Teslim Vermek İçin, \n Barkod Okutunuz veya Kodu Girip Butona Basınız")
+        info_PNRDelivery.setFont(QFont("Arial", 18, QFont.Bold))
+        info_PNRDelivery.setAlignment(Qt.AlignCenter)
+        info_PNRDelivery.setMargin(20)
 
         self.TrackTextEditor = QLineEdit(self)
         self.TrackTextEditor.setPlaceholderText("Takip Numarasını Giriniz")
         self.TrackTextEditor.setValidator(QIntValidator())
+        self.TrackTextEditor.setStyleSheet("color:black; background-color: #AEF3EE; border-radius: 20px; padding: 10px;")
+        self.TrackTextEditor.setFixedSize(int(self.PNRTextEditor.sizeHint().width() + 50),
+                                        int(self.PNRTextEditor.sizeHint().height() + 10))
 
         Trackbutton = QPushButton("Kargo Teslim Et", objectName="GeneralButton")
-        Trackbutton.setFont(QFont("Time New Roman", 20))
+        Trackbutton.setFont(QFont("Time New Roman", 25))
         Trackbutton.clicked.connect(self.TrackingFinder)
         Trackbutton.setFixedSize(int(Trackbutton.sizeHint().width()) + 50, Trackbutton.sizeHint().height() + 10)
 
@@ -276,59 +288,79 @@ class Window(QWidget):
         vbox = QVBoxLayout()
         vbox.addStretch()
         vbox.addWidget(info_PNRDelivery)
-        vbox.addWidget(self.TrackTextEditor)
+        vbox.addWidget(self.TrackTextEditor, alignment=QtCore.Qt.AlignCenter)
         vbox.addWidget(self.TrackText)
         vbox.addWidget(Trackbutton, alignment=QtCore.Qt.AlignCenter)
-        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
         vbox.addStretch()
+        vbox.addWidget(self.CameraLabel_D, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
         groupBox.size().setHeight(320)
         groupBox.setLayout(vbox)
 
         return groupBox
 
-    def GB_BarCode(self):
-        self.CameraLabel_D = QLabel(self)
-        # self.label.move(280, 120)
-        self.CameraLabel_D.resize(640, 480)
-        grupbox = QGroupBox("Barkod Okuyucu")
 
-        title = QLabel("Kargonuzun barkodunu Aşağıya Okutunuz")
-        title.setFont(QFont("Arial", 30, QFont.Bold))
-        title.setAlignment(Qt.AlignHCenter)
+    def GB_LockerTab(self):  # Kargo Teslim Grup Box - Step2
 
-        image = QLabel()
-        png = QPixmap("barcode.png")
-        png.scaled(64, 64)
-        image.setPixmap(png)
-        image.setAlignment(Qt.AlignCenter)
+        groupBox = QGroupBox("Emanet Teslim")
+
+        info_PNRDelivery = QLabel("Emanetinizi teslim etmek \n için bilgileri giriniz.")
+        info_PNRDelivery.setFont(QFont("Arial", 30, QFont.Bold))
+        info_PNRDelivery.setAlignment(Qt.AlignCenter)
+
+        self.PNRTextEditor = QLineEdit()
+        self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
+        self.PNRTextEditor.setValidator(QIntValidator())
+        self.PNRTextEditor.setStyleSheet("color : blue")
+
+        ConfirmButton = QPushButton("Onayla", objectName="GeneralButton")
+
+        # PNRbutton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        ConfirmButton.installEventFilter(self)
+        ConfirmButton.setFont(QFont("Time New Roman", 20))
+        ConfirmButton.clicked.connect(self.PNRFinder)
+        ConfirmButton.setFixedSize(int(ConfirmButton.sizeHint().width())+50, ConfirmButton.sizeHint().height()+10)
+
+        self.PNRText = QLabel("")  # success failed text
 
         vbox = QVBoxLayout()
-        vbox.addWidget(title)
-        vbox.addWidget(image)
+        vbox.addStretch()
+        vbox.addWidget(info_PNRDelivery)
+        vbox.addWidget(self.PNRTextEditor)
+        vbox.addWidget(self.PNRText)
+        vbox.addStretch()
+        vbox.addWidget(ConfirmButton, alignment=QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
+        groupBox.size().setHeight(320)
+        groupBox.setLayout(vbox)
 
-        main_hbox = QHBoxLayout()
-        main_hbox.addLayout(vbox)
-        main_hbox.addWidget(self.CameraLabel_D)
-
-        grupbox.setLayout(main_hbox)
-        return grupbox
+        return groupBox
 
     def B_receivingFunction(self):  # receiving button function
         self.tab.addTab(self.tab2, "Kargo Alma Aşaması")
         self.tab.setCurrentWidget(self.tab2)
+        self.settingButton.setVisible(False)
 
     def B_deliveringFunction(self):  # delivering button function
         self.tab.addTab(self.tab3, "Kargo Verme Aşaması")
         self.tab.setCurrentWidget(self.tab3)  # pass tab-5 when clicked button
+        self.settingButton.setVisible(False)
+
+    def B_LockerFunction(self):
+        self.tab.addTab(self.tab6, "Kargo Verme Aşaması")
+        self.tab.setCurrentWidget(self.tab6)  # pass tab-6 when clicked button
+        self.settingButton.setVisible(False)
 
     def B_BackMainButton(self):
 
         self.BackButton = QPushButton("Ana Menüye Dönmek için Tıklayınız", objectName="GeneralButton")
-        self.BackButton.setFont(QFont("Arial", 20))
-        self.BackButton.setIcon(QIcon("Home.png"))
-        self.BackButton.setIconSize(QtCore.QSize(45, 45))
+        self.BackButton.setFont(QFont("Arial", 15))
+        self.BackButton.setIcon(QIcon("home/pi/Desktop/SafetyBox/icons/Home.png"))
+        self.BackButton.setIconSize(QtCore.QSize(30, 30))
         self.BackButton.setFixedSize(int(self.BackButton.sizeHint().width())+50, self.BackButton.sizeHint().height()+10)
         self.BackButton.clicked.connect(self.BackMainFunction)
+
+        self.settingButton.setVisible(True)
 
         return self.BackButton
 
@@ -418,17 +450,20 @@ class Window(QWidget):
 
         self.tab = QTabWidget()  # create Tab
 
-        self.tab1 = QWidget()  # create tab-1 (step-1)
-        self.tab2 = QWidget()  # create tab-2 (step-2)
-        self.tab3 = QWidget()  # create tab-3 (step-3)
-        self.tab4 = QWidget()  # create tab-4 (step-4)
-        self.tab5 = QWidget()  # create tab-5 (step-5)
+        self.tab1 = QWidget()  # create tab-1 (step-1) main tab
+        self.tab2 = QWidget()  # create tab-2 (step-2) receiver tab
+        self.tab3 = QWidget()  # create tab-3 (step-3) delivery tab
+        self.tab4 = QWidget()  # create tab-4 (step-4) update tab
+        self.tab5 = QWidget()  # create tab-5 (step-5) settings tab
+        self.tab6 = QWidget()  # create tab-6 (step-6) locker tab
 
-        tab1_grid = QGridLayout()  # tab-1's layout
-        tab2_grid = QGridLayout()  # tab-2's layout
-        tab5_vbox = QVBoxLayout()  # tab-3's layout
+        tab1_vbox = QVBoxLayout()  # tab-1's main layout
+        tab1_hbox = QHBoxLayout()  # tab-1's layout
+        tab2_vbox = QVBoxLayout()  # tab-2's layout
+        tab3_vbox = QVBoxLayout()  # tab-3's layout
         tab4_vbox = QVBoxLayout()  # tab-4's layout
-        tab3_grid = QGridLayout()  # tab-5's layout
+        tab5_vbox = QVBoxLayout()  # tab-5's layout
+        tab6_vbox = QVBoxLayout()  # tab-6's layout
 
         #Main TAB Settings Button
         self.settingButton = QPushButton(objectName="SettingsButton")
@@ -464,32 +499,41 @@ class Window(QWidget):
         self.U_Button.clicked.connect(self.Database_Update)
         # TAB-5 Widgets END
 
+
         # widgets are placed
-        tab1_grid.addWidget(self.GB_cargoReceive(), 0, 0)
-        tab1_grid.addWidget(self.GB_cargoDelivery(), 0, 1)
-        tab2_grid.addWidget(self.GB_cargoPNR(), 0, 0)
-        tab2_grid.addWidget(self.GB_instructions(), 1, 0)
-        tab3_grid.addWidget(self.GB_cargoTrack(), 0, 0)
-        tab3_grid.addWidget(self.GB_BarCode(), 1, 0)
+        tab1_hbox.addWidget(self.GB_cargoReceive())
+        tab1_hbox.addWidget(self.GB_cargoDelivery())
+        tab1_vbox.addLayout(tab1_hbox, 70)
+        tab1_vbox.addWidget(self.GB_LockerSystem(), 30)
+
+        tab2_vbox.addWidget(self.GB_cargoPNR())
+
+        tab3_vbox.addWidget(self.GB_cargoTrack())
+
         tab4_vbox.addWidget(self.databaseAddRow)
         tab4_vbox.addWidget(self.databaseUpdateRow)
         tab4_vbox.addWidget(self.databaseButton)
-        tab4_vbox.addWidget(self.B_BackMainButton())
+        tab4_vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
+
         tab5_vbox.addStretch()
         tab5_vbox.addWidget(self.U_TextLabel)
         tab5_vbox.addWidget(self.U_Column)
         tab5_vbox.addWidget(self.U_N_Value)
         tab5_vbox.addWidget(self.U_Tel_Num)
         tab5_vbox.addWidget(self.U_Button)
-        tab5_vbox.addWidget(self.B_BackMainButton())
+        tab5_vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
         tab5_vbox.addStretch()
 
+        tab6_vbox.addWidget(self.GB_LockerTab())
+
+
         # tab's layout setted
-        self.tab1.setLayout(tab1_grid)
-        self.tab2.setLayout(tab2_grid)
-        self.tab3.setLayout(tab3_grid)
+        self.tab1.setLayout(tab1_vbox)
+        self.tab2.setLayout(tab2_vbox)
+        self.tab3.setLayout(tab3_vbox)
         self.tab4.setLayout(tab4_vbox)
         self.tab5.setLayout(tab5_vbox)
+        self.tab6.setLayout(tab6_vbox)
 
         self.tab.addTab(self.tab1, "Ana Sayfa")
         # TABS WILL OPEN WHEN YOU CLICK BUTTON
@@ -557,11 +601,11 @@ class Thread(QThread):
                 h, w, ch = rgbImage.shape
                 bytesPerLine = ch * w
                 convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine, QImage.Format_RGB888)
-                p = convertToQtFormat.scaled(360, 270, Qt.KeepAspectRatio)
+                p = convertToQtFormat.scaled(320, 240, Qt.KeepAspectRatio)
                 self.changePixmap.emit(p)
 
     def takePicture(self, receiver_ID, saving_name):
-        cv2.imwrite("/home/pi/Desktop/receiver_Person/" + str(receiver_ID) + "/" + str(saving_name) + ".jpg",
+        cv2.imwrite("home/pi/Desktop/receiver_Person/" + str(receiver_ID) + "/" + str(saving_name) + ".jpg",
                     self.frame)
 
 
@@ -570,3 +614,28 @@ app.setStyleSheet(StyleSheet)
 mainwindow = Window()
 mainwindow.show()
 app.exec_()
+
+# if __name__ == "__main__":
+#     import sys
+#
+#     app = QtWidgets.QApplication(sys.argv)
+#     app.setStyle('Fusion')
+#     palette = QPalette()
+#     palette.setColor(QPalette.Window, QColor(53, 53, 53))
+#     palette.setColor(QPalette.WindowText, QtCore.Qt.white)
+#     palette.setColor(QPalette.Base, QColor(15, 15, 15))
+#     palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+#     palette.setColor(QPalette.ToolTipBase, QtCore.Qt.white)
+#     palette.setColor(QPalette.ToolTipText, QtCore.Qt.white)
+#     palette.setColor(QPalette.Text, QtCore.Qt.white)
+#     palette.setColor(QPalette.Button, QColor(53, 53, 53))
+#     palette.setColor(QPalette.ButtonText, QtCore.Qt.white)
+#     palette.setColor(QPalette.BrightText, QtCore.Qt.red)
+#
+#     palette.setColor(QPalette.Highlight, QColor(142, 45, 197).lighter())
+#     palette.setColor(QPalette.HighlightedText, QtCore.Qt.black)
+#     app.setPalette(palette)
+#     app.setStyleSheet(StyleSheet)
+#     MainWindow = Window()
+#     MainWindow.show()
+#     sys.exit(app.exec_())

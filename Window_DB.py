@@ -165,8 +165,8 @@ class Window_DB(QMainWindow):
         central_widget.setLayout(hbox)  # Install this placement in the central widget
 
         self.table.resizeColumnsToContents()
-        hbox.addLayout(vbox)
-        hbox.addWidget(self.table)
+        hbox.addLayout(vbox, 20)
+        hbox.addWidget(self.table, 80)
 
         self.combobox_Tablename = QComboBox(self)
         self.combobox_Tablename.addItems(["İlçeler", "SafetyBox's", "Dolaplar", "Kargolar", "Kimlikler", "Detaylı Tablo"])
@@ -182,7 +182,7 @@ class Window_DB(QMainWindow):
 
         self.textbox_DetailSearch = QLineEdit()
         self.textbox_DetailSearch.setPlaceholderText("Arama Parametresini Yazınız")
-        self.textbox_DetailSearch.setFixedWidth(self.combobox_Column.width()*2)
+        # self.textbox_DetailSearch.setFixedWidth(self.combobox_Column.width()*2)
         self.textbox_DetailSearch.setVisible(False)
         self.textbox_DetailSearch.textChanged.connect(self.on_lineEdit_textChanged)
 

@@ -5,7 +5,7 @@ class main_DB():
     def __init__(self):
         super().__init__()
         print(mysql.connector.version)
-        # with open("DBparameters.txt", "r") as DB_pm:
+        # with open("home/pi/Desktop/SafetyBox/DBparameters.txt", "r") as DB_pm:
         #     DB_pm_list = DB_pm.read().splitlines()
         #     print(DB_pm_list)
         #
@@ -15,7 +15,7 @@ class main_DB():
         #                                           database=DB_pm_list[3])
 
         self.connection = mysql.connector.connect(user="root", password="kuzey7174",
-                                                  host="192.168.1.37",
+                                                  host="localhost",
                                                   database="safetybox_db")
 
         if (self.connection):
