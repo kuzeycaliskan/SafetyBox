@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import *
 import Code_Generator
-import main_DB
+import Database
 import Mail
 from pathlib import Path
 
@@ -11,7 +11,7 @@ class CreateRow(QWidget):  # <===
         super().__init__()
         # self.setGeometry(0, 0, 500, 250)
         self.setWindowTitle("Yeni Kişi Oluştur")
-        self.database = main_DB.main_DB()
+        self.database = Database.main_DB()
 
         self.createrow()
         self.show()
@@ -101,9 +101,9 @@ class CreateRow(QWidget):  # <===
         safetybox = self.CB_SafetyBoxs.currentText()
         county = self.CB_Counties.currentText()
         city = self.CB_Cities.currentText()
-        identities_ID = self.database.getIdentity_ID(phone)
+        identities_ID = self.database.getIdentity_withPhone(phone)
 
-        PNR, Tracking, QRCode, datetime = self.Code_Generator.create_QRCode(surname, name, county, city)
+        PNR, Tracking, QRCode, datetime = self.Code_Generator.create_QRCode("R", surname, name, county, city)
 
         self.database.create_Cargo(Tracking, QRCode, PNR, security, self.box_no, identities_ID, datetime, 0)
         self.database.setBoxState_isEmpty("0", str(self.box_no))
@@ -114,7 +114,7 @@ class CreateRow(QWidget):  # <===
         value = [name, surname, "", email.lower(), Tracking, PNR, SB_Split[0], SB_Split[1], county, city]
         Mail.SendMail("Creating_Cargo", value)
 
-        Path("/home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
+        Path("home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
                                                                exist_ok=True)  # create folder if not exist
 
     def checkIdenties(self):  # Checking if ID is registered
@@ -126,8 +126,8 @@ class CreateRow(QWidget):  # <===
         for identity in self.database.getIdentities():
             if (str(phone) == str(identity[3])) or (str(email) == str(identity[4])):  # returning if ID found
                 return
-
-        self.database.create_Identity(name, surname, phone, email)
+        person_code = int(self.database.getLastPersonCode_Identities()) + 1
+        self.database.create_Identity(name, surname, phone, email, person_code)
         return
 
     def findEmptyBox(self, text):

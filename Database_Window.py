@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import *
-import main_DB
+import Database
 from PyQt5 import QtCore
 from PyQt5.Qt import *
 
@@ -14,7 +14,7 @@ class Window_DB(QMainWindow):
 
         self.setGeometry(0, 0, 1080, 732)  # window size
         self.setWindowTitle("Database Table")
-        self.database = main_DB.main_DB()
+        self.database = Database.main_DB()
         self.table_DB(table_name)
 
 
@@ -98,7 +98,7 @@ class Window_DB(QMainWindow):
 
             self.model.setHorizontalHeaderLabels(["ID", "Takip No", "QR Kod", "PNR No", "Ek Güvenlik",
                                                   "Kayıtlı Dolap ID", "Kayıtlı Kimlik ID", "Kargo Oluşturma Tarihi",
-                                                  "Kargo Teslim Tarihi", "Teslim edildi mi?"])
+                                                  "Kargo Bırakma Tarihi", "Kargo Alma Tarihi", "Teslim edildi mi?"])
 
             for get_DB in read_db:
                 self.model.invisibleRootItem().appendRow(

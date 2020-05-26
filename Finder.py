@@ -1,11 +1,11 @@
 from PyQt5.Qt import *
-import main_DB
+import Database
 import datetime
 import InfoWindow
 
 
 class Finder():
-    database = main_DB.main_DB()
+    database = Database.main_DB()
     currenttime = datetime.datetime.now()
 
     def PNRFinder(self, currenttext):  # find person from PNR Number
@@ -68,24 +68,24 @@ class Finder():
     def getValues(self, cargo_type, info_type, info):  # calling info window class with PNR Number
 
         if cargo_type == "receiver" and info_type == "PNR":
-            list_InfoWindow = self.database.getPerson_withPNRNo(info)
+            list_InfoWindow = self.database.getIdentity_withPNRNo(info)
             self.database.setBoxState_isEmpty("1", str(list_InfoWindow[0][5]))
             self.database.setCargoState_isReceived_withPNR("1", info)
             self.database.setCargoState_received_at_withPNR(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, list_InfoWindow
         elif cargo_type == "delivery" and info_type == "Tracking":
-            list_InfoWindow = self.database.getPerson_withTrackingNo(info)
+            list_InfoWindow = self.database.getIdentity_withTrackingNo(info)
             print("deneme ", list_InfoWindow)
             mail_track = self.database.getMailinfo_withTrackingNo(info)  # Takip numarası ile mail içerikleri çekme
             self.database.setCargoState_delivered_at_withTracking(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, list_InfoWindow, mail_track
 
         elif cargo_type == "receiver" and info_type == "QRCode":
-            getPerson = self.database.getPerson_withQRCode(info)
+            getPerson = self.database.getIdentity_withQRCode(info)
             self.database.setBoxState_isEmpty("1", str(getPerson[0][5]))
             self.database.setCargoState_isReceived_withQRCode("1", info)
             self.database.setCargoState_received_at_withQRCode(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, getPerson
         elif cargo_type == "delivery" and info_type == "QRCode":
-            getPerson = self.database.getPerson_withQRCode(info)
+            getPerson = self.database.getIdentity_withQRCode(info)
             return cargo_type, getPerson

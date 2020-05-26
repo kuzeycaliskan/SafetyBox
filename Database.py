@@ -110,12 +110,6 @@ class main_DB():
 
         return read_DB
 
-    def getIdentity_ID(self, phone):
-        self.select_DB.execute("SELECT id FROM kimlikler where tel_num =" + phone)
-        read_DB = self.select_DB.fetchone()
-
-        return read_DB[0]
-
     def getRowCount_Counties(self):
         self.select_DB.execute('SELECT COUNT(*) FROM ilceler')
         readRowCount = self.select_DB.fetchone()
@@ -142,6 +136,12 @@ class main_DB():
 
     def getRowCount_Identities(self):
         self.select_DB.execute('SELECT COUNT(*) FROM kimlikler')
+        readRowCount = self.select_DB.fetchone()
+
+        return readRowCount[0]
+
+    def getLastPersonCode_Identities(self):
+        self.select_DB.execute('SELECT person_code FROM kimlikler order by person_code desc limit 1')
         readRowCount = self.select_DB.fetchone()
 
         return readRowCount[0]
@@ -173,7 +173,7 @@ class main_DB():
         readQRCode = self.select_DB.fetchall()
         return readQRCode
 
-    def getPerson_withPNRNo(self, PNR_num):
+    def getIdentity_withPNRNo(self, PNR_num):
         self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
                                'kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
                                ' krg.dolaplar_id = dlp.id WHERE PNR_num = ' + PNR_num)
@@ -181,13 +181,34 @@ class main_DB():
 
         return readInfo_IW
 
-    def getPerson_withQRCode(self, QRCode):
+    def getIdentity_withQRCode(self, QRCode):
         self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
                                ' kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
                                ' krg.dolaplar_id = dlp.id where  krg.qr_kod =' + '"' + str(QRCode) + '"')
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW
+
+    def getIdentity_withTrackingNo(self, Tracking_num):
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
+                               ' kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
+                               ' krg.dolaplar_id = dlp.id where  takip_no =' + '"' + str(Tracking_num) + '"')
+        readDelivery_DW = self.select_DB.fetchall()
+
+        return readDelivery_DW
+
+    def getIdentity_withPhone(self, phone):
+        self.select_DB.execute("SELECT id FROM kimlikler where tel_num =" + phone)
+        read_DB = self.select_DB.fetchone()
+
+        return read_DB[0]
+
+    def getIdentity_withPersonCode(self, person_Code):
+        self.select_DB.execute('SElECT isim, soyisim, tel_num, mail FROM kimlikler WHERE person_code = ' + '"' +
+                               str(person_Code) + '"')
+        read_DB = self.select_DB.fetchone()
+
+        return read_DB[0]
 
     def getTrackList(self):
         self.select_DB.execute("SELECT takip_no FROM kargolar")
@@ -206,14 +227,6 @@ class main_DB():
         read_DB = self.select_DB.fetchone()
 
         return read_DB[0]
-
-    def getPerson_withTrackingNo(self, Tracking_num):
-        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
-                               ' kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
-                               ' krg.dolaplar_id = dlp.id where  takip_no =' + '"' + str(Tracking_num) + '"')
-        readDelivery_DW = self.select_DB.fetchall()
-
-        return readDelivery_DW
 
     def getMailinfo_withTrackingNo(self, Tracking_num):
         self.select_DB.execute('select isim,soyisim,tel_num,mail,krg.takip_no,krg.PNR_num,sftb.isim_sb,sftb.adres,i.ilce, i.il from '
@@ -247,10 +260,10 @@ class main_DB():
 
         self.connection.commit()
 
-    def create_Identity(self, name, surname, phone, email):
-        self.select_DB.execute("INSERT INTO kimlikler (isim, soyisim, tel_num, mail) VALUES (" + '"' +
-                               str(name) + '"' + ',' + '"' + str(surname) + '"' +  ',' + str(phone) + "," +
-                               '"' + str(email) + '"' + ')')
+    def create_Identity(self, name, surname, phone, email, person_code):
+        self.select_DB.execute("INSERT INTO kimlikler (isim, soyisim, tel_num, mail, person_code) VALUES (" + '"' +
+                               str(name) + '"' + ',' + '"' + str(surname) + '"' + ',' + str(phone) + "," +
+                               '"' + str(email) + '"' + "," + '"' + str(person_code) + '"' ')')
 
         self.connection.commit()
 

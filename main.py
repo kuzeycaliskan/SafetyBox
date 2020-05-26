@@ -11,8 +11,8 @@ import CreateRow
 import Finder
 import InfoWindow
 import Mail
-import Window_DB
-import main_DB
+import Database_Window
+import Database
 import adminPassWindow
 
 # GUI Button Shape
@@ -117,8 +117,7 @@ class Window(QWidget):
         self.setPalette(background_Color)
 
 
-        self.database = main_DB.main_DB()  # calling database class
-
+        self.database = Database.main_DB()  # calling database class
 
         self.tabs()  # initialize tabs
         self.show()
@@ -128,7 +127,7 @@ class Window(QWidget):
         # messagebox opened, when no cargo is found
         self.info_dialog = QtWidgets.QMessageBox(self)
         self.info_dialog.setIcon(QMessageBox.Information)
-        self.info_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint)  # no title bar
+        # self.info_dialog.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowTitleHint)  # no title bar
         self.info_dialog.setWindowIcon(QIcon('/home/pi/Desktop/SafetyBox/icons/icon.png'))
         # self.info_dialog.setIconPixmap(QPixmap('icons/icon.png'))
         self.info_dialog.setWindowTitle("Uyarı")
@@ -145,8 +144,8 @@ class Window(QWidget):
 
     def cllback_AdminPass(self, result):
         if result is True:
-            self.tab.addTab(self.tab4, "Ayarlar")
-            self.tab.setCurrentWidget(self.tab4)
+            self.tab.addTab(self.tab5, "Ayarlar")
+            self.tab.setCurrentWidget(self.tab5)
             self.settingButton.setVisible(False)
             self.admin_W.close()
         else:
@@ -186,7 +185,7 @@ class Window(QWidget):
 
         return groupBox
 
-    def GB_LockerSystem(self):  # Kargo Teslim Alma - Step1
+    def GB_LockerSystem(self):  # Emanet Dolabı - Step1
 
         groupBox = QGroupBox("Emanet Dolabı")
 
@@ -299,39 +298,26 @@ class Window(QWidget):
 
         return groupBox
 
-
-    def GB_LockerTab(self):  # Kargo Teslim Grup Box - Step2
-
-        groupBox = QGroupBox("Emanet Teslim")
-
-        info_PNRDelivery = QLabel("Emanetinizi teslim etmek \n için bilgileri giriniz.")
-        info_PNRDelivery.setFont(QFont("Arial", 30, QFont.Bold))
-        info_PNRDelivery.setAlignment(Qt.AlignCenter)
-
-        self.PNRTextEditor = QLineEdit()
-        self.PNRTextEditor.setPlaceholderText("PNR Kod Giriniz")
-        self.PNRTextEditor.setValidator(QIntValidator())
-        self.PNRTextEditor.setStyleSheet("color : blue")
-
-        ConfirmButton = QPushButton("Onayla", objectName="GeneralButton")
-
-        # PNRbutton.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        ConfirmButton.installEventFilter(self)
-        ConfirmButton.setFont(QFont("Time New Roman", 20))
-        ConfirmButton.clicked.connect(self.PNRFinder)
-        ConfirmButton.setFixedSize(int(ConfirmButton.sizeHint().width())+50, ConfirmButton.sizeHint().height()+10)
-
-        self.PNRText = QLabel("")  # success failed text
+    def GB_Locker_FindIdentity(self):
+        groupBox = QGroupBox("Yeni Kişi Emanet Bırakma")
 
         vbox = QVBoxLayout()
-        vbox.addStretch()
-        vbox.addWidget(info_PNRDelivery)
-        vbox.addWidget(self.PNRTextEditor)
-        vbox.addWidget(self.PNRText)
-        vbox.addStretch()
-        vbox.addWidget(ConfirmButton, alignment=QtCore.Qt.AlignCenter)
-        vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
-        groupBox.size().setHeight(320)
+        info = QLabel()
+        info.setText("bilgiler buraya eklenecek")
+        vbox.addWidget(info)
+
+        groupBox.setLayout(vbox)
+
+        return groupBox
+
+    def GB_Locker_NewIdentity(self):
+        groupBox = QGroupBox("Kişi Kodu ile Emanet Bırakma")
+
+        vbox = QVBoxLayout()
+        info = QLabel()
+        info.setText("kişi kodu ile teslim alma olayları falan filan")
+        vbox.addWidget(info)
+
         groupBox.setLayout(vbox)
 
         return groupBox
@@ -347,8 +333,8 @@ class Window(QWidget):
         self.settingButton.setVisible(False)
 
     def B_LockerFunction(self):
-        self.tab.addTab(self.tab6, "Kargo Verme Aşaması")
-        self.tab.setCurrentWidget(self.tab6)  # pass tab-6 when clicked button
+        self.tab.addTab(self.tab4, "Kargo Verme Aşaması")
+        self.tab.setCurrentWidget(self.tab4)  # pass tab-6 when clicked button
         self.settingButton.setVisible(False)
 
     def B_BackMainButton(self):
@@ -365,7 +351,7 @@ class Window(QWidget):
         return self.BackButton
 
     def W_DatabaseWindow(self):  # calling database window class
-        self.w_DB = Window_DB.Window_DB("İlçeler")
+        self.w_DB = Database_Window.Window_DB("İlçeler")
         self.w_DB.show()
 
     def W_Database_CreateRow(self):  # calling database CreateRow window class
@@ -433,8 +419,8 @@ class Window(QWidget):
                                                            "Lütfen Takip Numarası Girip Tekrar Deneyiniz")
 
     def Database_Update(self):  # Database value uptade
-        self.tab.addTab(self.tab5, "DB Güncelleme")
-        self.tab.setCurrentWidget(self.tab5)
+        self.tab.addTab(self.tab6, "DB Güncelleme")
+        self.tab.setCurrentWidget(self.tab6)
 
     def BackMainFunction(self):
         self.settingButton.setVisible(True)
@@ -453,17 +439,18 @@ class Window(QWidget):
         self.tab1 = QWidget()  # create tab-1 (step-1) main tab
         self.tab2 = QWidget()  # create tab-2 (step-2) receiver tab
         self.tab3 = QWidget()  # create tab-3 (step-3) delivery tab
-        self.tab4 = QWidget()  # create tab-4 (step-4) update tab
-        self.tab5 = QWidget()  # create tab-5 (step-5) settings tab
-        self.tab6 = QWidget()  # create tab-6 (step-6) locker tab
+        self.tab4 = QWidget()  # create tab-4 (step-4) luggage locker
+        self.tab5 = QWidget()  # create tab-5 (step-5) update tab
+        self.tab6 = QWidget()  # create tab-6 (step-6) settings tab
 
         tab1_vbox = QVBoxLayout()  # tab-1's main layout
         tab1_hbox = QHBoxLayout()  # tab-1's layout
         tab2_vbox = QVBoxLayout()  # tab-2's layout
         tab3_vbox = QVBoxLayout()  # tab-3's layout
-        tab4_vbox = QVBoxLayout()  # tab-4's layout
+        tab4_hbox = QHBoxLayout()  # tab-4's layout
         tab5_vbox = QVBoxLayout()  # tab-5's layout
         tab6_vbox = QVBoxLayout()  # tab-6's layout
+
 
         #Main TAB Settings Button
         self.settingButton = QPushButton(objectName="SettingsButton")
@@ -473,7 +460,7 @@ class Window(QWidget):
         # self.settingButton.setFixedWidth(60)
         # self.settingButton.setFixedHeight(60)
 
-        # TAB-4 Widgets
+        # TAB-5 Widgets
         self.databaseAddRow = QPushButton("Add Row", objectName="GeneralButton")
         self.databaseAddRow.clicked.connect(self.W_Database_CreateRow)
         self.databaseButton = QPushButton("DB Table", objectName="GeneralButton")
@@ -481,9 +468,9 @@ class Window(QWidget):
         self.databaseUpdateRow = QPushButton("Update Row", objectName="GeneralButton")
         self.databaseUpdateRow.clicked.connect(self.Database_Update)
 
-        # TAB-4 Widgets END
+        # TAB-5 Widgets END
 
-        # TAB-5 Widgets
+        # TAB-6 Widgets
         self.U_TextLabel = QLabel("")
 
         self.U_Column = QComboBox(self)
@@ -497,7 +484,7 @@ class Window(QWidget):
 
         self.U_Button = QPushButton("Kaydet", objectName="GeneralButton")
         self.U_Button.clicked.connect(self.Database_Update)
-        # TAB-5 Widgets END
+        # TAB-6 Widgets END
 
 
         # widgets are placed
@@ -510,28 +497,28 @@ class Window(QWidget):
 
         tab3_vbox.addWidget(self.GB_cargoTrack())
 
-        tab4_vbox.addWidget(self.databaseAddRow)
-        tab4_vbox.addWidget(self.databaseUpdateRow)
-        tab4_vbox.addWidget(self.databaseButton)
-        tab4_vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
+        tab4_hbox.addWidget(self.GB_Locker_NewIdentity())
+        tab4_hbox.addWidget(self.GB_Locker_FindIdentity())
 
-        tab5_vbox.addStretch()
-        tab5_vbox.addWidget(self.U_TextLabel)
-        tab5_vbox.addWidget(self.U_Column)
-        tab5_vbox.addWidget(self.U_N_Value)
-        tab5_vbox.addWidget(self.U_Tel_Num)
-        tab5_vbox.addWidget(self.U_Button)
+        tab5_vbox.addWidget(self.databaseAddRow)
+        tab5_vbox.addWidget(self.databaseUpdateRow)
+        tab5_vbox.addWidget(self.databaseButton)
         tab5_vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
-        tab5_vbox.addStretch()
 
-        tab6_vbox.addWidget(self.GB_LockerTab())
-
+        tab6_vbox.addStretch()
+        tab6_vbox.addWidget(self.U_TextLabel)
+        tab6_vbox.addWidget(self.U_Column)
+        tab6_vbox.addWidget(self.U_N_Value)
+        tab6_vbox.addWidget(self.U_Tel_Num)
+        tab6_vbox.addWidget(self.U_Button)
+        tab6_vbox.addWidget(self.B_BackMainButton(), alignment=QtCore.Qt.AlignCenter)
+        tab6_vbox.addStretch()
 
         # tab's layout setted
         self.tab1.setLayout(tab1_vbox)
         self.tab2.setLayout(tab2_vbox)
         self.tab3.setLayout(tab3_vbox)
-        self.tab4.setLayout(tab4_vbox)
+        self.tab4.setLayout(tab4_hbox)
         self.tab5.setLayout(tab5_vbox)
         self.tab6.setLayout(tab6_vbox)
 

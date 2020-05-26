@@ -45,7 +45,6 @@ class InfoWindow(QWidget):  # <===
         self.mailLabel.setText("Mail: " + knowledge[0][3])
         self.box_no = knowledge[0][4]
         print('PRINTED INFO')
-
         self.receiver_ID = knowledge[0][3]
 
     def showInfoWindow(self, info_type, DB_RowValue, tracking_no):
