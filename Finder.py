@@ -101,13 +101,13 @@ class Finder():
             return cargo_type, list_InfoWindow, mail_track
 
         elif cargo_type == "receiver" and info_type == "QRCode":
-            getPerson = self.database.getIdentity_with_LockerQRCode(info)
+            getPerson = self.database.getIdentity_with_CargoQRCode(info)
             self.database.setBoxState_isEmpty("1", str(getPerson[0][5]))
             self.database.setCargoState_isReceived_withQRCode("1", info)
             self.database.setCargoState_received_at_withQRCode(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, getPerson
         elif cargo_type == "delivery" and info_type == "QRCode":
-            getPerson = self.database.getIdentity_with_LockerQRCode(info)
+            getPerson = self.database.getIdentity_with_CargoQRCode(info)
             return cargo_type, getPerson
 
         elif cargo_type == "Locker" and info_type == "QRCode":
