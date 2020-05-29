@@ -46,8 +46,8 @@ class main_DB():
         self.connection.commit()
 
     def setCargoState_delivered_at_withTracking(self, date, Tracking):
-        self.select_DB.execute(
-            'UPDATE kargolar SET delivered_at = ' + '"' + date + '"' + ' WHERE takip_no = ' + Tracking)
+        self.select_DB.execute('UPDATE kargolar SET delivered_at = ' + '"' + date + '"' + ' WHERE takip_no = ' + Tracking)
+
         self.connection.commit()
 
     def setCargoState_received_at_withPNR(self, date, PNR):
@@ -272,7 +272,6 @@ class main_DB():
             'on kimlikler.id = kargolar.kimlikler_id where krg.takip_no =' + Tracking_num)
 
         mailinfo_Track = self.select_DB.fetchall()
-
         return mailinfo_Track
 
     def getBoxNo_withTrackingNum(self, Tracking_num):

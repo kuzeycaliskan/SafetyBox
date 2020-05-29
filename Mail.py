@@ -54,7 +54,7 @@ class SendMail():
             message.attach(msgImage)
 
         elif mail_type == "Delivering_Cargo":
-            print("**********")
+            print("Mail Deliverin Cargo -- Program Burada Çöküyorsa QRKod Resmi Bulunamamış Olabilir")
             message["To"] = knowledge[0][3]
             # msgText = MIMEText('<b>Sayın </b> and an image.<br><img src="cid:image1"><br>Nifty!', 'html')
             self.msgText = MIMEText("<p><b>Sayın " + knowledge[0][0] + " " + knowledge[0][1] + ";</b></p>" +
@@ -159,15 +159,15 @@ class SendMail():
             msgImage.add_header('Content-ID', '<image1>')
             message.attach(msgImage)
 
-        try:
-            mail = smtplib.SMTP("smtp.gmail.com", 587)  # connection STMP Port 587-GmailPort
-            mail.ehlo()  # confirm connection
-            mail.starttls()  # gmail username/password cription
-            mail.login("safetyboxtr@gmail.com", "Yunus.54")  # login account
-            mail.sendmail(message["From"], message["To"], message.as_string())  # send mail
-            print("mail başarı ile gönderildi")  # information
-            mail.close()
-
-        except:
-            sys.stderr.write("bir hata oluştu")
-            sys.stderr.flush
+        # try:
+        #     mail = smtplib.SMTP("smtp.gmail.com", 587)  # connection STMP Port 587-GmailPort
+        #     mail.ehlo()  # confirm connection
+        #     mail.starttls()  # gmail username/password cription
+        #     mail.login("safetyboxtr@gmail.com", "Yunus.54")  # login account
+        #     mail.sendmail(message["From"], message["To"], message.as_string())  # send mail
+        #     print("mail başarı ile gönderildi")  # information
+        #     mail.close()
+        #
+        # except:
+        #     sys.stderr.write("bir hata oluştu")
+        #     sys.stderr.flush

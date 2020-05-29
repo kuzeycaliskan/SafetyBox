@@ -53,7 +53,6 @@ class InfoWindow(QWidget):  # <===
         self.phoneLabel.setText("Telefon: " + str(knowledge[0][2]))
         self.mailLabel.setText("Mail: " + knowledge[0][3])
         self.box_no = knowledge[0][4]
-        print('PRINTED INFO')
         self.receiver_ID = knowledge[0][3]
 
     def showInfoWindow(self, info_type, DB_RowValue, pnr_or_tracking):
@@ -61,27 +60,14 @@ class InfoWindow(QWidget):  # <===
         self.DB_RowValue = DB_RowValue
         self.info_type = info_type
         if info_type == "receiver":
-            print("InfoWindowClass", DB_RowValue)
-            print(DB_RowValue[0][0])
-            print(DB_RowValue[0][1])
-            print(DB_RowValue[0][2])
-            print(DB_RowValue[0][3])
-            print(DB_RowValue[0][4])
-            self.receiver_info(DB_RowValue)
+            print("Receiver showInfoWindow", DB_RowValue)
+            self.setInfoLabels(DB_RowValue)
         elif info_type == "delivery":
-            print("Shouldn't write this sentence", DB_RowValue)
-            print(DB_RowValue[0][0])
-            print(DB_RowValue[0][1])
-            print(DB_RowValue[0][2])
-            print(DB_RowValue[0][3])
-            self.delivery_info(DB_RowValue)
+            print("Delivery showInfoWindow", DB_RowValue)
+            self.setInfoLabels(DB_RowValue)
 
         elif info_type == "Locker":
             print("Locker showInfoWindow", DB_RowValue)
-            print(DB_RowValue[0][0])
-            print(DB_RowValue[0][1])
-            print(DB_RowValue[0][2])
-            print(DB_RowValue[0][3])
             self.setInfoLabels(DB_RowValue)
 
         self.setHidden(False)
@@ -94,7 +80,6 @@ class InfoWindow(QWidget):  # <===
 
     def confirmFunction(self):
         self.closeInfoWindow()
-
         if self.info_type == "receiver":
             # send mail and take picture process
             current_time = time.strftime("%d_%m_%Y_%H.%M.%S")  # creating current time value

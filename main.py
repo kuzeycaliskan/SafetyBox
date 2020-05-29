@@ -475,7 +475,6 @@ class Window(QWidget):
             print("choose something")
 
         empty_box = CreateRow.CreateRow().findEmptyBox(self.safetybox_name, self.Locker_box_size)
-        print("****", empty_box)
 
         return empty_box
 

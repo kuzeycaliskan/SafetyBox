@@ -27,7 +27,6 @@ class Finder():
             return None
 
     def TrackFinder(self, currenttext):  # Takip numarası karşılaştırma
-        print('TrackFINDER')
         getTrackList = self.database.getTrackList()
         i = 0
 
@@ -40,8 +39,6 @@ class Finder():
                 return self.getValues("delivery", "Tracking", str(getTrack[0]))
             else:
                 pass
-
-            print(int(currenttext) == int(getTrack[0]))
 
         if i == 0:
 
@@ -59,6 +56,7 @@ class Finder():
                     print(type(barcodeData))
                     print(type(QRCode[0]))
                     i = i + 1
+                    print("Finder Check: ", QRCode)
                     return self.getValues("receiver", "QRCode", str(QRCode[0]))
                 else:
                     pass
@@ -98,7 +96,6 @@ class Finder():
             return cargo_type, list_InfoWindow
         elif cargo_type == "delivery" and info_type == "Tracking":
             list_InfoWindow = self.database.getIdentity_withTrackingNo(info)
-            print("deneme ", list_InfoWindow)
             mail_track = self.database.getMailinfo_withTrackingNo(info)  # Takip numarası ile mail içerikleri çekme
             self.database.setCargoState_delivered_at_withTracking(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, list_InfoWindow, mail_track
@@ -114,14 +111,9 @@ class Finder():
             return cargo_type, getPerson
 
         elif cargo_type == "Locker" and info_type == "QRCode":
-            print("locker state girildi")
             getPerson = self.database.getIdentity_with_LockerQRCode(info)
-            print("11111", getPerson[0][5])
             self.database.setBoxState_isEmpty("1", str(getPerson[0][5]))
-            print("22222")
             self.database.setLockerState_isReceived_withQRCode("1", info)
-            print("33333")
             self.database.setLockerState_received_at_withQRCode(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
-            print("44444")
             return cargo_type, getPerson
 
