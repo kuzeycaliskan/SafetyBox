@@ -48,22 +48,45 @@ class Finder():
             return None
 
     def QRCodeFinder(self, barcodeData):  # find person with QR Code
-        getQRCodeList = self.database.getQRCodeList()
-        i = 0
-        for QRCode in getQRCodeList:
-            if QRCode[0] == barcodeData:
-                print("success. I found a person")
-                print(type(barcodeData))
-                print(type(QRCode[0]))
-                i = i + 1
-                return self.getValues("receiver", "QRCode", str(QRCode[0]))
-            else:
-                pass
-                # print(type)
-                # print("trying another QRCode")
+        barcodeData_type = barcodeData.split("/*/")
+        barcodeData_type = barcodeData[0]
+        if barcodeData_type == "R":
+            getQRCodeList = self.database.getQRCodeList_Cargo()
+            i = 0
+            for QRCode in getQRCodeList:
+                if QRCode[0] == barcodeData:
+                    print("success. I found a person")
+                    print(type(barcodeData))
+                    print(type(QRCode[0]))
+                    i = i + 1
+                    return self.getValues("receiver", "QRCode", str(QRCode[0]))
+                else:
+                    pass
+                    # print(type)
+                    # print("trying another QRCode")
 
-        if i == 0:  # if not found give information is provided
-            return None
+            if i == 0:  # if not found give information is provided
+                return None
+
+        elif barcodeData_type == "L":
+            getQRCodeList = self.database.getQRCodeList_Locker()
+            i = 0
+            for QRCode in getQRCodeList:
+                if QRCode[0] == barcodeData:
+                    print("success. I found a person")
+                    print(type(barcodeData))
+                    print(type(QRCode[0]))
+                    i = i + 1
+                    return self.getValues("Locker", "QRCode", str(QRCode[0]))
+                else:
+                    pass
+                    # print(type)
+                    # print("trying another QRCode")
+
+            if i == 0:  # if not found give information is provided
+                return None
+
+
 
     def getValues(self, cargo_type, info_type, info):  # calling info window class with PNR Number
 
@@ -81,11 +104,24 @@ class Finder():
             return cargo_type, list_InfoWindow, mail_track
 
         elif cargo_type == "receiver" and info_type == "QRCode":
-            getPerson = self.database.getIdentity_withQRCode(info)
+            getPerson = self.database.getIdentity_with_LockerQRCode(info)
             self.database.setBoxState_isEmpty("1", str(getPerson[0][5]))
             self.database.setCargoState_isReceived_withQRCode("1", info)
             self.database.setCargoState_received_at_withQRCode(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
             return cargo_type, getPerson
         elif cargo_type == "delivery" and info_type == "QRCode":
-            getPerson = self.database.getIdentity_withQRCode(info)
+            getPerson = self.database.getIdentity_with_LockerQRCode(info)
             return cargo_type, getPerson
+
+        elif cargo_type == "Locker" and info_type == "QRCode":
+            print("locker state girildi")
+            getPerson = self.database.getIdentity_with_LockerQRCode(info)
+            print("11111", getPerson[0][5])
+            self.database.setBoxState_isEmpty("1", str(getPerson[0][5]))
+            print("22222")
+            self.database.setLockerState_isReceived_withQRCode("1", info)
+            print("33333")
+            self.database.setLockerState_received_at_withQRCode(self.currenttime.strftime("%Y-%m-%d %H:%M:%S"), info)
+            print("44444")
+            return cargo_type, getPerson
+

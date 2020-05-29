@@ -23,10 +23,10 @@ class CabinNum_Window(QWidget):  # <===
         Cabin_Num_Text.setFont(QFont("Arial", 50, QFont.Bold))
         Cabin_Num_Text.setAlignment(Qt.AlignCenter)
         self.information_Text = QLabel()
-        if self.info_type == "receiver":
-            self.information_Text.setText("Numaralı Dolaptan\nKargonuzu Alabilirsiniz.")
+        if self.info_type == "receiver" or "Locker":
+            self.information_Text.setText("Numaralı Dolaptan\nÜrününüzü Alabilirsiniz.")
         elif self.info_type == "delivery":
-            self.information_Text.setText("Numaralı Dolaba\nKargoyu Bırakınız.")
+            self.information_Text.setText("Numaralı Dolaba\nÜrünü Bırakınız.")
         self.information_Text.setFont(QFont("Arial", 25, QFont.Bold))
         self.information_Text.setAlignment(Qt.AlignCenter)
 

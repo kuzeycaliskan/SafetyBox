@@ -26,19 +26,28 @@ class main_DB():
         self.select_DB = self.connection.cursor()
 
     def setBoxState_isEmpty(self, state, box_no):
-        self.select_DB.execute('UPDATE dolaplar SET is_empty = ' + '"' + state + '"' + ' WHERE id = ' + '"' + box_no + '"')
+        self.select_DB.execute(
+            'UPDATE dolaplar SET is_empty = ' + '"' + state + '"' + ' WHERE id = ' + '"' + box_no + '"')
         self.connection.commit()
 
     def setCargoState_isReceived_withPNR(self, state, PNR_num):
-        self.select_DB.execute('UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE PNR_num = ' + '"' + PNR_num + '"')
+        self.select_DB.execute(
+            'UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE PNR_num = ' + '"' + PNR_num + '"')
         self.connection.commit()
 
     def setCargoState_isReceived_withQRCode(self, state, QR_Code):
-        self.select_DB.execute('UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE qr_kod = ' + '"' + QR_Code + '"')
+        self.select_DB.execute(
+            'UPDATE kargolar SET is_received = ' + '"' + state + '"' + 'WHERE qr_kod = ' + '"' + QR_Code + '"')
+        self.connection.commit()
+
+    def setLockerState_isReceived_withQRCode(self, state, QR_Code):
+        self.select_DB.execute(
+            'UPDATE emanetler SET is_received = ' + '"' + state + '"' + 'WHERE qr_kod = ' + '"' + QR_Code + '"')
         self.connection.commit()
 
     def setCargoState_delivered_at_withTracking(self, date, Tracking):
-        self.select_DB.execute('UPDATE kargolar SET delivered_at = ' + '"' + date + '"' + ' WHERE takip_no = ' + Tracking)
+        self.select_DB.execute(
+            'UPDATE kargolar SET delivered_at = ' + '"' + date + '"' + ' WHERE takip_no = ' + Tracking)
         self.connection.commit()
 
     def setCargoState_received_at_withPNR(self, date, PNR):
@@ -46,11 +55,18 @@ class main_DB():
         self.connection.commit()
 
     def setCargoState_received_at_withQRCode(self, date, QR_Code):
-        self.select_DB.execute('UPDATE kargolar SET received_at = ' + '"' + date + '"' + ' WHERE qr_kod = ' + '"' + QR_Code + '"')
+        self.select_DB.execute(
+            'UPDATE kargolar SET received_at = ' + '"' + date + '"' + ' WHERE qr_kod = ' + '"' + QR_Code + '"')
+        self.connection.commit()
+
+    def setLockerState_received_at_withQRCode(self, date, QR_Code):
+        self.select_DB.execute(
+            'UPDATE emanetler SET received_at = ' + '"' + date + '"' + ' WHERE qr_kod = ' + '"' + QR_Code + '"')
         self.connection.commit()
 
     def setQRCode(self, new_QR, old_QR):
-        self.select_DB.execute('UPDATE kargolar SET qr_kod = ' + '"' + new_QR + '"' + ' WHERE kargolar.qr_kod = ' + '"' + old_QR + '"')
+        self.select_DB.execute(
+            'UPDATE kargolar SET qr_kod = ' + '"' + new_QR + '"' + ' WHERE kargolar.qr_kod = ' + '"' + old_QR + '"')
         self.connection.commit()
 
     def updateIdentity(self, n_column, n_value, tel_num, o_value):
@@ -168,10 +184,16 @@ class main_DB():
         readPNR_DB = self.select_DB.fetchall()
         return readPNR_DB
 
-    def getQRCodeList(self):
+    def getQRCodeList_Cargo(self):
         self.select_DB.execute("select qr_kod from kargolar")
         readQRCode = self.select_DB.fetchall()
         return readQRCode
+
+    def getQRCodeList_Locker(self):
+        self.select_DB.execute("select qr_kod from emanetler")
+        readQRCode = self.select_DB.fetchall()
+        return readQRCode
+
 
     def getIdentity_withPNRNo(self, PNR_num):
         self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
@@ -181,10 +203,18 @@ class main_DB():
 
         return readInfo_IW
 
-    def getIdentity_withQRCode(self, QRCode):
+    def getIdentity_with_CargoQRCode(self, QRCode):
         self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
                                ' kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on '
                                ' krg.dolaplar_id = dlp.id where  krg.qr_kod =' + '"' + str(QRCode) + '"')
+        readDelivery_DW = self.select_DB.fetchall()
+
+        return readDelivery_DW
+
+    def getIdentity_with_LockerQRCode(self, QRCode):
+        self.select_DB.execute('select isim,soyisim,tel_num,mail,dolap_no,dolaplar_id from kimlikler inner join '
+                               ' emanetler emnt on kimlikler.id = emnt.kimlikler_id inner join dolaplar dlp on '
+                               ' emnt.dolaplar_id = dlp.id where  emnt.qr_kod =' + '"' + str(QRCode) + '"')
         readDelivery_DW = self.select_DB.fetchall()
 
         return readDelivery_DW
@@ -198,17 +228,17 @@ class main_DB():
         return readDelivery_DW
 
     def getIdentity_withPhone(self, phone):
-        self.select_DB.execute("SELECT id FROM kimlikler where tel_num =" + phone)
-        read_DB = self.select_DB.fetchone()
+        self.select_DB.execute("SELECT id,isim, soyisim, tel_num, mail, person_code FROM kimlikler where tel_num =" + phone)
+        read_DB = self.select_DB.fetchall()
 
-        return read_DB[0]
+        return read_DB
 
     def getIdentity_withPersonCode(self, person_Code):
-        self.select_DB.execute('SElECT isim, soyisim, tel_num, mail FROM kimlikler WHERE person_code = ' + '"' +
+        self.select_DB.execute('SElECT id,isim, soyisim, tel_num, mail FROM kimlikler WHERE person_code = ' + '"' +
                                str(person_Code) + '"')
         read_DB = self.select_DB.fetchone()
 
-        return read_DB[0]
+        return read_DB
 
     def getTrackList(self):
         self.select_DB.execute("SELECT takip_no FROM kargolar")
@@ -228,11 +258,18 @@ class main_DB():
 
         return read_DB[0]
 
+    def getLockerPNRNo_withQRCode(self, QRCode):
+        self.select_DB.execute('SELECT PNR_num from emanetler where qr_kod = ' + '"' + QRCode + '"')
+        read_DB = self.select_DB.fetchone()
+
+        return read_DB[0]
+
     def getMailinfo_withTrackingNo(self, Tracking_num):
-        self.select_DB.execute('select isim,soyisim,tel_num,mail,krg.takip_no,krg.PNR_num,sftb.isim_sb,sftb.adres,i.ilce, i.il from '
-                               'kimlikler inner join kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id '
-                               'inner join safetyboxs sftb on dlp.safetyboxs_id = sftb.id inner join ilceler i on sftb.ilceler_id = i.id inner join kargolar '
-                               'on kimlikler.id = kargolar.kimlikler_id where krg.takip_no =' + Tracking_num)
+        self.select_DB.execute(
+            'select isim,soyisim,tel_num,mail,krg.takip_no,krg.PNR_num,sftb.isim_sb,sftb.adres,i.ilce, i.il from '
+            'kimlikler inner join kargolar krg on kimlikler.id = krg.kimlikler_id inner join dolaplar dlp on krg.dolaplar_id = dlp.id '
+            'inner join safetyboxs sftb on dlp.safetyboxs_id = sftb.id inner join ilceler i on sftb.ilceler_id = i.id inner join kargolar '
+            'on kimlikler.id = kargolar.kimlikler_id where krg.takip_no =' + Tracking_num)
 
         mailinfo_Track = self.select_DB.fetchall()
 
@@ -252,11 +289,11 @@ class main_DB():
         readBoxNo = self.select_DB.fetchone()
         return readBoxNo[0]
 
-    def create_Cargo(self, tracking, QRCode, PNR, security, dolap_id, kimlik_id, create_date,  received):
+    def create_Cargo(self, tracking, QRCode, PNR, security, dolap_id, kimlik_id, created_at, is_received):
         self.select_DB.execute('INSERT INTO kargolar (takip_no, qr_kod, pnr_num, is_security, dolaplar_id,' +
                                ' kimlikler_id, created_at, is_received) VALUES (' + str(tracking) + ',' + '"' +
-                                QRCode + '"' + ',' + str(PNR) + ',' + str(security) + ',' + str(dolap_id) + ',' +
-                                str(kimlik_id) + ',' + '"' + str(create_date) + '"' + ',' + str(received) + ')')
+                               QRCode + '"' + ',' + str(PNR) + ',' + str(security) + ',' + str(dolap_id) + ',' +
+                               str(kimlik_id) + ',' + '"' + str(created_at) + '"' + ',' + str(is_received) + ')')
 
         self.connection.commit()
 
@@ -264,6 +301,14 @@ class main_DB():
         self.select_DB.execute("INSERT INTO kimlikler (isim, soyisim, tel_num, mail, person_code) VALUES (" + '"' +
                                str(name) + '"' + ',' + '"' + str(surname) + '"' + ',' + str(phone) + "," +
                                '"' + str(email) + '"' + "," + '"' + str(person_code) + '"' ')')
+
+        self.connection.commit()
+
+    def create_SafetyLocker(self, PNR, QRCode, dolap_id, kimlik_id, created_at, is_received):
+        self.select_DB.execute('INSERT INTO emanetler (PNR_num, qr_kod, dolaplar_id, kimlikler_id, created_at,'
+                               'is_received) VALUES (' + str(PNR) + ',' + '"' + QRCode + '"' + ',' +
+                               str(dolap_id) + ',' + str(kimlik_id) + ',' + '"' + created_at + '"' + ',' +
+                               str(is_received) + ')')
 
         self.connection.commit()
 
