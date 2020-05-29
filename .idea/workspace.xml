@@ -1,60 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="355eaeca-6695-4e6f-a8ed-9ffa2bbd1306" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CabinNum_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/CabinNum_Window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code_Generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Code_Generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateRow.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateRow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Database.py" beforeDir="false" afterPath="$PROJECT_DIR$/Database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/Finder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InfoWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/InfoWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mail.py" beforeDir="false" afterPath="$PROJECT_DIR$/Mail.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_26at19.37.38_99559234_caliskan_kuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_27at15.07.08_94409888_caliskan_kuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_27at15.13.23_75599387_gunduzburak.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_27at23.19.04_81222506_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_27at23.25.03_19231993_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_27at23.28.54_86866182_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at11.40.20_80753215_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at18.27.37_53003480_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at18.28.35_20595063_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at18.29.08_72765592_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at21.26.27_89831441_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at21.27.16_26492613_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at21.29.58_26921502_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at21.34.39_54860506_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at21.37.02_82236515_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at21.37.32_36293431_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_03_30at21.42.31_44768347_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.04.15_81627901_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.06.08_70474973_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.13.32_32402000_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.18.34_90790936_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.23.22_66443927_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.24.55_94684504_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.27.03_56782280_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.29.14_56326549_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.32.03_48067228_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.33.40_99280212_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.35.35_72381971_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.42.12_36137877_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_01at14.45.49_56779113_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_05at21.07.35_16607086_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_05at21.13.30_74236813_gunduzburak.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_05at21.19.21_38478244_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_05at21.27.13_51009043_karkasmuhammed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_12at18.49.50_52671764_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_04_12at19.22.18_91972268_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_05_26at17.34.20_65959918_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_05_26at20.08.33_18606617_caliskankuzey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_05_26at20.12.40_85877286_karkasmuhammed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_05_26at21.00.11_58710407_gumusemin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_05_26at21.00.11_59543247_gumusemin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_05_26at21.00.11_82788831_gumusemin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home/pi/Desktop/qr_images/2020_05_26at23.07.32_45300881_esmeyunus.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="355eaeca-6695-4e6f-a8ed-9ffa2bbd1306" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -255,7 +202,7 @@
       <workItem from="1590020587835" duration="25000" />
       <workItem from="1590022688212" duration="765000" />
       <workItem from="1590503587991" duration="60138000" />
-      <workItem from="1590752946080" duration="8065000" />
+      <workItem from="1590752946080" duration="8435000" />
     </task>
     <servers />
   </component>
@@ -299,29 +246,29 @@
     <state x="-822" y="199" key="FileChooserDialogImpl/0.0.1536.824/-1280.0.1280.984@-1280.0.1280.984" timestamp="1586766954262" />
     <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590510114342" />
     <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1585830445974" />
-    <state width="1493" height="121" key="GridCell.Tab.0.bottom" timestamp="1590770431385">
+    <state width="1493" height="121" key="GridCell.Tab.0.bottom" timestamp="1590770800862">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1237" height="121" key="GridCell.Tab.0.bottom/0.0.1536.824/-1280.0.1280.984@-1280.0.1280.984" timestamp="1590526217685" />
-    <state width="1493" height="121" key="GridCell.Tab.0.bottom/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770431385" />
+    <state width="1493" height="121" key="GridCell.Tab.0.bottom/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770800862" />
     <state width="1493" height="121" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1590751982261" />
-    <state width="1493" height="121" key="GridCell.Tab.0.center" timestamp="1590770431385">
+    <state width="1493" height="121" key="GridCell.Tab.0.center" timestamp="1590770800862">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1237" height="121" key="GridCell.Tab.0.center/0.0.1536.824/-1280.0.1280.984@-1280.0.1280.984" timestamp="1590526217685" />
-    <state width="1493" height="121" key="GridCell.Tab.0.center/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770431385" />
+    <state width="1493" height="121" key="GridCell.Tab.0.center/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770800862" />
     <state width="1493" height="121" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1590751982260" />
-    <state width="1493" height="121" key="GridCell.Tab.0.left" timestamp="1590770431385">
+    <state width="1493" height="121" key="GridCell.Tab.0.left" timestamp="1590770800862">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1237" height="121" key="GridCell.Tab.0.left/0.0.1536.824/-1280.0.1280.984@-1280.0.1280.984" timestamp="1590526217685" />
-    <state width="1493" height="121" key="GridCell.Tab.0.left/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770431385" />
+    <state width="1493" height="121" key="GridCell.Tab.0.left/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770800862" />
     <state width="1493" height="121" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1590751982260" />
-    <state width="1493" height="121" key="GridCell.Tab.0.right" timestamp="1590770431385">
+    <state width="1493" height="121" key="GridCell.Tab.0.right" timestamp="1590770800862">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1237" height="121" key="GridCell.Tab.0.right/0.0.1536.824/-1280.0.1280.984@-1280.0.1280.984" timestamp="1590526217685" />
-    <state width="1493" height="121" key="GridCell.Tab.0.right/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770431385" />
+    <state width="1493" height="121" key="GridCell.Tab.0.right/0.0.1536.824/-1280.0.1280.984@0.0.1536.824" timestamp="1590770800862" />
     <state width="1493" height="121" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1590751982261" />
     <state width="1493" height="220" key="GridCell.Tab.1.bottom" timestamp="1590612995960">
       <screen x="0" y="0" width="1536" height="824" />
@@ -376,6 +323,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/SafetyBox$main_DB.coverage" NAME="main_DB Coverage Results" MODIFIED="1580509575899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SafetyBox$main.coverage" NAME="main Coverage Results" MODIFIED="1590770431380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SafetyBox$main.coverage" NAME="main Coverage Results" MODIFIED="1590771088149" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

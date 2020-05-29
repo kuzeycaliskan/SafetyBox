@@ -393,7 +393,8 @@ class Window(QWidget):
 
         vbox = QVBoxLayout()
         info = QLabel()
-        info.setText("SafetyBox Kimlik Numaranızı Giriniz.")
+        info.setText("SafetyBox Kimlik Numaranızı Giriniz.\nve\nKutu Boyutu Seçiniz.")
+        info.setAlignment(QtCore.Qt.AlignCenter)
         info.setFont(QFont("Arial", 18, QFont.Bold))
         info.setMargin(20)
 
