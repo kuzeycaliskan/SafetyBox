@@ -42,4 +42,4 @@ class CabinNum_Window(QWidget):  # <===
     def confirmFunction(self):
         self.close()
         print("Açılacak Dolap No: ", self.Cabin_Num)
-        # RP4_GPIO.RP4_GPIO(self.Cabin_Num)
+        RP4_GPIO.RP4_GPIO(self.Cabin_Num)

@@ -174,7 +174,7 @@ class Window(QWidget):
 
     def __init__(self):
         super().__init__()  # QWidget fonskiyonlarını kullanabilmek icin
-        self.setGeometry(0, 0, 800, 640)  # window size
+        self.setGeometry(0, 0, 1280, 720)  # window size
         self.setWindowTitle("Safety Box")  # window title
         background_Color = self.palette()
         background_Color.setColor(self.backgroundRole(), Qt.white)
@@ -219,7 +219,7 @@ class Window(QWidget):
 
         vbox = QVBoxLayout()
 
-        self.receivingButton = QPushButton("Kargo Teslim\nAlma", objectName="ReceivingButton")  # button initialize
+        self.receivingButton = QPushButton("Müşteriyim", objectName="ReceivingButton")  # button initialize
         self.receivingButton.installEventFilter(self)
         # receivingButton.setFixedSize(receivingButton.width(), receivingButton.height())  # button size maximize
         self.receivingButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -236,7 +236,7 @@ class Window(QWidget):
         groupBox = QGroupBox("Kargo Teslim Etme")
 
         vbox = QVBoxLayout()
-        self.deliveringButton = QPushButton("Kargo Teslim\nEtme", objectName="DeliveringButton")  # button initialize
+        self.deliveringButton = QPushButton("Kuryeyim", objectName="DeliveringButton")  # button initialize
         self.deliveringButton.installEventFilter(self)
         # deliveringButton.setFixedSize(deliveringButton.width(), deliveringButton.height())  # button size maximize
         self.deliveringButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -544,17 +544,17 @@ class Window(QWidget):
 
         Locker_LineEdit_Name = QLineEdit(objectName="LockerLineEdit")
         Locker_LineEdit_Name.setPlaceholderText("Adınızı Girin")
-        Locker_LineEdit_Name.setFixedWidth(Locker_LineEdit_Name.sizeHint().width()+50)
+        Locker_LineEdit_Name.setFixedWidth(Locker_LineEdit_Name.sizeHint().width()+150)
         Locker_LineEdit_Surname = QLineEdit(objectName="LockerLineEdit")
         Locker_LineEdit_Surname.setPlaceholderText("Soyadınızı Girin")
-        Locker_LineEdit_Surname.setFixedWidth(Locker_LineEdit_Surname.sizeHint().width()+50)
+        Locker_LineEdit_Surname.setFixedWidth(Locker_LineEdit_Surname.sizeHint().width()+150)
         Locker_LineEdit_Phone = QLineEdit(objectName="LockerLineEdit")
         Locker_LineEdit_Phone.setPlaceholderText("Örn: 5XXXXXXXXX")
-        Locker_LineEdit_Phone.setFixedWidth(Locker_LineEdit_Phone.sizeHint().width()+50)
+        Locker_LineEdit_Phone.setFixedWidth(Locker_LineEdit_Phone.sizeHint().width()+150)
         Locker_LineEdit_Phone.setValidator(QIntValidator())
         Locker_LineEdit_Mail = QLineEdit(objectName="LockerLineEdit")
         Locker_LineEdit_Mail.setPlaceholderText("Mailinizi Girin")
-        Locker_LineEdit_Mail.setFixedWidth(Locker_LineEdit_Mail.sizeHint().width()+50)
+        Locker_LineEdit_Mail.setFixedWidth(Locker_LineEdit_Mail.sizeHint().width()+150)
 
         Locker_FormLayout = QFormLayout()
         Locker_FormLayout.addRow(Label_Name,  Locker_LineEdit_Name)
@@ -872,7 +872,8 @@ class Thread(QThread):
                             self.mem_barcodeData = barcodeData
                             self.cllbck(barcodeData)
 
-            if ret:
+            if ret \
+                    :
                 # https://stackoverflow.com/a/55468544/6622587
                 rgbImage = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
                 h, w, ch = rgbImage.shape

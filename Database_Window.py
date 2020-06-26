@@ -12,7 +12,7 @@ class Window_DB(QMainWindow):
         # Be sure to call the super class method
         QMainWindow.__init__(self)
 
-        self.setGeometry(0, 0, 1080, 732)  # window size
+        self.setGeometry(0, 0, 1280, 720)  # window size
         self.setWindowTitle("Database Table")
         self.database = Database.main_DB()
         self.table_DB(table_name)

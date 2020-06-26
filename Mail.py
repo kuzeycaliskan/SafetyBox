@@ -159,15 +159,15 @@ class SendMail():
             msgImage.add_header('Content-ID', '<image1>')
             message.attach(msgImage)
 
-        # try:
-        #     mail = smtplib.SMTP("smtp.gmail.com", 587)  # connection STMP Port 587-GmailPort
-        #     mail.ehlo()  # confirm connection
-        #     mail.starttls()  # gmail username/password cription
-        #     mail.login("safetyboxtr@gmail.com", "Yunus.54")  # login account
-        #     mail.sendmail(message["From"], message["To"], message.as_string())  # send mail
-        #     print("mail başarı ile gönderildi")  # information
-        #     mail.close()
-        #
-        # except:
-        #     sys.stderr.write("bir hata oluştu")
-        #     sys.stderr.flush
+        try:
+            mail = smtplib.SMTP("smtp.gmail.com", 587)  # connection STMP Port 587-GmailPort
+            mail.ehlo()  # confirm connection
+            mail.starttls()  # gmail username/password cription
+            mail.login("safetyboxtr@gmail.com", "Yunus.54")  # login account
+            mail.sendmail(message["From"], message["To"], message.as_string())  # send mail
+            print("mail başarı ile gönderildi")  # information
+            mail.close()
+
+        except:
+            sys.stderr.write("bir hata oluştu")
+            sys.stderr.flush
