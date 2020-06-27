@@ -108,7 +108,7 @@ QPushButton#SmallButton:pressed {
 }
 
 QPushButton#SettingsButton {
-    qproperty-icon: url("home/pi/Desktop/SafetyBox/icons/setting.png"); 
+    qproperty-icon: url("/home/pi/Desktop/SafetyBox/icons/setting.png"); 
     qproperty-iconSize: 35px 35px; 
     background-color: #FFF;
     border-radius: 48px;
@@ -625,7 +625,7 @@ class Window(QWidget):
     def B_BackMainButton(self):
 
         self.BackButton = QPushButton("Ana Menüye Dönmek için Tıklayınız", objectName="BackMainButton")
-        self.BackButton.setIcon(QIcon("home/pi/Desktop/SafetyBox/icons/Home.png"))
+        self.BackButton.setIcon(QIcon("/home/pi/Desktop/SafetyBox/icons/Home.png"))
         self.BackButton.setIconSize(QtCore.QSize(30, 30))
 
         self.BackButton.clicked.connect(self.BackMainFunction)
@@ -883,7 +883,7 @@ class Thread(QThread):
                 self.changePixmap.emit(p)
 
     def takePicture(self, receiver_ID, saving_name):
-        cv2.imwrite("home/pi/Desktop/receiver_Person/" + str(receiver_ID) + "/" + str(saving_name) + ".jpg",
+        cv2.imwrite("/home/pi/Desktop/receiver_Person/" + str(receiver_ID) + "/" + str(saving_name) + ".jpg",
                     self.frame)
 
 

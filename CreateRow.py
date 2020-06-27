@@ -129,7 +129,7 @@ class CreateRow(QWidget):  # <===
             value = [name, surname, "", email.lower(), Tracking, PNR, SB_Split[0], SB_Split[1], county, city]
             Mail.SendMail("Creating_Cargo", value)
 
-            Path("home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
+            Path("/home/pi/Desktop/receiver_Person/" + receiver_Person_ID[0]).mkdir(parents=True,
                                                                    exist_ok=True)  # create folder if not exist
 
     def checkIdenties(self, name, surname, phone, email):  # Checking if ID is registered
